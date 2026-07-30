@@ -1,0 +1,15 @@
+{
+  "hash": "25cc2a1a23bdc8eb69b310066bba630a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Probe\"\nformat:\n  docx:\n    reference-doc: ../04.references/style-elsevier-quarto.docx\nbibliography: ../04.references/references.bib\ncsl: ../04.references/apa.csl\nengine: knitr\n---\nTesting a citation [@mitchell2012carbon] and an inline value: 4.\n\n# References\n\n::: {#refs}\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}
