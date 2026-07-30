@@ -301,9 +301,15 @@ res_mc <- do.call(rbind, lapply(SYS, function(sid) {
   s  <- sims[[sid]]
   ok <- is.finite(s$parity)
   q  <- if (any(ok)) quantile(s$parity[ok], c(0.025, 0.5, 0.975)) else rep(NA_real_, 3)
+  okb <- is.finite(s$payback)
   data.frame(system_id = sid,
              p_never   = mean(!ok),
              parity_lo = q[1], parity_md = q[2], parity_hi = q[3],
+             # payback is summarised the same way as parity so the two columns of Table 3 are
+             # the same kind of quantity. Where the invaded state is static the two coincide
+             # by construction, which is a useful check on the code.
+             payback_md = if (any(okb)) median(s$payback[okb]) else NA_real_,
+             p_never_b  = mean(!okb),
              nb40_md   = median(s$nb40),
              nb40_lo   = quantile(s$nb40, 0.025),
              nb40_hi   = quantile(s$nb40, 0.975),
@@ -473,7 +479,7 @@ Parity times follow from that ordering but not proportionally, because repayment
 ```{r}
 #| label: tbl-parity
 #| echo: true
-#| tbl-cap: "Removal debt, time to carbon parity and time to carbon payback, with the net carbon benefit of removal at the end of a 40 year crediting period. Parity times are medians with 95 percent intervals taken over the Monte Carlo draws that reach parity, so they are conditional on parity being reached and must be read alongside the adjacent probability that it is not. Systems in which the majority of draws never reach parity are reported as not reached rather than by a conditional median. Payback is the point estimate. Negative net benefit means the removal trajectory is still below the counterfactual at year 40."
+#| tbl-cap: "Removal debt, time to carbon parity and time to carbon payback, with the net carbon benefit of removal at the end of a 40 year crediting period. Parity times are medians with 95 percent intervals taken over the Monte Carlo draws that reach parity, so they are conditional on parity being reached and must be read alongside the adjacent probability that it is not. Systems in which the majority of draws never reach parity are reported as not reached rather than by a conditional median. Payback is summarised the same way. Where the invaded state is treated as static the two are identical by construction, because the counterfactual and the pre-removal stock are then the same quantity. Negative net benefit means the removal trajectory is still below the counterfactual at year 40."
 
 t3 <- data.frame(
   System    = res$system_short,
@@ -481,7 +487,7 @@ t3 <- data.frame(
   `Parity (yr)` = ifelse(res$p_never > 0.5, "not reached",
                     paste0(yr(res$parity_md), " (", yr(res$parity_lo), "-", yr(res$parity_hi), ")")),
   `P(never)` = pc(res$p_never),
-  `Payback (yr)` = yr(res$payback),
+  `Payback (yr)` = ifelse(res$p_never_b > 0.5, "not reached", yr(res$payback_md)),
   `Net benefit at 40 yr (Mg C/ha)` = paste0(f1(res$nb40_md), " (", f1(res$nb40_lo), " to ", f1(res$nb40_hi), ")"),
   check.names = FALSE, stringsAsFactors = FALSE)
 kable(t3, row.names = FALSE)

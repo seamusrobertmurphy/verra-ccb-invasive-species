@@ -51,6 +51,32 @@ death. The words Phragmites and Spartina do not appear in its body text. Do not 
 those numbers to invasive plant control. The genuine Phragmites removal flux work is
 Martin and Moseman-Valtierra 2017, *Atmospheric Environment* 158:51-59.
 
+**The 10.6 kg CO2e/ha figure is an insecticide figure, not a herbicide emission factor.**
+PLOS ONE 8(8):e72293 is about foliar insecticides against soybean aphid. It contains no
+herbicide emission factor at all, and the only herbicide it names is glyphosate as a tank-mix
+partner. What is transferable from it is the **application** term, 3.60 kg CO2e/ha, which is
+diesel use by a tractor sprayer and is chemical-agnostic. An earlier version of the parameter
+table here cited the 10.6 total as a herbicide factor. It does not.
+
+**Kahara et al. 2026's published carbon stocks are a factor of 100 too large.** Reproducing
+their own Equation 1 on their raw supplementary data gives `%C x BD x D x 100`, which is
+100 x (Mg C/ha). Their tables label the result g/ha and their Results text calls it kg C/ha;
+it is neither. Divide every tabulated value by 100. Two further defects sit in the same file:
+core depths range from 2.2 to 29.0 cm despite a stated 20 to 30 cm, and spring cores average
+7 cm against 23 to 25 cm in summer and autumn, which confounds their reported seasonal effect
+with sampling depth. Depth-standardising the raw data leaves Phragmites and native Spartina
+statistically indistinguishable, p = 0.70.
+
+**Phragmites emits far less methane than the native it replaces.** In the only within-marsh
+comparison available, invasive Phragmites emitted roughly 60 times less CH4 than native
+*Spartina alterniflora*, and N2O shows no invasion effect anywhere it has been measured. Do
+not assume the intuitive direction here.
+
+**Prosopis aboveground carbon is in Mbaabu's Supplementary Table S7, not the main paper.**
+Dense stands hold 12.46 Mg C/ha (SD 6.36, n=5), measured on the same plots as the soil data.
+Do not substitute Birhane et al.'s Ethiopian figure of roughly 86 Mg C/ha: different country,
+different measurement basis, and it contradicts the bound Mbaabu states in the main text.
+
 **Working for Water is carbon-blind, and that is a finding.** The largest invasive removal
 programme on earth has run for three decades with endpoints of water yield, employment and
 biodiversity. It is not a data gap to apologise for in the limitations; it belongs in the

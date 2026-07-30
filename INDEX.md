@@ -85,36 +85,50 @@ increase. Nothing in CCB credits, rewards or requires control.
 
 Ordered exactly by invader functional type, which was the hypothesis.
 
-| System | Debt (Mg C/ha) | Parity | Claimable at 40 yr |
-|---|---|---|---|
-| Cheatgrass steppe | 0.4 | 28 yr | yes, but the benefit is near zero |
-| Dry deciduous forest (Lantana) | 1.7 | 5 yr | yes, debt 30% of benefit |
-| Atlantic Forest regrowth (Acacia) | 45.4 | 21 yr | yes, debt 178% of benefit |
-| Prosopis rangeland | 10.2 | not reached, P=0.56 | no |
-| Tropical freshwater (hyacinth) | 3.8 | not reached, P=0.70 | no |
-| Everglades (Melaleuca) | 51.0 | not reached, P=0.86 | no |
-| Tidal marsh (Phragmites) | 9.5 | not reached, P=0.96 | no |
+| System | Debt (Mg C/ha) | Parity, median (95%) | P(never) | Claimable at 40 yr |
+|---|---|---|---|---|
+| Dry deciduous forest (Lantana) | 1.7 | 5 yr (1-71) | 19% | yes, debt 30% of benefit |
+| Cheatgrass steppe | 0.4 | 16 yr (0-158) | 40% | no, benefit is near zero |
+| Atlantic Forest regrowth (Acacia) | 45.4 | 21 yr (9-90) | 1% | yes, debt 178% of benefit |
+| Prosopis rangeland | 11.2 | 23 yr (2-110) | 38% | no, benefit near zero at yr 40 |
+| Tidal marsh (Phragmites) | 4.5 | not reached | 54% | no |
+| Tropical freshwater (hyacinth) | 3.8 | not reached | 70% | no |
+| Everglades (Melaleuca) | 51.0 | not reached | 86% | no |
 
-The Prosopis result is the most interesting and the least secure: the soil carbon gain from
-grassland restoration very nearly cancels the loss of Prosopis standing biomass, so parity sits
-on a knife edge and the answer is governed by an aboveground stock the source does not tabulate.
+**The Prosopis result is the sharpest in the paper.** With the measured aboveground carbon from
+Mbaabu's Supplementary Table S7 (12.46 Mg C/ha for dense stands), the soil carbon gained by
+restoring grassland very nearly cancels the loss of Prosopis standing biomass. Parity lands at
+23 years by the Monte Carlo median and at roughly 41 years on the point estimate, straddling the
+end of a 40-year crediting period, and the net benefit at year 40 is indistinguishable from zero
+(-0.6, 95% interval -16.8 to 16.6). A project in Baringo would be betting its entire carbon case
+on where in that interval it lands. Note also that the restoration chronosequence stops at year
+30, so the approach to the asymptote is an extrapolation.
+
+Parity and payback are identical wherever the invaded state is treated as static, which is a
+check on the code rather than a coincidence: with a flat counterfactual the pre-removal stock
+and the counterfactual are the same quantity.
 
 ## Blocking and open
 
-- **Only two of seven systems are fully quantified.** Evidence class is derived in code from
+- **Only three of seven systems are fully quantified.** Evidence class is derived in code from
   the parameter tiers, not asserted, so this cannot be talked around: a system counts as
   quantified only where both stocks and the invader's own aboveground carbon are measured.
-  Cheatgrass and Lantana pass. The rest carry at least one transferred parameter.
-- **The single most valuable missing number is Prosopis aboveground carbon in Baringo.**
-  Mbaabu et al. report it only as being lower than the 0-30 cm SOC pool, in Supplementary
-  Table S7, which was not retrieved. Get S7 and the Prosopis parity result firms up
-  substantially. Do not substitute Birhane et al.'s Ethiopian figure of 86 Mg C/ha: it is a
-  different country, a different measurement basis, and it violates the bound Mbaabu states.
-- **Phragmites stocks are the weakest in the table.** Gu et al.'s 37 to 77 per cent soil carbon
-  excess is verified, but the absolute native stock is nominal, because Kahara et al. report
-  concentrations rather than areal stocks and MDPI returned 403 to automated fetch. The sign of
-  the difference drives the result, not the magnitude, but the numbers should not be quoted as
-  measurements. Retrieve Kahara et al. Table 3 by hand.
+  Prosopis, cheatgrass and Lantana pass. The rest carry at least one transferred parameter.
+- **Acacia is the most valuable remaining gap.** Matos et al. measure aboveground live stems
+  only: no roots, no soil, no litter, no deadwood, no regeneration layer. Since acacias are
+  nitrogen fixers and the uninvaded plots carry 147 species against 26, the belowground and
+  soil terms are exactly where a native stand would be expected to close the gap. The native
+  asymptote of 150 Mg C/ha is a transferred value and drives the acacia result. Note also that
+  the source's headline threefold difference is not age-controlled; invaded stands average 4.9
+  years younger, and the age-controlled multiplier is 5.15x.
+- **Melaleuca figures in the literature are dry mass, not carbon.** The canonical 129 to 263
+  t/ha is aboveground dry biomass excluding roots, from single unreplicated plots; the better
+  replicated 2002 figures are higher (141 to 304 t/ha with standard errors) but the weaker
+  numbers propagated. No carbon fraction has ever been measured for Melaleuca in Florida.
+- **No measured decay constant exists for any of the five woody invaders.** The global synthesis
+  of 295 estimates across 114 species contains no record for Prosopis, Acacia, Lantana,
+  Melaleuca or Tamarix, and almost nothing from warm semi-arid systems at all. Every release
+  fraction in the table is therefore a modelled quantity.
 - **No system has a measured post-removal carbon trajectory except Prosopis**, whose rate is
   derived from the Mbaabu restoration chronosequence. Recovery rate is the parameter the model
   is most sensitive to, so this is the field's central data gap and the paper says so.
