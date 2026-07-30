@@ -3,3 +3,4 @@
 .RData
 ._*
 *_files/
+.quarto/
