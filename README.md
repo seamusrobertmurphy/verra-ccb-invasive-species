@@ -98,8 +98,8 @@ would have put fabricated numbers in the Phragmites section.
 
 ```
 cd 01.manuscript
-quarto render invasive-removal-carbon-parity.qmd --to docx
-quarto render invasive-removal-carbon-parity.qmd --to html
+quarto render invasive-removal-carbon-debt.qmd --to docx
+quarto render invasive-removal-carbon-debt.qmd --to html
 ```
 
 Rendering runs the entire analysis. Base R only, no packages beyond `knitr`, nothing fetched

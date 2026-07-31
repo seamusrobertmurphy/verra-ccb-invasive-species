@@ -6,10 +6,10 @@ Status as of 2026-07-30: **master manuscript built and rendering**, analysis exe
 in-document, bibliography verified entry by entry against fetched publisher records.
 Sole-authored. Target venue Global Change Biology.
 
-**The master is [`01.manuscript/invasive-removal-carbon-parity.qmd`](01.manuscript/invasive-removal-carbon-parity.qmd).**
+**The master is [`01.manuscript/invasive-removal-carbon-debt.qmd`](01.manuscript/invasive-removal-carbon-debt.qmd).**
 Edit it, not the renders. Every number in the prose is an inline R expression and every table
 and figure is generated at render time, so prose and results cannot drift.
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-parity.qmd --to docx`.
+Build: `cd 01.manuscript && quarto render invasive-removal-carbon-debt.qmd --to docx`.
 
 ## Read in this order
 

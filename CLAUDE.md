@@ -11,12 +11,12 @@ invader functional types, and no carbon standard can credit the result either wa
 
 ## The master document
 
-`01.manuscript/invasive-removal-carbon-parity.qmd` is the single source of truth. Edit it,
+`01.manuscript/invasive-removal-carbon-debt.qmd` is the single source of truth. Edit it,
 never the renders. Rendering runs the analysis: every number in the prose is an inline R
 expression, every table and figure is generated at render time from `02.inputs/`. Nothing is
 fetched over the network.
 
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-parity.qmd --to docx`
+Build: `cd 01.manuscript && quarto render invasive-removal-carbon-debt.qmd --to docx`
 (or `--to html`).
 
 Base R only, no packages beyond `knitr`. Every chunk carries an explicit `#| echo: true`.
