@@ -1,11 +1,12 @@
 ---
-title: "A synthesis of the effects of invasive plant removal on ecosystem carbon storage"
+title: "Carbon storage outcomes of invasive plant removal, and their treatment under voluntary carbon standards"
 author:
     - name: Murphy, S
       url: https://scholar.google.com/citations?hl=en&user=jDGq9I4AAAAJ
       orcid: 0000-0002-1792-0351
       email: seamusrobertmurphy@gmail.com
 
+subtitle: "A synthesis across seven invaded ecosystems"
 date: today
 format:
   docx:
@@ -75,7 +76,7 @@ dir.create(FIG, recursive = TRUE, showWarnings = FALSE)
 
 set.seed(20260730)          # the Monte Carlo below is reproducible from this seed
 NSIM      <- 10000          # draws per system
-HORIZON   <- 300            # years; the point at which removal exceeds retention is reported as not reached beyond this
+HORIZON   <- 300            # years; the time to exceed retention is reported as not reached beyond this
 CREDIT    <- 40             # years; the AFOLU crediting period used for the crediting test
 DEMINIMIS <- 0.05           # the 5 percent de minimis threshold used by Verra
 DEFAULT_CV <- 0.20          # dispersion assumed where a source reports none
@@ -140,7 +141,7 @@ n_indic <- sum(sysmeta$evidence_class == "Indicative")
 #| echo: true
 
 # ---------------------------------------------------------------------------
-# The two trajectory the point at which removal exceeds retention model
+# The two-scenario model
 # ---------------------------------------------------------------------------
 # Both scenarios are monomolecular approaches to an asymptote, the standard form for
 # stock recovery toward a carrying capacity. C(t) = K - (K - C0) exp(-r t).
@@ -149,7 +150,7 @@ n_indic <- sum(sysmeta$evidence_class == "Indicative")
 # C_inv toward the invaded asymptote K_inv at rate r_inv. Where the invaded state is
 # already at equilibrium, K_inv equals C_inv and the trajectory is flat.
 #
-# REMOVE: at t = 0 the stock falls instantaneously by the C loss from clearing D, then relaxes
+# REMOVE: at t = 0 the stock falls instantaneously by the C loss D, then relaxes
 # from that reduced starting point toward the native reference stock C_nat at rate
 # r_nat, the rate at which native vegetation reaccumulates carbon on cleared ground.
 
@@ -164,9 +165,9 @@ c_loss <- function(AGB_inv, f_rel, dSOC, E_op) AGB_inv * f_rel + dSOC + E_op
 
 C_remove <- function(t, C_inv, D, C_nat, r_nat) approach(t, C_inv - D, C_nat, r_nat)
 
-# The point at which C storage under removal exceeds C storage under retention is the first time the removal trajectory catches the leave trajectory.
-# This is the point at which removal exceeds retention in the sense of Mitchell et al., a comparison against the counterfactual,
-# not return to pre-removal C storage in the sense of returning to the pre-removal stock. Both are reported.
+# Removal exceeds retention at the first time the removal trajectory catches the retention trajectory.
+# This is a comparison against the counterfactual, not a return to the
+# pre-removal stock. Both are reported.
 crossing <- function(f, horizon = HORIZON) {
   if (f(0) >= 0) return(0)
   if (f(horizon) < 0) return(NA_real_)
@@ -294,8 +295,8 @@ simulate_system <- function(sid, nsim = NSIM) {
 sims <- lapply(SYS, simulate_system)
 names(sims) <- SYS
 
-# summarise: median and 95 percent interval of time to exceed retention among draws that exceed retention,
-# and the probability that the point at which removal exceeds retention is never reached inside the 300 year horizon
+# summarise: median and 95 percent interval of the time to exceed retention, among draws that do so,
+# and the probability that retention is never exceeded inside the 300 year horizon
 res_mc <- do.call(rbind, lapply(SYS, function(sid) {
   s  <- sims[[sid]]
   ok <- is.finite(s$t_exceed)
@@ -304,7 +305,7 @@ res_mc <- do.call(rbind, lapply(SYS, function(sid) {
   data.frame(system_id = sid,
              p_never   = mean(!ok),
              t_exceed_lo = q[1], t_exceed_md = q[2], t_exceed_hi = q[3],
-             # return to pre-removal C storage is summarised the same way as the point at which removal exceeds retention so the two columns of Table 3 are
+             # time to return is summarised the same way as the time to exceed retention so the two columns of Table 3 are
              # the same kind of quantity. Where the invaded state is static the two coincide
              # by construction, which is a useful check on the code.
              t_return_md = if (any(okb)) median(s$t_return[okb]) else NA_real_,
@@ -334,7 +335,7 @@ res <- res[order(res$display_order), ]
 # 1. Does the project generate a positive net benefit inside the crediting period? If
 #    the removal trajectory is still below the counterfactual at year 40, there is
 #    nothing to credit no matter how the rules are written.
-# 2. Is the C loss from clearing small enough to be waved through as de minimis? Verra permits
+# 2. Is the C loss small enough to be waved through as de minimis? Verra permits
 #    an omitted decrease in carbon stocks only where it is below 5 percent of the total
 #    greenhouse gas benefit the project generates. A removal whose C loss exceeds that
 #    share of its own benefit must account for the C loss explicitly, and no approved
@@ -377,9 +378,15 @@ rownames(audm) <- NULL
 
 # Abstract
 
-Removing an invasive plant is one of the few restoration actions with an unambiguous biodiversity rationale and no reliable way to pay for it. Carbon finance fails it for a reason that is arithmetic rather than administrative: a woody invader is itself a carbon stock, so clearing it registers as an emission against a carbon-rich baseline and meets, on its face, every test for baseline gaming. Whether removal is nevertheless a carbon gain depends on the time for recovering native vegetation to overtake the trajectory the invader would have followed if left in place. We adapt the the point at which C storage under removal exceeds C storage under retention framework developed for biofuel and bioenergy accounting to invasive plant removal and apply it to `r nrow(sysmeta)` invaded systems spanning six invader functional types, from annual grasses to woody nitrogen fixers. Removal C losses span `r f1(minloss_v)` to `r f1(maxloss_v)` Mg C per hectare and the point at which removal exceeds retention times run from immediate to never, ordered by the functional type of the invader. Only `r n_quant` systems can be parameterised entirely from measurement, because the recovery rate that dominates the calculation is barely measured anywhere. On the single site where intact, degraded and restored classes were all measured, the sign of the invasion effect changes with the comparison chosen, across a range wider than the invaded stand's entire aboveground stock. We then audit six voluntary carbon standards and one compliance scheme against their own current requirement documents. The failure is symmetrical: removal cannot be credited because clearing is an emission against the baseline, and retention cannot be credited because retention is the baseline and nothing is additional to itself. Whichever action the arithmetic favours, the accounting returns nothing, and it does so regardless of the ecology. The activity is monetised today only as biochar feedstock and as a biodiversity credit, neither of which rewards the land carbon effect.
+1. Invasive plant removal is widely advocated on biodiversity grounds, but whether it increases or decreases ecosystem carbon (C) storage is unresolved, and carbon finance is the most likely source of funding for it. A woody invader is itself a C store, so clearing it reduces C storage immediately, and that loss must be offset by subsequent native regrowth before removal yields a net gain. The time required has not been estimated for any invaded ecosystem.
 
-# 1. Introduction
+2. We compiled C pool data for `r nrow(sysmeta)` invaded ecosystems spanning six invader growth forms, from annual grasses to woody nitrogen-fixing trees, and built a two-scenario model comparing C storage following removal against C storage under continued invasion. Parameter uncertainty was propagated by Monte Carlo simulation with `r f0(NSIM)` draws per ecosystem. We then reviewed six voluntary carbon standards and one compliance scheme against their own current requirement documents.
+
+3. C loss on clearing ranged from `r f1(minloss_v)` to `r f1(maxloss_v)` Mg C ha^-1^, and the time for removal to exceed retention ranged from a few years to never, ordered by invader growth form. Only `r n_quant` of `r nrow(sysmeta)` ecosystems could be parameterised entirely from measurement, because the rate of native C accumulation after clearing, which dominates the result, is rarely measured. On the single site where intact, degraded and restored vegetation types were all sampled, the estimated effect of invasion on C storage changed sign with the comparison used, from a loss of 3.27 to a gain of 20.30 Mg C ha^-1^.
+
+4. *Synthesis and applications*. No standard credits the C consequence of removing an invasive plant, and none can credit retention either, because retention is the accounting baseline. Land carrying invasive plants is therefore uncreditable whichever action increases C storage. Where the invader holds little C and suppresses vegetation capable of holding more, removal repays quickly and could be credited if a matched-baseline design were extended beyond forest. Elsewhere, biodiversity crediting instruments, which already score invasive abundance directly, are the appropriate mechanism. The measurement priority is the rate of native C accumulation after clearing.
+
+# 1 | INTRODUCTION
 
 Invasive species are among the recognised direct drivers of biodiversity loss, and the first global assessment devoted to them concluded that they are also among the most expensive, with costs that have risen steeply over recent decades [@ipbes2023invasive; @diagne2021high]. The international response has set targets for their control, but the financing to meet those targets has no obvious source. The Kunming-Montreal framework asks parties to reduce the introduction and establishment of invasive species and, separately, to restore a substantial share of degraded ecosystems, while relying on private finance to help pay for both [@cbd2022kunming].
 
@@ -387,20 +394,24 @@ Restoration finance has consolidated around carbon, and invasive removal fits th
 
 The scientific question underneath the accounting question has been answered only in fragments. A substantial literature quantifies what invasion does to ecosystem carbon, beginning with the finding that invasion alters carbon and nitrogen pools systematically and often upward [@liao2008altered; @vila2011ecological; @peltzer2010effects], and continuing into mechanism through soil biota, microbial biomass and heterotrophic respiration [@raheem2024unraveling; @he2025plant; @negesse2025plant]. A much thinner literature follows what happens after removal, and it is dominated by endpoints other than carbon. The most recent global synthesis of post-removal revegetation reports native cover recovering by nearly half and non-native cover falling by more than a quarter, with carbon appearing only as an ordering claim, that abundance recovers faster than carbon stocks, which recover faster than diversity [@ahmad2026turning]. The two halves have never been joined into the quantity a financing decision requires, which is the time the removal trajectory takes to overtake the counterfactual.
 
-That quantity has a well developed analogue. Biofuel accounting confronted the same structure when it became clear that clearing native vegetation for an energy crop incurs an immediate C loss from clearing that the crop's annual savings must repay, with return to pre-removal C storage periods running to centuries in the worst cases [@fargione2008land; @searchinger2008use]. Forest bioenergy accounting then sharpened the idea by separating return to pre-removal C storage, the return to the pre-intervention stock, from the point at which removal exceeds retention, the point at which the intervention overtakes the trajectory the stand would otherwise have followed [@mitchell2012carbon]. The point at which removal exceeds retention, not return to pre-removal C storage, is the quantity relevant to a counterfactual-based crediting system, and it is the quantity computed here. The same literature is candid about the framework's fragility, since methodological choices alone can move the point at which removal exceeds retention estimates by two orders of magnitude [@jonker2014carbon], which is why the accounting boundary and the counterfactual are fixed here before any result is computed.
+Whether removal increases or decreases C storage should depend on the growth form of the invader rather than on invasion as such. Where the invader is taller or more woody than the vegetation it displaced it holds more C, so clearing it removes a large standing stock: invasive acacias in Atlantic Forest regrowth hold roughly three times the C of uninvaded second growth, of which the acacias themselves account for 91% [@matos2023invasive], and encroaching *Prosopis juliflora* raises woody C in East African rangeland [@birhane2017can]. Where the invader is shorter or less woody the direction reverses, and the reversal is amplified by altered fire regimes: cheatgrass replacing sagebrush reduced above-ground biomass C by 55% and below-ground biomass C by 62% across the Great Basin [@nagy2021synthesis]. Invasion of tidal marsh by *Phragmites australis* falls between these cases, with one study reporting substantially higher soil C than under the native *Spartina* it displaces [@gu2020invasive] and another finding no consistent difference [@kahara2026beyond]. A synthesis spanning growth forms is therefore needed before any general statement about removal can be made.
+
+The quantity required has a developed analogue outside invasion ecology. Biofuel accounting confronted the same structure when it became clear that clearing native vegetation for an energy crop causes an immediate C loss that the crop's annual savings must repay, over periods running to centuries in the worst cases [@fargione2008land; @searchinger2008use]. Forest bioenergy accounting then separated two distinct times: the time for an intervention to return to the pre-intervention stock, and the time for it to overtake the trajectory the stand would otherwise have followed [@mitchell2012carbon]. The second is the quantity relevant to a counterfactual-based crediting system and it is the one computed here. That literature is also candid about the framework's fragility, since methodological choices alone can move such estimates by two orders of magnitude [@jonker2014carbon], which is why the accounting boundary and the counterfactual are fixed here before any result is computed.
+
+The accounting side of the question has not been examined against the standards themselves. Voluntary carbon standards set the rules under which any removal project would be credited, and they treat invasive species almost exclusively as a safeguard to be complied with rather than as a management target. Whether their rules can express the C consequence of a removal, in either direction, is answerable only by reading the current requirement documents rather than summaries of them.
 
 The nearest existing treatment of invasive control as climate action concerns invasive mammals on islands [@honzak2024toward], where the eradication target holds no standing biomass and the accounting problem examined here never arises. That asymmetry between animal and woody-plant invaders is the gap this paper occupies.
 
 Three questions follow. First, across invaded systems that differ in the functional type of the invader, how long is the time to exceed C storage under retention after removal, and in which systems is it never reached? Second, given those answers, could a removal project be credited under the accounting rules that carbon standards actually apply? Third, where the carbon answer is unfavourable, what instrument is appropriate instead?
 
-# 2. Methods
+# 2 | MATERIALS AND METHODS
 
-## 2.1 Systems and the evidence base
+## 2.1 | Systems and the evidence base
 
 ```{r}
 #| label: tbl-systems
 #| echo: true
-#| tbl-cap: "The seven invaded systems, the functional type of the invader, and the strength of the evidence available for each. Evidence class is assigned from the tiers of the parameters the system contributes: quantified systems carry a measured or derived value for every parameter that the the point at which removal exceeds retention calculation is sensitive to, indicative systems rely on at least one parameter transferred from elsewhere."
+#| tbl-cap: "The seven invaded systems, the functional type of the invader, and the strength of the evidence available for each. Evidence class is assigned from the tiers of the parameters the system contributes: quantified systems carry a measured or derived value for every parameter that the the time to exceed retention calculation is sensitive to, indicative systems rely on at least one parameter transferred from elsewhere."
 
 t1 <- sysmeta[order(sysmeta$display_order),
               c("system_short", "invader", "region", "functional_type", "evidence_class")]
@@ -411,19 +422,19 @@ write.csv(t1, file.path(TBL, "table-1-systems.csv"), row.names = FALSE)
 
 Systems were selected to span the functional types across which the carbon consequence of removal is expected to differ, rather than to be a representative sample of invaded ecosystems, which the available data would not support. The selection is deliberately adversarial to the framing advanced here: it includes the systems in which removal is most likely to be a carbon loss as well as those in which it is most likely to be a gain.
 
-The evidence classification in Table 1 is derived from the parameter tiers rather than asserted, so a system counts as quantified only where both ecosystem stocks and the invader's own aboveground carbon come from measurement or from arithmetic on measurements. On that test `r n_quant` of the `r nrow(sysmeta)` systems are quantified and `r n_indic` are indicative. That ratio is itself a result. It is not possible at present to assemble a fully measured the point at which removal exceeds retention calculation for most of the world's best known plant invasions, and the reader should treat the indicative systems as showing the sign and rough magnitude of an effect rather than its value.
+The evidence classification in Table 1 is derived from the parameter tiers rather than asserted, so a system counts as quantified only where both ecosystem stocks and the invader's own aboveground carbon come from measurement or from arithmetic on measurements. On that test `r n_quant` of the `r nrow(sysmeta)` systems are quantified and `r n_indic` are indicative. That ratio is itself a result. It is not possible at present to assemble a fully measured the time to exceed retention calculation for most of the world's best known plant invasions, and the reader should treat the indicative systems as showing the sign and rough magnitude of an effect rather than its value.
 
-## 2.2 The the point at which removal exceeds retention model
+## 2.2 | Removal and retention scenarios
 
-The model compares two futures from the moment of intervention. Under the leave scenario the invader is retained and total ecosystem carbon relaxes toward the asymptote of the invaded state. Under the remove scenario the stock falls instantaneously by the C loss from clearing, then relaxes toward the native reference stock at the rate at which native vegetation reaccumulates carbon on cleared ground. Both trajectories take the monomolecular form, which is the standard representation of stock recovery toward a carrying capacity and requires only a starting stock, an asymptote and a rate constant.
+The model compares two futures from the moment of intervention. Under the leave scenario the invader is retained and total ecosystem carbon relaxes toward the asymptote of the invaded state. Under the remove scenario the stock falls instantaneously by the C loss, then relaxes toward the native reference stock at the rate at which native vegetation reaccumulates carbon on cleared ground. Both trajectories take the monomolecular form, which is the standard representation of stock recovery toward a carrying capacity and requires only a starting stock, an asymptote and a rate constant.
 
-The C loss from clearing has three components: the fraction of the invader's own aboveground carbon released to the atmosphere within a year of clearing, any soil organic carbon lost to the disturbance itself, and the operational emissions of the clearing work. Carbon that leaves the site in durable form, as timber or biochar, is not part of the C loss, which is why the biochar route discussed below changes the arithmetic rather than merely the finance.
+The C loss has three components: the fraction of the invader's own aboveground carbon released to the atmosphere within a year of clearing, any soil organic carbon lost to the disturbance itself, and the operational emissions of the clearing work. Carbon that leaves the site in durable form, as timber or biochar, is not part of the C loss, which is why the biochar route discussed below changes the arithmetic rather than merely the finance.
 
-The point at which C storage under removal exceeds C storage under retention is the first time at which the removal trajectory crosses the leave trajectory. Return to pre-removal C storage, reported alongside it, is the first time at which the removal trajectory returns to the pre-removal stock. The two differ whenever the invaded state is not at equilibrium, and the difference matters because a crediting system pays for the former while intuition tends to reach for the latter.
+The point at which C storage under removal exceeds C storage under retention is the first time at which the removal trajectory crosses the leave trajectory. Time to return, reported alongside it, is the first time at which the removal trajectory returns to the pre-removal stock. The two differ whenever the invaded state is not at equilibrium, and the difference matters because a crediting system pays for the former while intuition tends to reach for the latter.
 
-## 2.3 The counterfactual, and why it is a choice rather than a fact
+## 2.3 | The counterfactual, and why it is a choice rather than a fact
 
-The the point at which removal exceeds retention calculation compares removal against a stated alternative, and the alternative is not given by the data. Three are defensible for any invaded site. The site could be compared against the intact native community, which is what almost every paired study in this literature measures. It could be compared against the degraded but uninvaded state, which is what the site would plausibly have become had the invader not arrived, given that the disturbance which admitted the invader would still have occurred. Or it could be compared against what active restoration could achieve, which is the alternative facing a manager holding a budget.
+The the time to exceed retention calculation compares removal against a stated alternative, and the alternative is not given by the data. Three are defensible for any invaded site. The site could be compared against the intact native community, which is what almost every paired study in this literature measures. It could be compared against the degraded but uninvaded state, which is what the site would plausibly have become had the invader not arrived, given that the disturbance which admitted the invader would still have occurred. Or it could be compared against what active restoration could achieve, which is the alternative facing a manager holding a budget.
 
 These are different questions and they do not share an answer. Where all three classes have been measured on one site, the sign of the estimated carbon effect of invasion depends on which is chosen.
 
@@ -434,7 +445,7 @@ These are different questions and they do not share an answer. Where all three c
 cls <- read.csv(file.path(IN, "counterfactual-classes.csv"), stringsAsFactors = FALSE)
 cls$total <- cls$soc + cls$agc
 
-# the invaded state used in the the point at which removal exceeds retention model is the dense stand
+# the invaded state used in the model is the dense stand
 inv_tot <- cls$total[cls$class == "Prosopis high density"]
 
 cf <- cls[cls$class_type != "invaded", c("class", "class_type", "soc", "agc", "total")]
@@ -444,41 +455,15 @@ cf <- cf[order(-cf$total), ]
 cf_span <- diff(range(cf$effect))
 ```
 
-```{r}
-#| label: tbl-counterfactual
-#| echo: true
-#| tbl-cap: "The counterfactual sets the sign. Total ecosystem carbon of every land-cover class measured on one site in one year by one team with one protocol, and the estimated effect of invasion computed against each candidate counterfactual in turn. The invaded state throughout is the dense Prosopis stand at 52.5 Mg C per hectare. Soil carbon is to 1 m depth and aboveground carbon is from the same plots."
-
-t2b <- data.frame(
-  `Counterfactual` = cf$class,
-  `Soil C` = f1(cf$soc), `Aboveground C` = f1(cf$agc), `Total` = f1(cf$total),
-  `Effect of invasion` = sprintf("%+.2f", cf$effect),
-  `Verdict` = cf$verdict,
-  check.names = FALSE, stringsAsFactors = FALSE)
-kable(t2b, row.names = FALSE)
-write.csv(t2b, file.path(TBL, "table-2b-counterfactual.csv"), row.names = FALSE)
-```
 
 Invasion is a carbon loss of `r f2(abs(cf$effect[cf$class_type == "reference"]))` Mg C per hectare against the intact grassland, a gain of `r f2(cf$effect[cf$class_type == "restored"])` against the restored grassland, and a gain of `r f2(cf$effect[cf$class_type == "degraded"])` against the degraded grassland. The spread between the extreme comparisons is `r f1(cf_span)` Mg C per hectare, which exceeds the entire aboveground carbon stock of the invaded stand. Nothing about the ecosystem differs between these three statements. Only the question does.
 
-This matters for the present analysis because the the point at which removal exceeds retention model must adopt one of them, and it adopts the second. The retention trajectory represents the invaded state persisting, which is the alternative actually facing a proponent deciding whether to clear. Comparing instead against the intact native community would attribute to the invader whatever degradation preceded and permitted it, and comparing against the restored state would presuppose the very restoration whose value is in question. The choice is conservative for the removal case in the sense that it neither credits nor penalises the invader for the site's prior condition, but it is a choice, and results computed under one counterfactual should not be read as though they held under another.
+This matters for the present analysis because the the time to exceed retention model must adopt one of them, and it adopts the second. The retention trajectory represents the invaded state persisting, which is the alternative actually facing a proponent deciding whether to clear. Comparing instead against the intact native community would attribute to the invader whatever degradation preceded and permitted it, and comparing against the restored state would presuppose the very restoration whose value is in question. The choice is conservative for the removal case in the sense that it neither credits nor penalises the invader for the site's prior condition, but it is a choice, and results computed under one counterfactual should not be read as though they held under another.
 
 The wider literature rarely states which comparison it is making. Conservation science confronted the same problem two decades ago and largely resolved it by importing counterfactual reasoning from programme evaluation [@ferraro2006money]; invasion ecology has not yet done so at scale, and the paired invaded-versus-uninvaded design that dominates the field cannot separate the effect of the invader from the effect of the disturbance that admitted it.
 
-## 2.4 Parameterisation and uncertainty
+## 2.4 | Parameterisation and uncertainty
 
-```{r}
-#| label: tbl-parameters
-#| echo: true
-#| tbl-cap: "Parameter values, dispersion and provenance. Tier A is measured in the cited source for that system with a dispersion estimate, B measured as a point estimate, C derived by arithmetic shown in this document, D transferred from another system or a global default. Every tier D parameter is a stated limitation."
-
-t2 <- par_long[, c("system_id", "parameter", "value", "sd", "n", "units", "source_key", "tier")]
-t2 <- t2[order(match(t2$system_id, sysmeta$system_id[order(sysmeta$display_order)]),
-               match(t2$parameter, PARNAMES)), ]
-names(t2) <- c("System", "Parameter", "Value", "SD", "n", "Units", "Source", "Tier")
-kable(t2, row.names = FALSE, digits = 3)
-write.csv(t2, file.path(TBL, "table-2-parameters.csv"), row.names = FALSE)
-```
 
 ```{r}
 #| label: tier-summary
@@ -493,16 +478,16 @@ Of the `r n_par` parameters entering the model, `r as.integer(tier_tab["A"])` ar
 
 Uncertainty is propagated by Monte Carlo with `r f0(NSIM)` draws per system. Each parameter is drawn from a normal distribution centred on its point estimate, truncated where the physical meaning requires it, with the dispersion its source reports. Where a source reports none, the parameter is assigned a coefficient of variation of `r f2(DEFAULT_CV)`, and the sensitivity of the conclusions to that assumption is examined directly.
 
-## 2.5 Standards audit
+## 2.5 | Standards audit
 
 Six crediting regimes were audited against their own current requirement documents rather than against summaries: the Verra Verified Carbon Standard together with the Climate, Community and Biodiversity Standards, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, and the Article 6.4 mechanism of the Paris Agreement. The Australian Carbon Credit Unit scheme was added as the one compliance regime in which suppression of non-native plants appears in statute. Each document was retrieved, its full text searched for the relevant terms, and each occurrence read in context, because the phrase appears in a great many project documents as a compliance negation, a statement that invasive species will not be introduced, which is the opposite of the activity at issue.
 
-# 3. Results
+# 3 | RESULTS
 
-## 3.1 Time to exceed C storage under retention
+## 3.1 | Time to exceed C storage under retention
 
 ```{r}
-#| label: the point at which removal exceeds retention-values
+#| label: the time to exceed retention-values
 #| echo: true
 
 # values quoted in this section, computed rather than typed
@@ -517,20 +502,20 @@ n_neg40   <- sum(res$nb40_md < 0)
 
 Removal C losses span `r f1(minloss_v)` to `r f1(maxloss_v)` Mg C per hectare, a range of more than an order of magnitude, and they order the systems almost exactly as the functional type of the invader would predict. The largest C loss falls on `r maxloss`, where the invader is itself the dominant carbon pool of the system, and the smallest on systems where the invader holds negligible standing biomass and its effect on carbon runs through suppression of the native community rather than through its own stock.
 
-The point at which removal exceeds retention times follow from that ordering but not proportionally, because repayment depends on the gap between the native asymptote and the invaded stock rather than on the C loss alone. Among systems that exceed retention at all, the range runs from `r yr(fastest_t)` years in `r fastest` to `r yr(slowest_t)` years in `r slowest`. `r nrow(res_never)` of the `r nrow(res)` systems do not exceed retention within the three-century horizon in the majority of Monte Carlo draws, and `r n_neg40` are still below the counterfactual at the end of a forty year crediting period.
+The time to exceed retention times follow from that ordering but not proportionally, because repayment depends on the gap between the native asymptote and the invaded stock rather than on the C loss alone. Among systems that exceed retention at all, the range runs from `r yr(fastest_t)` years in `r fastest` to `r yr(slowest_t)` years in `r slowest`. `r nrow(res_never)` of the `r nrow(res)` systems do not exceed retention within the three-century horizon in the majority of Monte Carlo draws, and `r n_neg40` are still below the counterfactual at the end of a forty year crediting period.
 
 ```{r}
-#| label: tbl-the point at which removal exceeds retention
+#| label: tbl-the time to exceed retention
 #| echo: true
-#| tbl-cap: "C loss from clearing, time to exceed C storage under retention and time to carbon return to pre-removal C storage, with the net carbon benefit of removal at the end of a 40 year crediting period. The point at which removal exceeds retention times are medians with 95 percent intervals taken over the Monte Carlo draws that exceed retention, so they are conditional on the point at which removal exceeds retention being reached and must be read alongside the adjacent probability that it is not. Systems in which the majority of draws never exceed retention are reported as not reached rather than by a conditional median. Return to pre-removal C storage is summarised the same way. Where the invaded state is treated as static the two are identical by construction, because the counterfactual and the pre-removal stock are then the same quantity. Negative net benefit means the removal trajectory is still below the counterfactual at year 40."
+#| tbl-cap: "C loss, time to exceed C storage under retention and time to carbon time to return, with the net carbon benefit of removal at the end of a 40 year crediting period. The time to exceed retention times are medians with 95 percent intervals taken over the Monte Carlo draws that exceed retention, so they are conditional on the time to exceed retention being reached and must be read alongside the adjacent probability that it is not. Systems in which the majority of draws never exceed retention are reported as not reached rather than by a conditional median. Time to return is summarised the same way. Where the invaded state is treated as static the two are identical by construction, because the counterfactual and the pre-removal stock are then the same quantity. Negative net benefit means the removal trajectory is still below the counterfactual at year 40."
 
 t3 <- data.frame(
   System    = res$system_short,
   `C loss (Mg C/ha)` = f1(res$c_loss),
-  `The point at which removal exceeds retention (yr)` = ifelse(res$p_never > 0.5, "not reached",
+  `The time to exceed retention (yr)` = ifelse(res$p_never > 0.5, "not reached",
                     paste0(yr(res$t_exceed_md), " (", yr(res$t_exceed_lo), "-", yr(res$t_exceed_hi), ")")),
   `P(never)` = pc(res$p_never),
-  `Return to pre-removal C storage (yr)` = ifelse(res$p_never_b > 0.5, "not reached", yr(res$t_return_md)),
+  `Time to return (yr)` = ifelse(res$p_never_b > 0.5, "not reached", yr(res$t_return_md)),
   `Net benefit at 40 yr (Mg C/ha)` = paste0(f1(res$nb40_md), " (", f1(res$nb40_lo), " to ", f1(res$nb40_hi), ")"),
   check.names = FALSE, stringsAsFactors = FALSE)
 kable(t3, row.names = FALSE)
@@ -542,14 +527,14 @@ write.csv(t3, file.path(TBL, "table-3-c-storage.csv"), row.names = FALSE)
 #| echo: true
 #| fig-width: 9
 #| fig-height: 4.2
-#| fig-cap: "The the point at which removal exceeds retention framework. Left, the general case: removal incurs an immediate C loss, after which the recovering native trajectory may or may not overtake the counterfactual. The point at which removal exceeds retention is the crossing, return to pre-removal C storage the return to the pre-removal stock, and the shaded area the cumulative carbon cost carried until the point at which removal exceeds retention. Right, the three outcomes the framework distinguishes, drawn from the fitted systems."
+#| fig-cap: "The the time to exceed retention framework. Left, the general case: removal incurs an immediate C loss, after which the recovering native trajectory may or may not overtake the counterfactual. The time to exceed retention is the crossing, time to return the return to the pre-removal stock, and the shaded area the cumulative carbon cost carried until the time to exceed retention. Right, the three outcomes the framework distinguishes, drawn from the fitted systems."
 
 png(file.path(FIG, "figure-1-concept.png"), width = 2700, height = 1260, res = 300)
 op <- par(mfrow = c(1, 2), mar = c(4.2, 4.6, 2.4, 1.2), family = "sans", cex.axis = 0.9)
 
 # panel a: the schematic, drawn from the model itself rather than by hand. The invaded
 # state is deliberately given a rising trajectory here, because that is the case in which
-# return to pre-removal C storage and the point at which removal exceeds retention separate and the distinction between them becomes visible.
+# the two times separate and the distinction between them becomes visible.
 ps <- list(C_inv = 60, C_nat = 115, K_inv = 95, r_inv = 0.035, r_nat = 0.040, D = 28)
 tt <- seq(0, 120, by = 0.5)
 yl  <- C_leave(tt, ps$C_inv, ps$K_inv, ps$r_inv)
@@ -558,29 +543,29 @@ Tp <- t_exceed(ps); Tb <- t_return(ps)
 ylim_a <- c(15, 125)
 plot(tt, yl, type = "n", ylim = ylim_a, xlab = "Years since intervention",
      ylab = expression("Total ecosystem carbon (Mg C ha"^-1*")"),
-     main = "(a) C loss, return to pre-removal C storage and the point at which removal exceeds retention", font.main = 1, cex.main = 1.05)
+     main = "(a) C loss, time to return and the time to exceed retention", font.main = 1, cex.main = 1.05)
 polygon(c(tt[tt <= Tp], rev(tt[tt <= Tp])),
         c(yl[tt <= Tp], rev(yr_[tt <= Tp])), col = "#e8d9c5", border = NA)
 lines(tt, yl,  lwd = 2.4, col = "#8c6d3f")
 lines(tt, yr_, lwd = 2.4, col = "#2f6b4f")
 
-# return to pre-removal C storage and the point at which removal exceeds retention marked at different heights so the labels cannot collide
+# both times marked at different heights so the labels cannot collide
 segments(Tb, ylim_a[1], Tb, ps$C_inv, lty = 3, col = "grey45")
 segments(Tp, ylim_a[1], Tp, C_leave(Tp, ps$C_inv, ps$K_inv, ps$r_inv), lty = 2, col = "grey25")
 points(Tb, ps$C_inv, pch = 21, bg = "white", col = "grey45", cex = 1.0)
 points(Tp, C_leave(Tp, ps$C_inv, ps$K_inv, ps$r_inv), pch = 21, bg = "white",
        col = "grey25", cex = 1.1)
-text(Tb, 20, paste0("return to pre-removal C storage ", sprintf("%.0f", Tb), " yr"),
+text(Tb, 20, paste0("time to return ", sprintf("%.0f", Tb), " yr"),
      pos = 4, cex = 0.72, col = "grey45", offset = 0.2)
-text(Tp, 31, paste0("the point at which removal exceeds retention ",  sprintf("%.0f", Tp), " yr"),
+text(Tp, 31, paste0("the time to exceed retention ",  sprintf("%.0f", Tp), " yr"),
      pos = 4, cex = 0.72, col = "grey25", offset = 0.2)
 
-# the C loss from clearing, drawn as a drop at t = 0
+# the C loss, drawn as a drop at t = 0
 arrows(0, ps$C_inv, 0, ps$C_inv - ps$D, length = 0.05, code = 2, col = "grey25", lwd = 1.2)
 points(0, ps$C_inv - ps$D, pch = 19, col = "#2f6b4f", cex = 1.0)
-text(1.5, 46, "C loss from clearing", pos = 4, cex = 0.72, col = "grey25")
+text(1.5, 46, "C loss", pos = 4, cex = 0.72, col = "grey25")
 # the shaded band is named in the legend rather than on the panel, because every on-panel
-# position for that label collides with either the curves or the the point at which removal exceeds retention marker
+# position for that label collides with either the curves or the the crossing marker
 legend("bottomright", bty = "n", cex = 0.75, seg.len = 1.6,
        legend = c("invader retained", "invader removed", "cumulative carbon cost"),
        lwd = c(2.4, 2.4, NA), col = c("#8c6d3f", "#2f6b4f", NA),
@@ -634,7 +619,7 @@ par(op); invisible(dev.off())
 knitr::include_graphics(file.path(FIG, "figure-2-trajectories.png"))
 ```
 
-## 3.2 Sensitivity
+## 3.2 | Sensitivity
 
 ```{r}
 #| label: sensitivity
@@ -667,46 +652,13 @@ elasticity <- function(sid, p_name, delta = 0.10) {
 }
 
 ELP <- c("C_nat", "r_nat", "AGB_inv", "f_rel", "dSOC", "C_inv")
-# short axis labels; the full parameter definitions are in Table 2
+# short axis labels; the full parameter definitions are in Table S1
 ELLAB <- c(C_nat = "Native stock", r_nat = "Recovery rate", AGB_inv = "Invader AGB",
            f_rel = "Released fraction", dSOC = "Soil C loss", C_inv = "Invaded stock")
 elas <- outer(SYS, ELP, Vectorize(function(s, p) elasticity(s, p)))
 dimnames(elas) <- list(sysmeta$system_short[match(SYS, sysmeta$system_id)], ELP)
 ```
 
-```{r}
-#| label: fig-sensitivity
-#| echo: true
-#| fig-width: 8
-#| fig-height: 4.6
-#| fig-cap: "Elasticity of the time to exceed C storage under retention to a ten per cent increase in each parameter, by system. A value of minus one means a ten per cent increase in the parameter shortens the time to exceed retention by ten per cent. Green shortens the point at which removal exceeds retention, red lengthens it. The colour scale is clipped at the ninetieth percentile of absolute elasticity so that a single large value cannot flatten the rest of the panel; the printed values are unclipped. Rows marked undefined are systems in which retention is never exceeded, where a proportional change in the time to exceed retention has no meaning."
-
-png(file.path(FIG, "figure-3-sensitivity.png"), width = 2400, height = 1250, res = 300)
-op <- par(mar = c(3.0, 10.5, 1.6, 1.0), family = "sans")
-z <- t(elas)                                   # parameters on x, systems on y
-# the colour scale is clipped at the 90th percentile of absolute elasticity so that a single
-# large value cannot flatten the rest of the panel; printed values are unclipped
-zcap <- quantile(abs(z), 0.90, na.rm = TRUE)
-zc   <- pmin(pmax(z, -zcap), zcap)
-brk  <- seq(-zcap, zcap, length.out = 21)
-pal  <- colorRampPalette(c("#2f6b4f", "#f2f2ee", "#9b3b3b"))(20)
-image(seq_len(nrow(zc)), seq_len(ncol(zc)), zc, col = pal, breaks = brk,
-      axes = FALSE, xlab = "", ylab = "")
-for (i in seq_len(nrow(z)))
-  mtext(unname(ELLAB[rownames(z)[i]]), side = 1, at = i, line = 0.5, cex = 0.66, las = 1)
-for (j in seq_len(ncol(z)))
-  mtext(colnames(z)[j], side = 2, at = j, line = 0.4, cex = 0.7, las = 1, adj = 1)
-abline(h = seq_len(ncol(z)) + 0.5, col = "white", lwd = 3)
-abline(v = seq_len(nrow(z)) + 0.5, col = "white", lwd = 3)
-for (i in seq_len(nrow(z))) for (j in seq_len(ncol(z)))
-  if (is.finite(z[i, j])) text(i, j, sprintf("%.1f", z[i, j]), cex = 0.66, col = "grey15")
-# systems where the point at which removal exceeds retention is never reached carry no elasticity at all: say so on the panel
-for (j in seq_len(ncol(z))) if (all(!is.finite(z[, j])))
-  text(mean(seq_len(nrow(z))), j, "the point at which removal exceeds retention not reached, elasticity undefined",
-       cex = 0.66, col = "grey45", font = 3)
-par(op); invisible(dev.off())
-knitr::include_graphics(file.path(FIG, "figure-3-sensitivity.png"))
-```
 
 ```{r}
 #| label: sensitivity-values
@@ -723,11 +675,11 @@ second_v <- unname(mean_abs[2])
 rank_base <- rank(ifelse(is.finite(res$t_exceed_md), res$t_exceed_md, Inf))
 ```
 
-The time to exceed retention is most sensitive to `r top_par`, with a mean absolute elasticity of `r f2(top_val)` across systems, and second most sensitive to `r second` at `r f2(second_v)`. An elasticity of one means that a ten per cent change in the parameter moves the time to exceed retention by ten per cent. Elasticities on the recovery rate are negative throughout, as they must be, since faster native reaccumulation shortens the time to the point at which removal exceeds retention. Elasticities on the invader's own aboveground stock and on the released fraction are positive, since both enlarge the C loss.
+The time to exceed retention is most sensitive to `r top_par`, with a mean absolute elasticity of `r f2(top_val)` across systems, and second most sensitive to `r second` at `r f2(second_v)`. An elasticity of one means that a ten per cent change in the parameter moves the time to exceed retention by ten per cent. Elasticities on the recovery rate are negative throughout, as they must be, since faster native reaccumulation shortens the time to the time to exceed retention. Elasticities on the invader's own aboveground stock and on the released fraction are positive, since both enlarge the C loss.
 
 The practical consequence is uncomfortable. The parameter that matters most is the one the literature measures least. Standing stocks in invaded and uninvaded states are widely reported, frequently with dispersion and sample sizes, whereas the rate at which native vegetation reaccumulates carbon after clearance is reported almost nowhere, and where it is reported it comes from a chronosequence rather than a time series.
 
-## 3.3 The crediting gap
+## 3.3 | The crediting gap
 
 ```{r}
 #| label: tbl-audit
@@ -759,7 +711,7 @@ n_noncarbon  <- sum(audm$creditable_non_carbon >= 2)
 #| fig-height: 4.4
 #| fig-cap: "The crediting gap. Every regime restricts the introduction of invasive species; none credits the carbon consequence of removing them. Only the Australian compliance scheme resolves the biomass C loss, and it does so by assuming the removal would have happened anyway."
 
-# short labels for the figure only; the full criterion wording is in Table 4
+# short labels for the figure only; the full criterion wording is in Table 3
 CRITSHORT <- c(introduce_prohibited      = "Introduction prohibited",
                removal_named_eligible    = "Removal named eligible",
                removal_creditable_carbon = "Removal creditable as carbon",
@@ -792,31 +744,12 @@ All `r n_std` regimes restrict the introduction of invasive species, `r n_prohib
 
 The asymmetry between the columns is the finding. The obligation runs one way throughout. A proponent may be required to demonstrate that invasive populations have not increased, and may in some regimes be encouraged to eradicate, while having no mechanism by which the carbon result of doing so can be quantified or paid for. `r n_noncarbon` of the regimes credit removal under a non-carbon instrument, scoring invasive abundance as a biodiversity outcome, which is the only place in the voluntary market where the activity is currently rewarded on its own terms.
 
-## 3.4 Where the the point at which removal exceeds retention answer and the crediting answer meet
+## 3.4 | Carbon storage outcomes and creditability
 
-```{r}
-#| label: tbl-verdict
-#| echo: true
-#| tbl-cap: "Joint verdict. For each system, whether removal generates a claimable carbon benefit within a 40 year crediting period, whether the C loss from clearing is small enough to pass the 5 percent de minimis test that would otherwise require it to be accounted explicitly, and the crediting route that could accommodate it."
-
-t5 <- data.frame(
-  System = res$system_short,
-  `Claimable at 40 yr` = ifelse(res$claimable, "yes", "no"),
-  # a C loss share far above 100 per cent means the benefit is near zero rather than that the
-  # C loss is unusually large, so the ratio is capped for display and read with the benefit column
-  `C loss as share of benefit` = ifelse(!is.finite(res$closs_share), "-",
-                               ifelse(res$closs_share > 10, "over 1000%", pc(res$closs_share))),
-  `Passes de minimis` = ifelse(is.na(res$deminimis), "-", ifelse(res$deminimis, "yes", "no")),
-  Verdict = res$verdict,
-  `Available route` = res$route,
-  check.names = FALSE, stringsAsFactors = FALSE)
-kable(t5, row.names = FALSE)
-write.csv(t5, file.path(TBL, "table-5-verdict.csv"), row.names = FALSE)
-```
 
 Joining the two analyses narrows the field sharply. A removal project needs three things at once: a positive net benefit inside the crediting period, a C loss small enough that the accounting rules can absorb it, and a methodology whose baseline construction does not penalise the proponent for the invader's own biomass. Table 5 shows how few systems hold all three. The systems that pass the carbon test tend to be those where the invader holds least carbon, which are also the systems where a carbon-denominated payment would be smallest, and the systems where removal delivers the largest ecological gain tend to fail it.
 
-# 4. Discussion
+# 4 | DISCUSSION
 
 ```{r}
 #| label: discussion-values
@@ -835,9 +768,7 @@ r_nat_elas <- mean(abs(elas[, "r_nat"]), na.rm = TRUE)
 agb_elas   <- mean(abs(elas[, "AGB_inv"]), na.rm = TRUE)
 ```
 
-## 4.1 The answer depends on what kind of invader it is
-
-The the point at which removal exceeds retention times reported here span a range wide enough that no general statement about the
+The the time to exceed retention times reported here span a range wide enough that no general statement about the
 carbon consequence of invasive removal can be defended. Of the seven systems, `r n_never` do
 not exceed retention at all within three centuries, while `r n_fast` reach it within twenty years.
 The ordering follows the functional type of the invader almost perfectly, and it follows it
@@ -852,7 +783,7 @@ This is why the woody nitrogen-fixing invaders are the hard case and the annual 
 the easy one, and it is why the wetland graminoid is hardest of all. Where an invader
 outperforms the native community it displaced, as the evidence for *Phragmites* soil carbon in
 several North American marshes indicates [@gu2020invasive; @campbell2026case], the removal
-trajectory never crosses the counterfactual and the the point at which removal exceeds retention framework returns not a long time
+trajectory never crosses the counterfactual and the the time to exceed retention framework returns not a long time
 but no time at all. The finding for invasive acacias in Atlantic Forest regrowth is the same
 result in a forest setting: carbon accumulates roughly three times faster under the invader
 while phylogenetic and functional diversity recovery collapses [@matos2023invasive].
@@ -862,8 +793,6 @@ carbon as the instrument that pays for it. The systems in which removal costs th
 are frequently the systems in which it delivers the most biodiversity, which is precisely the
 trade-off the acacia work quantifies. A financing mechanism that ranks restoration actions by
 carbon will systematically defund the removals with the strongest ecological case.
-
-## 4.2 The standards cannot express the answer, in either direction
 
 The audit returns a uniform result across regimes that otherwise share very little. All
 `r n_std` prohibit or discourage the introduction of invasive species. `r n_eligible` name
@@ -893,8 +822,6 @@ the project does to it. The recent tightening of that route, from a blanket exem
 evidentiary test requiring a defined dominance threshold, sharpens the mismatch rather than
 resolving it.
 
-## 4.3 One accounting design already dissolves the problem
-
 The dynamic matched baseline is the exception, and it appears not to have been recognised as
 one. Where the counterfactual is constructed from matched control plots rather than modelled
 forward from the project site, the invader stands in both the project and the control. Its
@@ -919,9 +846,7 @@ do, pays for the ecological result directly and never touches the carbon questio
 rewards the land carbon effect of removal, and on the evidence assembled here, for most
 systems neither should.
 
-## 4.4 The symmetry: retention cannot be credited either
-
-The systems in which the point at which removal exceeds retention is never reached are, read the other way, the systems in which the carbon-rational action is to leave the invader standing. That is not a rhetorical inversion. It is the same arithmetic stated from the other end, and it applies to `r n_never` of the `r nrow(res)` systems examined here. Nor is it a hypothetical position: working in Ethiopian rangelands, Birhane and colleagues found woody carbon roughly 40 per cent higher under dense *Prosopis* encroachment than under sparse, and proposed carbon trading on densely invaded land rather than eradication [@birhane2017can]. On carbon grounds alone that proposal follows from the evidence.
+The systems in which the time to exceed retention is never reached are, read the other way, the systems in which the carbon-rational action is to leave the invader standing. That is not a rhetorical inversion. It is the same arithmetic stated from the other end, and it applies to `r n_never` of the `r nrow(res)` systems examined here. Nor is it a hypothetical position: working in Ethiopian rangelands, Birhane and colleagues found woody carbon roughly 40 per cent higher under dense *Prosopis* encroachment than under sparse, and proposed carbon trading on densely invaded land rather than eradication [@birhane2017can]. On carbon grounds alone that proposal follows from the evidence.
 
 Retention cannot be credited either, and the reason is worth stating precisely because it is structural rather than ideological. Retention is inaction, inaction is the baseline, and an activity cannot be additional to itself. The only route by which retention could generate credits would be to establish that clearance was the counterfactual, which at the scale of the invaded estate is demonstrably false: the registry search underlying this paper found no project anywhere for which invasive plant control is the primary crediting activity. Crediting retention would therefore require either abandoning additionality or asserting a threat of clearance that does not exist.
 
@@ -932,8 +857,6 @@ The prohibition that produces this outcome is not unreasonable. A categorical ru
 That places the argument squarely inside an older and unresolved debate. Hobbs and colleagues argued that systems which have crossed a threshold should be managed for function rather than restored to historical composition [@hobbs2009novel]; Murcia and colleagues replied that the concept is too loosely specified to be operational and in practice licenses the abandonment of restoration [@murcia2014critique]. The parallel argument over whether provenance should determine management value ran through the same period [@davis2011dont; @schlaepfer2011potential]. Our contribution to that debate is narrow but quantitative: for a defined subset of invaded systems the carbon ledger favours retention, and no crediting instrument can express that preference in either direction.
 
 We do not conclude that retention should therefore be credited. The decisive objection is leakage. A payment for retaining an invader is a payment for maintaining a propagule source that continues to invade neighbouring land, and a stock-based accounting captures the retained carbon while externalising the spread. Any serious proposal to credit retention would need to internalise that externality, and none of the accounting designs reviewed here can do so. A second and more practical obstacle is that retention is often not a policy choice at all: *Prosopis* regains cover within months of cutting, and roughly a quarter of treated *Phragmites* sites are recolonised after apparent eradication, so the realistic question in much of the invaded world is not whether to retain but whether to account for what will persist regardless.
-
-## 4.5 What the sensitivity analysis says about the evidence base
 
 The time to exceed retention is most sensitive to the native recovery rate, with a mean absolute elasticity
 of `r f2(r_nat_elas)` across systems, and considerably less sensitive to the invader's
@@ -953,10 +876,8 @@ measurement programme retrofitted onto existing Working for Water clearance chro
 would produce the single most valuable dataset in this field at a fraction of the cost of
 establishing new sites.
 
-## 4.6 Limitations
-
 The most consequential limitation is the counterfactual, and it belongs to the field rather than
-to this analysis. Section 2.3 shows that on the one site where all the relevant classes were
+to this analysis. Table S2 shows that on the one site where all the relevant classes were
 measured, the sign of the estimated carbon effect of invasion changes with the comparison
 chosen, across a range of `r f1(cf_span)` Mg C per hectare. Every time to exceed retention reported here is
 conditional on the retention counterfactual and would differ under the others. More awkwardly,
@@ -970,8 +891,8 @@ it at length elsewhere.
 The model is otherwise deliberately simple. Both trajectories are monomolecular approaches to an
 asymptote, which represents stock recovery adequately but cannot represent a system that
 overshoots, collapses, or is reinvaded. Secondary invasion after clearing is common and is not
-modelled; where it occurs, the real the point at which removal exceeds retention times will be longer than those reported here and
-in some systems the point at which removal exceeds retention will be lost entirely.
+modelled; where it occurs, the real the time to exceed retention times will be longer than those reported here and
+in some systems the time to exceed retention will be lost entirely.
 
 The accounting boundary is carbon stock only. Three consequences follow. Methane and nitrous
 oxide are excluded, which matters most in the wetland and aquatic systems, where the flux
@@ -988,14 +909,13 @@ systems are reported as indicative rather than quantified throughout. Sensitivit
 assumed dispersion of unreported parameters was tested directly and does not change the
 ordering of systems, but it does widen the intervals, and the intervals are wide already.
 
-Finally, the the point at which removal exceeds retention framework inherits a known fragility. In the bioenergy literature,
-methodological choices alone swing return to pre-removal C storage times from under a year to twenty-seven and the point at which removal exceeds retention
+Finally, the the time to exceed retention framework inherits a known fragility. In the bioenergy literature,
+methodological choices alone swing time to return times from under a year to twenty-seven and the time to exceed retention
 from two years to more than a century [@jonker2014carbon]. Fixing the accounting boundary and
 the counterfactual before computing anything, as done here, contains that problem without
-eliminating it, and cross-study comparison of the point at which removal exceeds retention times should be treated with the same
+eliminating it, and cross-study comparison of the time to exceed retention times should be treated with the same
 caution the bioenergy literature learned to apply.
 
-# 5. Conclusion
 
 The question of whether invasive plant removal is a carbon gain has an answer, and the answer
 is that it depends on the invader in a way that is predictable from its functional type and
@@ -1024,40 +944,129 @@ fix a counterfactual in advance and apply it categorically. It therefore fixes t
 answer before the ecology is consulted.
 
 Two things follow. The narrow one is technical: extending dynamic matched baselines beyond
-forest would make removal creditable in the systems where the the point at which removal exceeds retention calculation says it
+forest would make removal creditable in the systems where the the time to exceed retention calculation says it
 should be. The broader one is that carbon is the wrong lens for most of this work. The systems
 where removal costs the most carbon are often those where it delivers the most biodiversity,
 and a mechanism that ranks restoration by carbon will defund exactly the removals with the
 strongest ecological case. The emerging biodiversity credit instruments, which already score
-invasive abundance directly, are the better fit. The the point at which removal exceeds retention calculation should decide which
+invasive abundance directly, are the better fit. The the time to exceed retention calculation should decide which
 instrument applies, and for a large share of the invaded world it says the answer is not
 carbon.
 
-# Data availability
-
-Every parameter entering the analysis, its dispersion, its units and the source it was read from is given in Table 2 and held in `02.inputs/carbon-parameters.csv`. The standards audit, including the clause and the document version each code was read from, is held in `02.inputs/standards-audit.csv`. Rendering the manuscript reruns the entire analysis from those two files and regenerates every table and figure, so no result reported here exists outside the code that produced it. The manuscript source, the input tables and the code are archived together and require no software beyond R and base packages.
-
-# Conflict of interest
-
-The author declares no conflict of interest, and no financial relationship with any carbon standard, registry, project developer or verification body assessed in the standards audit.
-
-# Funding
-
-No funding was received for this work.
-
-# Author contributions
-
-Sole authorship. Following the CRediT taxonomy, the author is responsible for conceptualization, methodology, software, formal analysis, investigation, data curation, visualization, and writing of the original draft and its revision.
-
-# Use of generative artificial intelligence
-
-Large language model assistance was used in compiling and cross-checking the standards audit corpus, in verifying bibliographic records against publisher and Crossref registrations, and in drafting and editing prose. All quantitative parameters were read from the cited primary sources and are reproduced with their provenance in Table 2; all quoted standards text was verified against the retrieved documents; and the author takes full responsibility for the content of the manuscript. One error introduced at the compilation stage is recorded here because it bears on the literature: a widely circulated set of soil carbon loss figures attributed in secondary summaries to herbicide control of invasive *Phragmites* in North American marshes originates instead in an experimental wetland loss study on native emergent marsh in coastal Louisiana [@lane2016fate], and those figures are not used here.
-
-# Acknowledgements
-
-Standards documents were retrieved from the public repositories of Verra, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, the UNFCCC and the Australian Federal Register of Legislation between 29 and 30 July 2026. Version numbers and retrieval dates are recorded in the input table, because several of the documents assessed were revised during the period in which comparable analyses have been published.
-
-# References
 
 ::: {#refs}
 :::
+
+# ACKNOWLEDGEMENTS
+
+Standards documents were retrieved from the public repositories of Verra, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, the UNFCCC and the Australian Federal Register of Legislation between 29 and 30 July 2026. Version numbers and retrieval dates are recorded in the input table, because several of the documents assessed were revised during the period in which comparable analyses have been published. No funding was received for this work.
+
+# CONFLICT OF INTEREST
+
+The author declares no conflict of interest, and no financial relationship with any carbon standard, registry, project developer or verification body assessed in the standards audit.
+
+# AUTHORS' CONTRIBUTIONS
+
+Sole authorship. Following the CRediT taxonomy, the author is responsible for conceptualization, methodology, software, formal analysis, investigation, data curation, visualization, and writing of the original draft and its revision.
+
+# USE OF GENERATIVE ARTIFICIAL INTELLIGENCE
+
+Large language model assistance was used in compiling and cross-checking the standards audit corpus, in verifying bibliographic records against publisher and Crossref registrations, and in drafting and editing prose. All quantitative parameters were read from the cited primary sources and are reproduced with their provenance in Table 2; all quoted standards text was verified against the retrieved documents; and the author takes full responsibility for the content of the manuscript. One error introduced at the compilation stage is recorded here because it bears on the literature: a widely circulated set of soil carbon loss figures attributed in secondary summaries to herbicide control of invasive *Phragmites* in North American marshes originates instead in an experimental wetland loss study on native emergent marsh in coastal Louisiana [@lane2016fate], and those figures are not used here.
+
+# DATA AVAILABILITY STATEMENT
+
+Every parameter entering the analysis, its dispersion, its units and the source it was read from is given in Table S1 and held in `02.inputs/carbon-parameters.csv`. The standards audit, including the clause and the document version each code was read from, is held in `02.inputs/standards-audit.csv`. Rendering the manuscript reruns the entire analysis from those two files and regenerates every table and figure, so no result reported here exists outside the code that produced it. The manuscript source, the input tables and the code are archived together and require no software beyond R and base packages.
+
+# ORCID
+
+*S. Murphy* https://orcid.org/0000-0002-1792-0351
+
+# REFERENCES
+
+::: {#refs}
+:::
+
+# SUPPORTING INFORMATION
+
+```{r}
+#| label: tbl-parameters
+#| echo: true
+#| tbl-cap: "Table S1. Parameter values, dispersion and provenance. Tier A is measured in the cited source for that system with a dispersion estimate, B measured as a point estimate, C derived by arithmetic shown in this document, D transferred from another system or a global default. Every tier D parameter is a stated limitation."
+
+t2 <- par_long[, c("system_id", "parameter", "value", "sd", "n", "units", "source_key", "tier")]
+t2 <- t2[order(match(t2$system_id, sysmeta$system_id[order(sysmeta$display_order)]),
+               match(t2$parameter, PARNAMES)), ]
+names(t2) <- c("System", "Parameter", "Value", "SD", "n", "Units", "Source", "Tier")
+kable(t2, row.names = FALSE, digits = 3)
+write.csv(t2, file.path(TBL, "table-2-parameters.csv"), row.names = FALSE)
+```
+
+```{r}
+#| label: tbl-counterfactual
+#| echo: true
+#| tbl-cap: "Table S2. The counterfactual sets the sign. Total ecosystem carbon of every land-cover class measured on one site in one year by one team with one protocol, and the estimated effect of invasion computed against each candidate counterfactual in turn. The invaded state throughout is the dense Prosopis stand at 52.5 Mg C per hectare. Soil carbon is to 1 m depth and aboveground carbon is from the same plots."
+
+t2b <- data.frame(
+  `Counterfactual` = cf$class,
+  `Soil C` = f1(cf$soc), `Aboveground C` = f1(cf$agc), `Total` = f1(cf$total),
+  `Effect of invasion` = sprintf("%+.2f", cf$effect),
+  `Verdict` = cf$verdict,
+  check.names = FALSE, stringsAsFactors = FALSE)
+kable(t2b, row.names = FALSE)
+write.csv(t2b, file.path(TBL, "table-2b-counterfactual.csv"), row.names = FALSE)
+```
+
+```{r}
+#| label: fig-sensitivity
+#| echo: true
+#| fig-width: 8
+#| fig-height: 4.6
+#| fig-cap: "Figure S1. Elasticity of the time to exceed C storage under retention to a ten per cent increase in each parameter, by system. A value of minus one means a ten per cent increase in the parameter shortens the time to exceed retention by ten per cent. Green shortens the time to exceed retention, red lengthens it. The colour scale is clipped at the ninetieth percentile of absolute elasticity so that a single large value cannot flatten the rest of the panel; the printed values are unclipped. Rows marked undefined are systems in which retention is never exceeded, where a proportional change in the time to exceed retention has no meaning."
+
+png(file.path(FIG, "figure-3-sensitivity.png"), width = 2400, height = 1250, res = 300)
+op <- par(mar = c(3.0, 10.5, 1.6, 1.0), family = "sans")
+z <- t(elas)                                   # parameters on x, systems on y
+# the colour scale is clipped at the 90th percentile of absolute elasticity so that a single
+# large value cannot flatten the rest of the panel; printed values are unclipped
+zcap <- quantile(abs(z), 0.90, na.rm = TRUE)
+zc   <- pmin(pmax(z, -zcap), zcap)
+brk  <- seq(-zcap, zcap, length.out = 21)
+pal  <- colorRampPalette(c("#2f6b4f", "#f2f2ee", "#9b3b3b"))(20)
+image(seq_len(nrow(zc)), seq_len(ncol(zc)), zc, col = pal, breaks = brk,
+      axes = FALSE, xlab = "", ylab = "")
+for (i in seq_len(nrow(z)))
+  mtext(unname(ELLAB[rownames(z)[i]]), side = 1, at = i, line = 0.5, cex = 0.66, las = 1)
+for (j in seq_len(ncol(z)))
+  mtext(colnames(z)[j], side = 2, at = j, line = 0.4, cex = 0.7, las = 1, adj = 1)
+abline(h = seq_len(ncol(z)) + 0.5, col = "white", lwd = 3)
+abline(v = seq_len(nrow(z)) + 0.5, col = "white", lwd = 3)
+for (i in seq_len(nrow(z))) for (j in seq_len(ncol(z)))
+  if (is.finite(z[i, j])) text(i, j, sprintf("%.1f", z[i, j]), cex = 0.66, col = "grey15")
+# systems where retention is never exceeded carry no elasticity at all: say so on the panel
+for (j in seq_len(ncol(z))) if (all(!is.finite(z[, j])))
+  text(mean(seq_len(nrow(z))), j, "the time to exceed retention not reached, elasticity undefined",
+       cex = 0.66, col = "grey45", font = 3)
+par(op); invisible(dev.off())
+knitr::include_graphics(file.path(FIG, "figure-3-sensitivity.png"))
+```
+
+```{r}
+#| label: tbl-verdict
+#| echo: true
+#| tbl-cap: "Table S3. Joint verdict. For each system, whether removal generates a claimable carbon benefit within a 40 year crediting period, whether the C loss is small enough to pass the 5 percent de minimis test that would otherwise require it to be accounted explicitly, and the crediting route that could accommodate it."
+
+t5 <- data.frame(
+  System = res$system_short,
+  `Claimable at 40 yr` = ifelse(res$claimable, "yes", "no"),
+  # a C loss share far above 100 per cent means the benefit is near zero rather than that the
+  # C loss is unusually large, so the ratio is capped for display and read with the benefit column
+  `C loss as share of benefit` = ifelse(!is.finite(res$closs_share), "-",
+                               ifelse(res$closs_share > 10, "over 1000%", pc(res$closs_share))),
+  `Passes de minimis` = ifelse(is.na(res$deminimis), "-", ifelse(res$deminimis, "yes", "no")),
+  Verdict = res$verdict,
+  `Available route` = res$route,
+  check.names = FALSE, stringsAsFactors = FALSE)
+kable(t5, row.names = FALSE)
+write.csv(t5, file.path(TBL, "table-5-verdict.csv"), row.names = FALSE)
+```
+

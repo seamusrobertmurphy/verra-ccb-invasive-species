@@ -1,4 +1,4 @@
-"System","C loss (Mg C/ha)","The point at which removal exceeds retention (yr)","P(never)","Return to pre-removal C storage (yr)","Net benefit at 40 yr (Mg C/ha)"
+"System","C loss (Mg C/ha)","The time to exceed retention (yr)","P(never)","Time to return (yr)","Net benefit at 40 yr (Mg C/ha)"
 "Prosopis rangeland","11.2","23 (2-110)","38%","23","-0.6 (-16.8 to 16.6)"
 "Cheatgrass steppe","0.4","16 (0-158)","40%","16","-0.1 (-2.4 to 2.9)"
 "Tidal marsh","4.5","not reached","54%","not reached","-4.4 (-65.7 to 52.7)"

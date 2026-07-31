@@ -4,7 +4,7 @@
 
 Status as of 2026-07-30: **master manuscript built and rendering**, analysis executable
 in-document, bibliography verified entry by entry against fetched publisher records.
-Sole-authored. Target venue Global Change Biology.
+Sole-authored. Target venue Journal of Applied Ecology, following the exemplar Nagy et al. 2021.
 
 **The master is [`01.manuscript/invasive-removal-carbon-debt.qmd`](01.manuscript/invasive-removal-carbon-debt.qmd).**
 Edit it, not the renders. Every number in the prose is an inline R expression and every table
