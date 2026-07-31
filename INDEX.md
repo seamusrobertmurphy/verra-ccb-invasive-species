@@ -1,15 +1,15 @@
 # verra-ccb-invasive-species
 
-**Carbon parity after invasive plant removal, and the crediting gap it exposes.**
+**When does removing an invasive plant repay its carbon cost?**
 
 Status as of 2026-07-30: **master manuscript built and rendering**, analysis executable
 in-document, bibliography verified entry by entry against fetched publisher records.
 Sole-authored. Target venue Global Change Biology.
 
-**The master is [`01.manuscript/invasive-removal-carbon-parity.qmd`](01.manuscript/invasive-removal-carbon-parity.qmd).**
+**The master is [`01.manuscript/invasive-removal-carbon-cost.qmd`](01.manuscript/invasive-removal-carbon-cost.qmd).**
 Edit it, not the renders. Every number in the prose is an inline R expression and every table
 and figure is generated at render time, so prose and results cannot drift.
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-parity.qmd --to docx`.
+Build: `cd 01.manuscript && quarto render invasive-removal-carbon-cost.qmd --to docx`.
 
 ## Read in this order
 
@@ -26,7 +26,7 @@ Across invaded systems differing in the functional type of the invader, how long
 for recovering native vegetation to overtake the carbon trajectory the invader would have
 followed if left in place, and can any carbon standard credit the answer?
 
-H1 is that parity time is ordered by invader functional type, that it is never reached where
+H1 is that break-even time is ordered by invader functional type, that it is never reached where
 the invader outperforms the community it displaced, and that no standard can act on either
 outcome.
 
@@ -52,10 +52,10 @@ while externalising the spread.
 
 ## The two moving parts
 
-**The parity model.** Two monomolecular trajectories from the moment of intervention. Under
+**The break-even model.** Two monomolecular trajectories from the moment of intervention. Under
 retention the stock relaxes toward the invaded asymptote. Under removal it falls instantly by
-the removal debt, then relaxes toward the native reference stock. Parity is the crossing.
-Payback, reported alongside, is the return to the pre-removal stock. Uncertainty by Monte
+the initial carbon loss, then relaxes toward the native reference stock. Break-even is the crossing.
+Stock recovery, reported alongside, is the return to the pre-removal stock. Uncertainty by Monte
 Carlo, 10,000 draws per system, every parameter drawn from its reported dispersion.
 
 **The standards audit.** Six voluntary regimes plus the Australian compliance scheme, coded
@@ -105,11 +105,11 @@ increase. Nothing in CCB credits, rewards or requires control.
 
 Ordered exactly by invader functional type, which was the hypothesis.
 
-| System | Debt (Mg C/ha) | Parity, median (95%) | P(never) | Claimable at 40 yr |
+| System | Initial loss (Mg C/ha) | Break-even, median (95%) | P(never) | Claimable at 40 yr |
 |---|---|---|---|---|
-| Dry deciduous forest (Lantana) | 1.7 | 5 yr (1-71) | 19% | yes, debt 30% of benefit |
+| Dry deciduous forest (Lantana) | 1.7 | 5 yr (1-71) | 19% | yes, initial loss 30% of benefit |
 | Cheatgrass steppe | 0.4 | 16 yr (0-158) | 40% | no, benefit is near zero |
-| Atlantic Forest regrowth (Acacia) | 45.4 | 21 yr (9-90) | 1% | yes, debt 178% of benefit |
+| Atlantic Forest regrowth (Acacia) | 45.4 | 21 yr (9-90) | 1% | yes, initial loss 178% of benefit |
 | Prosopis rangeland | 11.2 | 23 yr (2-110) | 38% | no, benefit near zero at yr 40 |
 | Tidal marsh (Phragmites) | 4.5 | not reached | 54% | no |
 | Tropical freshwater (hyacinth) | 3.8 | not reached | 70% | no |
@@ -117,14 +117,14 @@ Ordered exactly by invader functional type, which was the hypothesis.
 
 **The Prosopis result is the sharpest in the paper.** With the measured aboveground carbon from
 Mbaabu's Supplementary Table S7 (12.46 Mg C/ha for dense stands), the soil carbon gained by
-restoring grassland very nearly cancels the loss of Prosopis standing biomass. Parity lands at
+restoring grassland very nearly cancels the loss of Prosopis standing biomass. Break-even lands at
 23 years by the Monte Carlo median and at roughly 41 years on the point estimate, straddling the
 end of a 40-year crediting period, and the net benefit at year 40 is indistinguishable from zero
 (-0.6, 95% interval -16.8 to 16.6). A project in Baringo would be betting its entire carbon case
 on where in that interval it lands. Note also that the restoration chronosequence stops at year
 30, so the approach to the asymptote is an extrapolation.
 
-Parity and payback are identical wherever the invaded state is treated as static, which is a
+Break-even and stock recovery are identical wherever the invaded state is treated as static, which is a
 check on the code rather than a coincidence: with a flat counterfactual the pre-removal stock
 and the counterfactual are the same quantity.
 

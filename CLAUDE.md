@@ -5,18 +5,18 @@ forced, and the traps.
 
 ## The claim, in one sentence
 
-Removing an invasive plant incurs an immediate carbon debt that the recovering native
+Removing an invasive plant incurs an immediate initial carbon loss that the recovering native
 vegetation may or may not repay, the time to repayment differs by orders of magnitude across
 invader functional types, and no carbon standard can credit the result either way.
 
 ## The master document
 
-`01.manuscript/invasive-removal-carbon-parity.qmd` is the single source of truth. Edit it,
+`01.manuscript/invasive-removal-carbon-cost.qmd` is the single source of truth. Edit it,
 never the renders. Rendering runs the analysis: every number in the prose is an inline R
 expression, every table and figure is generated at render time from `02.inputs/`. Nothing is
 fetched over the network.
 
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-parity.qmd --to docx`
+Build: `cd 01.manuscript && quarto render invasive-removal-carbon-cost.qmd --to docx`
 (or `--to html`).
 
 Base R only, no packages beyond `knitr`. Every chunk carries an explicit `#| echo: true`.
@@ -96,19 +96,19 @@ by reading.
 
 ## Terminology
 
-**Parity**, not payback, is the paper's quantity. Parity is the crossing of the counterfactual
-trajectory, in the sense of Mitchell et al. 2012; payback is the return to the pre-removal
+**Break-even**, not stock recovery, is the paper's quantity. Break-even is the crossing of the counterfactual
+trajectory, in the sense of Mitchell et al. 2012; stock recovery is the return to the pre-removal
 stock. Crediting systems pay for the former while intuition reaches for the latter, and
 conflating them is the single most likely reviewer objection. Both are reported.
 
-**Debt** is the carbon released or lost by the removal, not the standing stock of the invader.
-Carbon leaving the site in durable form, as timber or biochar, is not part of the debt. That
+**Initial loss** is the carbon released or lost by the removal, not the standing stock of the invader.
+Carbon leaving the site in durable form, as timber or biochar, is not part of the initial loss. That
 is precisely why the biochar route changes the arithmetic and not merely the finance.
 
 ## Traps
 
-- Jonker et al. 2014 showed that methodological choices alone swing payback from under a year
-  to 27 years and parity from 2 to 106 years in the bioenergy literature. A reviewer will
+- Jonker et al. 2014 showed that methodological choices alone swing stock recovery from under a year
+  to 27 years and break-even from 2 to 106 years in the bioenergy literature. A reviewer will
   raise this. The accounting boundary and the counterfactual are fixed in the Methods before
   any result is computed, and the sensitivity analysis addresses it directly.
 - The invaded state is often **not** at equilibrium. Where a source gives no invaded
