@@ -411,9 +411,9 @@ The nearest existing treatment of invasive control as climate action concerns in
 
 Three questions follow. First, across invaded systems that differ in the functional type of the invader, how long is the time to exceed C storage under retention after removal, and in which systems is it never reached? Second, given those answers, could a removal project be credited under the accounting rules that carbon standards actually apply? Third, where the carbon answer is unfavourable, what instrument is appropriate instead?
 
-# 2 \| MATERIALS AND METHODS
+# Materials and methods
 
-## 2.1 \| Systems and the evidence base
+## 2.1 Study systems and evidence base
 
 ```{r}
 #| label: tbl-systems
@@ -431,7 +431,7 @@ Systems were selected to span the functional types across which the carbon conse
 
 The evidence classification in Table 1 is derived from the parameter tiers rather than asserted, so a system counts as quantified only where both ecosystem stocks and the invader's own aboveground carbon come from measurement or from arithmetic on measurements. On that test `r n_quant` of the `r nrow(sysmeta)` systems are quantified and `r n_indic` are indicative. That ratio is itself a result. It is not possible at present to assemble a fully measured the time to exceed retention calculation for most of the world's best known plant invasions, and the reader should treat the indicative systems as showing the sign and rough magnitude of an effect rather than its value.
 
-## 2.2 \| Removal and retention scenarios
+## 2.2 Removal and retention scenarios
 
 The model compares two futures from the moment of intervention. Under the leave scenario the invader is retained and total ecosystem carbon relaxes toward the asymptote of the invaded state. Under the remove scenario the stock falls instantaneously by the C loss, then relaxes toward the native reference stock at the rate at which native vegetation reaccumulates carbon on cleared ground. Both trajectories take the monomolecular form, which is the standard representation of stock recovery toward a carrying capacity and requires only a starting stock, an asymptote and a rate constant.
 
@@ -439,7 +439,7 @@ The C loss has three components: the fraction of the invader's own aboveground c
 
 The point at which C storage under removal exceeds C storage under retention is the first time at which the removal trajectory crosses the leave trajectory. Time to return, reported alongside it, is the first time at which the removal trajectory returns to the pre-removal stock. The two differ whenever the invaded state is not at equilibrium, and the difference matters because a crediting system pays for the former while intuition tends to reach for the latter.
 
-## 2.3 \| The counterfactual, and why it is a choice rather than a fact
+## 2.3 Choice of counterfactual
 
 The the time to exceed retention calculation compares removal against a stated alternative, and the alternative is not given by the data. Three are defensible for any invaded site. The site could be compared against the intact native community, which is what almost every paired study in this literature measures. It could be compared against the degraded but uninvaded state, which is what the site would plausibly have become had the invader not arrived, given that the disturbance which admitted the invader would still have occurred. Or it could be compared against what active restoration could achieve, which is the alternative facing a manager holding a budget.
 
@@ -468,7 +468,7 @@ This matters for the present analysis because the the time to exceed retention m
 
 The wider literature rarely states which comparison it is making. Conservation science confronted the same problem two decades ago and largely resolved it by importing counterfactual reasoning from programme evaluation [@ferraro2006money]; invasion ecology has not yet done so at scale, and the paired invaded-versus-uninvaded design that dominates the field cannot separate the effect of the invader from the effect of the disturbance that admitted it.
 
-## 2.4 \| Parameterisation and uncertainty
+## 2.4 Parameterisation and uncertainty
 
 ```{r}
 #| label: tier-summary
@@ -483,13 +483,13 @@ Of the `r n_par` parameters entering the model, `r as.integer(tier_tab["A"])` ar
 
 Uncertainty is propagated by Monte Carlo with `r f0(NSIM)` draws per system. Each parameter is drawn from a normal distribution centred on its point estimate, truncated where the physical meaning requires it, with the dispersion its source reports. Where a source reports none, the parameter is assigned a coefficient of variation of `r f2(DEFAULT_CV)`, and the sensitivity of the conclusions to that assumption is examined directly.
 
-## 2.5 \| Standards audit
+## 2.5 Review of carbon crediting standards
 
 Six crediting regimes were audited against their own current requirement documents rather than against summaries: the Verra Verified Carbon Standard together with the Climate, Community and Biodiversity Standards, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, and the Article 6.4 mechanism of the Paris Agreement. The Australian Carbon Credit Unit scheme was added as the one compliance regime in which suppression of non-native plants appears in statute. Each document was retrieved, its full text searched for the relevant terms, and each occurrence read in context, because the phrase appears in a great many project documents as a compliance negation, a statement that invasive species will not be introduced, which is the opposite of the activity at issue.
 
-# 3 \| RESULTS
+# Results
 
-## 3.1 \| Time to exceed C storage under retention
+## 3.1 Carbon storage following removal
 
 ```{r}
 #| label: the time to exceed retention-values
@@ -624,7 +624,7 @@ par(op); invisible(dev.off())
 knitr::include_graphics(file.path(FIG, "figure-2-trajectories.png"))
 ```
 
-## 3.2 \| Sensitivity
+## 3.2 Sensitivity of the estimates
 
 ```{r}
 #| label: sensitivity
@@ -683,7 +683,7 @@ The time to exceed retention is most sensitive to `r top_par`, with a mean absol
 
 The practical consequence is uncomfortable. The parameter that matters most is the one the literature measures least. Standing stocks in invaded and uninvaded states are widely reported, frequently with dispersion and sample sizes, whereas the rate at which native vegetation reaccumulates carbon after clearance is reported almost nowhere, and where it is reported it comes from a chronosequence rather than a time series.
 
-## 3.3 \| The crediting gap
+## 3.3 Treatment of removal under carbon crediting standards
 
 ```{r}
 #| label: tbl-audit
@@ -748,11 +748,11 @@ All `r n_std` regimes restrict the introduction of invasive species, `r n_prohib
 
 The asymmetry between the columns is the finding. The obligation runs one way throughout. A proponent may be required to demonstrate that invasive populations have not increased, and may in some regimes be encouraged to eradicate, while having no mechanism by which the carbon result of doing so can be quantified or paid for. `r n_noncarbon` of the regimes credit removal under a non-carbon instrument, scoring invasive abundance as a biodiversity outcome, which is the only place in the voluntary market where the activity is currently rewarded on its own terms.
 
-## 3.4 \| Carbon storage outcomes and creditability
+## 3.4 Carbon storage outcomes and creditability
 
 Joining the two analyses narrows the field sharply. A removal project needs three things at once: a positive net benefit inside the crediting period, a C loss small enough that the accounting rules can absorb it, and a methodology whose baseline construction does not penalise the proponent for the invader's own biomass. Table 5 shows how few systems hold all three. The systems that pass the carbon test tend to be those where the invader holds least carbon, which are also the systems where a carbon-denominated payment would be smallest, and the systems where removal delivers the largest ecological gain tend to fail it.
 
-# 4 \| DISCUSSION
+# Discussion
 
 ```{r}
 #| label: discussion-values
@@ -821,42 +821,15 @@ The carbon standards cannot act on that answer in either direction, and the fail
 
 That the answer also depends on the counterfactual compounds the problem rather than relieving it. On the one site in this study where the intact, degraded and restored classes were all measured, invasion is a carbon loss against one comparison and a gain against the other two, across a range wider than the invaded stand's entire aboveground stock. A crediting system must fix a counterfactual in advance and apply it categorically. It therefore fixes the sign of the answer before the ecology is consulted.
 
-Two things follow. The narrow one is technical: extending dynamic matched baselines beyond forest would make removal creditable in the systems where the the time to exceed retention calculation says it should be. The broader one is that carbon is the wrong lens for most of this work. The systems where removal costs the most carbon are often those where it delivers the most biodiversity, and a mechanism that ranks restoration by carbon will defund exactly the removals with the strongest ecological case. The emerging biodiversity credit instruments, which already score invasive abundance directly, are the better fit. The the time to exceed retention calculation should decide which instrument applies, and for a large share of the invaded world it says the answer is not carbon.
+Two things follow. The narrow one is technical: extending dynamic matched baselines beyond forest would make removal creditable in the systems where the the time to exceed retention calculation says it should be. The broader one is that carbon is the wrong lens for most of this work. The systems where removal costs the most carbon are often those where it delivers the most biodiversity, and a mechanism that ranks restoration by carbon will defund exactly the removals with the strongest ecological case. The emerging biodiversity credit instruments, which already score invasive abundance directly, are the better fit. The the time to exceed retention calculation should decide which instrument applies, and for a large share of the invaded world it says the answer is not carbon.ORCID
 
-::: {#refs}
-:::
-
-# ACKNOWLEDGEMENTS
-
-Standards documents were retrieved from the public repositories of Verra, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, the UNFCCC and the Australian Federal Register of Legislation between 29 and 30 July 2026. Version numbers and retrieval dates are recorded in the input table, because several of the documents assessed were revised during the period in which comparable analyses have been published. No funding was received for this work.
-
-# CONFLICT OF INTEREST
-
-The author declares no conflict of interest, and no financial relationship with any carbon standard, registry, project developer or verification body assessed in the standards audit.
-
-# AUTHORS' CONTRIBUTIONS
-
-Sole authorship. Following the CRediT taxonomy, the author is responsible for conceptualization, methodology, software, formal analysis, investigation, data curation, visualization, and writing of the original draft and its revision.
-
-# USE OF GENERATIVE ARTIFICIAL INTELLIGENCE
-
-Large language model assistance was used in compiling and cross-checking the standards audit corpus, in verifying bibliographic records against publisher and Crossref registrations, and in drafting and editing prose. All quantitative parameters were read from the cited primary sources and are reproduced with their provenance in Table 2; all quoted standards text was verified against the retrieved documents; and the author takes full responsibility for the content of the manuscript. One error introduced at the compilation stage is recorded here because it bears on the literature: a widely circulated set of soil carbon loss figures attributed in secondary summaries to herbicide control of invasive *Phragmites* in North American marshes originates instead in an experimental wetland loss study on native emergent marsh in coastal Louisiana [@lane2016fate], and those figures are not used here.
-
-# DATA AVAILABILITY STATEMENT
-
-Every parameter entering the analysis, its dispersion, its units and the source it was read from is given in Table S1 and held in `02.inputs/carbon-parameters.csv`. The standards audit, including the clause and the document version each code was read from, is held in `02.inputs/standards-audit.csv`. Rendering the manuscript reruns the entire analysis from those two files and regenerates every table and figure, so no result reported here exists outside the code that produced it. The manuscript source, the input tables and the code are archived together and require no software beyond R and base packages.
-
-# ORCID
-
-*S. Murphy* https://orcid.org/0000-0002-1792-0351
-
-# REFERENCES
+# References
 
 <div>
 
 </div>
 
-# SUPPORTING INFORMATION
+# Supporting information
 
 ```{r}
 #| label: tbl-parameters
