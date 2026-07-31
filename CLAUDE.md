@@ -5,18 +5,18 @@ forced, and the traps.
 
 ## The claim, in one sentence
 
-Removing an invasive plant incurs an immediate initial carbon loss that the recovering native
+Removing an invasive plant incurs an immediate carbon debt that the recovering native
 vegetation may or may not repay, the time to repayment differs by orders of magnitude across
 invader functional types, and no carbon standard can credit the result either way.
 
 ## The master document
 
-`01.manuscript/invasive-removal-carbon-cost.qmd` is the single source of truth. Edit it,
+`01.manuscript/invasive-removal-carbon-parity.qmd` is the single source of truth. Edit it,
 never the renders. Rendering runs the analysis: every number in the prose is an inline R
 expression, every table and figure is generated at render time from `02.inputs/`. Nothing is
 fetched over the network.
 
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-cost.qmd --to docx`
+Build: `cd 01.manuscript && quarto render invasive-removal-carbon-parity.qmd --to docx`
 (or `--to html`).
 
 Base R only, no packages beyond `knitr`. Every chunk carries an explicit `#| echo: true`.
@@ -94,21 +94,57 @@ project descriptions at scale returns those negations, which are the opposite of
 at issue. The distinction between "we will not introduce" and "we will remove" has to be made
 by reading.
 
+## Terminology: the hard rule
+
+**Never use a term that does not already appear in the published literature.** Do not coin,
+do not paraphrase into plain English, do not substitute a "clearer" word. If a term seems like
+jargon, the response is to go and check what the literature calls the quantity, not to invent
+a replacement. Verify against article titles via the Crossref API before using anything.
+
+This rule exists because it was broken on 2026-07-30. "Carbon parity", "carbon debt" and
+"payback" were removed on the assumption that they were borrowed bioenergy jargon, and replaced
+with "carbon break-even", "initial carbon loss" and "stock recovery", which were invented on the
+spot and appear nowhere. The originals are the established terms and carry peer-reviewed article
+titles:
+
+- **carbon debt** — Fargione et al. 2008 *Science*; Mitchell et al. 2012 *GCB Bioenergy*;
+  "Carbon debt and payback time - Lost in the forest?" *Renew. Sustain. Energy Rev.* 2017
+- **carbon sequestration parity** — Mitchell et al. 2012 *GCB Bioenergy*; "Carbon debt repayment
+  or carbon sequestration parity?" *GCB Bioenergy* 2014
+- **carbon payback period / time** — Jonker et al. 2014 *GCB Bioenergy*; *Energies* 2018
+
+Note that "carbon parity" on its own is **not** attested; the full form is "carbon sequestration
+parity". Use the full form on first mention.
+
+## The exemplar publication
+
+**Mitchell, S.R., Harmon, M.E. & O'Connell, K.E.B. (2012). Carbon debt and carbon sequestration
+parity in forest bioenergy production. *GCB Bioenergy* 4(6):818-827. doi:10.1111/j.1757-1707.2012.01173.x**
+
+This is the model for terminology, analytical structure and depth. It is the paper this
+manuscript's two-trajectory model is an adaptation of, and it sits in the sister journal of the
+target venue. When a question arises about what to call something, how to structure the
+analysis, or how deep to go, the answer is whatever Mitchell et al. did.
+
+Secondary exemplar for subject matter and results presentation: Nagy et al. 2021,
+*Journal of Applied Ecology* 58:327-337, a quantitative synthesis of invasion effects on
+ecosystem carbon reported pool by pool.
+
 ## Terminology
 
-**Break-even**, not stock recovery, is the paper's quantity. Break-even is the crossing of the counterfactual
-trajectory, in the sense of Mitchell et al. 2012; stock recovery is the return to the pre-removal
+**Parity**, not payback, is the paper's quantity. Parity is the crossing of the counterfactual
+trajectory, in the sense of Mitchell et al. 2012; payback is the return to the pre-removal
 stock. Crediting systems pay for the former while intuition reaches for the latter, and
 conflating them is the single most likely reviewer objection. Both are reported.
 
-**Initial loss** is the carbon released or lost by the removal, not the standing stock of the invader.
-Carbon leaving the site in durable form, as timber or biochar, is not part of the initial loss. That
+**Debt** is the carbon released or lost by the removal, not the standing stock of the invader.
+Carbon leaving the site in durable form, as timber or biochar, is not part of the debt. That
 is precisely why the biochar route changes the arithmetic and not merely the finance.
 
 ## Traps
 
-- Jonker et al. 2014 showed that methodological choices alone swing stock recovery from under a year
-  to 27 years and break-even from 2 to 106 years in the bioenergy literature. A reviewer will
+- Jonker et al. 2014 showed that methodological choices alone swing payback from under a year
+  to 27 years and parity from 2 to 106 years in the bioenergy literature. A reviewer will
   raise this. The accounting boundary and the counterfactual are fixed in the Methods before
   any result is computed, and the sensitivity analysis addresses it directly.
 - The invaded state is often **not** at equilibrium. Where a source gives no invaded

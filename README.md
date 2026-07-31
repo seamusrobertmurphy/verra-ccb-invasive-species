@@ -1,6 +1,6 @@
 # verra-ccb-invasive-species
 
-**When does removing an invasive plant repay its carbon cost?**
+**Carbon parity after invasive plant removal, and the crediting gap it exposes.**
 
 A quantitative synthesis of how long it takes for recovering native vegetation to overtake the
 carbon trajectory an invasive plant would have followed if left in place, joined to an audit of
@@ -11,7 +11,7 @@ Target venue **Global Change Biology**, Research Article, guidelines verified li
 
 The venue decision was made on budget, not prestige. Global Change Biology allows 8,000 words
 counted over the body only, with **no cap on figures, tables or references**, which is the only
-budget among the candidates that can carry the break-even model and the six-standard audit in one
+budget among the candidates that can carry the parity model and the six-standard audit in one
 paper without exiling the audit to supplementary material. Impact factor 12.5, six-day median
 to first decision, no submission or publication charge. One Earth is the strong second choice
 and arguably the better home for the mixed character, at the cost of 5,000 words and seven
@@ -33,7 +33,7 @@ carbon finance. Those three facts are the standard test for baseline gaming, and
 restoration project satisfies all of them.
 
 Whether removal is nevertheless a carbon gain depends on a quantity nobody had estimated: the
-time to carbon break-even, meaning the point at which the recovering native trajectory overtakes
+time to carbon parity, meaning the point at which the recovering native trajectory overtakes
 the counterfactual. The literature splits cleanly into two halves that have never been joined.
 A large body quantifies what invasion does to ecosystem carbon, and finds that invasion
 frequently *raises* stocks. A much thinner body follows what happens after removal, and
@@ -44,8 +44,8 @@ measures species composition, water yield and employment rather than carbon.
 Two parts, and the second is what makes it a standards paper rather than an invasion ecology
 paper.
 
-**The break-even synthesis.** The initial carbon loss framework built for biofuels by Fargione et al.
-(2008) and sharpened into a break-even concept by Mitchell et al. (2012) is adapted to invasive
+**The parity synthesis.** The carbon debt framework built for biofuels by Fargione et al.
+(2008) and sharpened into a parity concept by Mitchell et al. (2012) is adapted to invasive
 removal and applied across seven systems chosen to span invader functional type: woody
 nitrogen-fixing trees, a thicket-forming shrub, an annual grass, a wetland graminoid, a woody
 wetland tree and a floating aquatic. The selection is deliberately adversarial, including the
@@ -98,8 +98,8 @@ would have put fabricated numbers in the Phragmites section.
 
 ```
 cd 01.manuscript
-quarto render invasive-removal-carbon-cost.qmd --to docx
-quarto render invasive-removal-carbon-cost.qmd --to html
+quarto render invasive-removal-carbon-parity.qmd --to docx
+quarto render invasive-removal-carbon-parity.qmd --to html
 ```
 
 Rendering runs the entire analysis. Base R only, no packages beyond `knitr`, nothing fetched
