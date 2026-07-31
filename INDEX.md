@@ -30,6 +30,26 @@ H1 is that parity time is ordered by invader functional type, that it is never r
 the invader outperforms the community it displaced, and that no standard can act on either
 outcome.
 
+## The thesis, as of 2026-07-30
+
+The paper now argues a **symmetry**, which is sharper than the original gap framing. Removal
+cannot be credited, because clearing a woody invader is an emission against a carbon-rich
+baseline and is indistinguishable, on the face of the applicable test, from deliberately
+lowering that baseline. Retention cannot be credited either, and for a structural reason rather
+than an ideological one: retention is inaction, inaction is the baseline, and nothing can be
+additional to itself. Whichever action the carbon arithmetic favours, the accounting returns
+nothing.
+
+Compounding it, the sign of the answer depends on the counterfactual. Section 2.3 shows that on
+the one site where intact, degraded and restored classes were all measured, invasion is a loss
+of 3.27 Mg C/ha against pristine grassland, a gain of 4.64 against restored grassland and a gain
+of 20.30 against degraded grassland. A crediting system must fix a counterfactual in advance and
+apply it categorically, so it fixes the sign before the ecology is consulted.
+
+Retention-crediting is **not** endorsed. The decisive objection is leakage: paying to retain an
+invader pays to maintain a propagule source, and stock accounting captures the retained carbon
+while externalising the spread.
+
 ## The two moving parts
 
 **The parity model.** Two monomolecular trajectories from the moment of intervention. Under

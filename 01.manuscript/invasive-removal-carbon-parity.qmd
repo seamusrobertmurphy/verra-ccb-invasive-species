@@ -1,6 +1,6 @@
 ---
 title: "Carbon parity after invasive plant removal, and the crediting gap it exposes"
-subtitle: "A parity synthesis across seven invaded systems, and an audit of six carbon standards that cannot reward the result"
+subtitle: "A parity synthesis across seven invaded systems, and why neither removing nor retaining an invader can be credited"
 author:
     - name: Murphy, S
       url: https://scholar.google.com/citations?hl=en&user=jDGq9I4AAAAJ
@@ -378,7 +378,7 @@ rownames(audm) <- NULL
 
 # Abstract
 
-Removing an invasive plant is one of the few restoration actions with an unambiguous biodiversity rationale and no reliable way to pay for it. Carbon finance fails it for a reason that is arithmetic rather than administrative: a woody invader is itself a carbon stock, so clearing it registers as an emission against a carbon-rich baseline and meets, on its face, every test for baseline gaming. Whether removal is nevertheless a carbon gain depends on a quantity that has not been estimated, the time for recovering native vegetation to overtake the trajectory the invader would have followed if left in place. We adapt the carbon parity framework developed for biofuel and bioenergy accounting to invasive plant removal and apply it to `r nrow(sysmeta)` invaded systems spanning woody nitrogen-fixing invaders, a thicket-forming shrub, an annual grass, a wetland graminoid, a woody wetland tree and a floating aquatic. Removal debts span `r f1(mindebt_v)` to `r f1(maxdebt_v)` Mg C per hectare and parity times run from immediate to never, ordered by the functional type of the invader. Only `r n_quant` systems can be parameterised entirely from measurement, which is itself a finding: the recovery rate that dominates the calculation is the quantity the literature measures least. We then audit six voluntary carbon standards and one compliance scheme against their own current requirement documents. All restrict the introduction of invasive species, none credits the carbon consequence of removing them, and the one design that dissolves the problem, the dynamic matched baseline, is confined to forest in a single country. The activity is monetised only as biochar feedstock and as a biodiversity credit, neither of which rewards the land carbon effect. The parity calculation, not the standards text, should decide where carbon finance is the right instrument, and for much of the invaded world it is not.
+Removing an invasive plant is one of the few restoration actions with an unambiguous biodiversity rationale and no reliable way to pay for it. Carbon finance fails it for a reason that is arithmetic rather than administrative: a woody invader is itself a carbon stock, so clearing it registers as an emission against a carbon-rich baseline and meets, on its face, every test for baseline gaming. Whether removal is nevertheless a carbon gain depends on the time for recovering native vegetation to overtake the trajectory the invader would have followed if left in place. We adapt the carbon parity framework developed for biofuel and bioenergy accounting to invasive plant removal and apply it to `r nrow(sysmeta)` invaded systems spanning six invader functional types, from annual grasses to woody nitrogen fixers. Removal debts span `r f1(mindebt_v)` to `r f1(maxdebt_v)` Mg C per hectare and parity times run from immediate to never, ordered by the functional type of the invader. Only `r n_quant` systems can be parameterised entirely from measurement, because the recovery rate that dominates the calculation is barely measured anywhere. On the single site where intact, degraded and restored classes were all measured, the sign of the invasion effect changes with the comparison chosen, across a range wider than the invaded stand's entire aboveground stock. We then audit six voluntary carbon standards and one compliance scheme against their own current requirement documents. The failure is symmetrical: removal cannot be credited because clearing is an emission against the baseline, and retention cannot be credited because retention is the baseline and nothing is additional to itself. Whichever action the arithmetic favours, the accounting returns nothing, and it does so regardless of the ecology. The activity is monetised today only as biochar feedstock and as a biodiversity credit, neither of which rewards the land carbon effect.
 
 # 1. Introduction
 
@@ -422,7 +422,51 @@ The removal debt has three components: the fraction of the invader's own abovegr
 
 Carbon parity is the first time at which the removal trajectory crosses the leave trajectory. Payback, reported alongside it, is the first time at which the removal trajectory returns to the pre-removal stock. The two differ whenever the invaded state is not at equilibrium, and the difference matters because a crediting system pays for the former while intuition tends to reach for the latter.
 
-## 2.3 Parameterisation and uncertainty
+## 2.3 The counterfactual, and why it is a choice rather than a fact
+
+The parity calculation compares removal against a stated alternative, and the alternative is not given by the data. Three are defensible for any invaded site. The site could be compared against the intact native community, which is what almost every paired study in this literature measures. It could be compared against the degraded but uninvaded state, which is what the site would plausibly have become had the invader not arrived, given that the disturbance which admitted the invader would still have occurred. Or it could be compared against what active restoration could achieve, which is the alternative facing a manager holding a budget.
+
+These are different questions and they do not share an answer. Where all three classes have been measured on one site, the sign of the estimated carbon effect of invasion depends on which is chosen.
+
+```{r}
+#| label: counterfactual-classes
+#| echo: true
+
+cls <- read.csv(file.path(IN, "counterfactual-classes.csv"), stringsAsFactors = FALSE)
+cls$total <- cls$soc + cls$agc
+
+# the invaded state used in the parity model is the dense stand
+inv_tot <- cls$total[cls$class == "Prosopis high density"]
+
+cf <- cls[cls$class_type != "invaded", c("class", "class_type", "soc", "agc", "total")]
+cf$effect  <- inv_tot - cf$total
+cf$verdict <- ifelse(cf$effect > 0, "gain", "loss")
+cf <- cf[order(-cf$total), ]
+cf_span <- diff(range(cf$effect))
+```
+
+```{r}
+#| label: tbl-counterfactual
+#| echo: true
+#| tbl-cap: "The counterfactual sets the sign. Total ecosystem carbon of every land-cover class measured on one site in one year by one team with one protocol, and the estimated effect of invasion computed against each candidate counterfactual in turn. The invaded state throughout is the dense Prosopis stand at 52.5 Mg C per hectare. Soil carbon is to 1 m depth and aboveground carbon is from the same plots."
+
+t2b <- data.frame(
+  `Counterfactual` = cf$class,
+  `Soil C` = f1(cf$soc), `Aboveground C` = f1(cf$agc), `Total` = f1(cf$total),
+  `Effect of invasion` = sprintf("%+.2f", cf$effect),
+  `Verdict` = cf$verdict,
+  check.names = FALSE, stringsAsFactors = FALSE)
+kable(t2b, row.names = FALSE)
+write.csv(t2b, file.path(TBL, "table-2b-counterfactual.csv"), row.names = FALSE)
+```
+
+Invasion is a carbon loss of `r f2(abs(cf$effect[cf$class_type == "reference"]))` Mg C per hectare against the intact grassland, a gain of `r f2(cf$effect[cf$class_type == "restored"])` against the restored grassland, and a gain of `r f2(cf$effect[cf$class_type == "degraded"])` against the degraded grassland. The spread between the extreme comparisons is `r f1(cf_span)` Mg C per hectare, which exceeds the entire aboveground carbon stock of the invaded stand. Nothing about the ecosystem differs between these three statements. Only the question does.
+
+This matters for the present analysis because the parity model must adopt one of them, and it adopts the second. The retention trajectory represents the invaded state persisting, which is the alternative actually facing a proponent deciding whether to clear. Comparing instead against the intact native community would attribute to the invader whatever degradation preceded and permitted it, and comparing against the restored state would presuppose the very restoration whose value is in question. The choice is conservative for the removal case in the sense that it neither credits nor penalises the invader for the site's prior condition, but it is a choice, and results computed under one counterfactual should not be read as though they held under another.
+
+The wider literature rarely states which comparison it is making. Conservation science confronted the same problem two decades ago and largely resolved it by importing counterfactual reasoning from programme evaluation [@ferraro2006money]; invasion ecology has not yet done so at scale, and the paired invaded-versus-uninvaded design that dominates the field cannot separate the effect of the invader from the effect of the disturbance that admitted it.
+
+## 2.4 Parameterisation and uncertainty
 
 ```{r}
 #| label: tbl-parameters
@@ -450,7 +494,7 @@ Of the `r n_par` parameters entering the model, `r as.integer(tier_tab["A"])` ar
 
 Uncertainty is propagated by Monte Carlo with `r f0(NSIM)` draws per system. Each parameter is drawn from a normal distribution centred on its point estimate, truncated where the physical meaning requires it, with the dispersion its source reports. Where a source reports none, the parameter is assigned a coefficient of variation of `r f2(DEFAULT_CV)`, and the sensitivity of the conclusions to that assumption is examined directly.
 
-## 2.4 Standards audit
+## 2.5 Standards audit
 
 Six crediting regimes were audited against their own current requirement documents rather than against summaries: the Verra Verified Carbon Standard together with the Climate, Community and Biodiversity Standards, Plan Vivo, the Gold Standard, the American Carbon Registry, the Climate Action Reserve, and the Article 6.4 mechanism of the Paris Agreement. The Australian Carbon Credit Unit scheme was added as the one compliance regime in which suppression of non-native plants appears in statute. Each document was retrieved, its full text searched for the relevant terms, and each occurrence read in context, because the phrase appears in a great many project documents as a compliance negation, a statement that invasive species will not be introduced, which is the opposite of the activity at issue.
 
@@ -876,7 +920,21 @@ do, pays for the ecological result directly and never touches the carbon questio
 rewards the land carbon effect of removal, and on the evidence assembled here, for most
 systems neither should.
 
-## 4.4 What the sensitivity analysis says about the evidence base
+## 4.4 The symmetry: retention cannot be credited either
+
+The systems in which parity is never reached are, read the other way, the systems in which the carbon-rational action is to leave the invader standing. That is not a rhetorical inversion. It is the same arithmetic stated from the other end, and it applies to `r n_never` of the `r nrow(res)` systems examined here. Nor is it a hypothetical position: working in Ethiopian rangelands, Birhane and colleagues found woody carbon roughly 40 per cent higher under dense *Prosopis* encroachment than under sparse, and proposed carbon trading on densely invaded land rather than eradication [@birhane2017can]. On carbon grounds alone that proposal follows from the evidence.
+
+Retention cannot be credited either, and the reason is worth stating precisely because it is structural rather than ideological. Retention is inaction, inaction is the baseline, and an activity cannot be additional to itself. The only route by which retention could generate credits would be to establish that clearance was the counterfactual, which at the scale of the invaded estate is demonstrably false: the registry search underlying this paper found no project anywhere for which invasive plant control is the primary crediting activity. Crediting retention would therefore require either abandoning additionality or asserting a threat of clearance that does not exist.
+
+The result is a symmetry that has not, as far as we are aware, been stated. Removal cannot be credited because clearing a woody invader is an emission against a carbon-rich baseline and is indistinguishable, on the face of the applicable test, from deliberately lowering that baseline. Retention cannot be credited because it is the baseline. Whichever action the carbon arithmetic favours, the accounting returns nothing. The invaded estate is uncreditable in both directions, and it is uncreditable regardless of the ecological facts, which is a different and more serious problem than a missing methodology.
+
+The prohibition that produces this outcome is not unreasonable. A categorical rule, never introduce invasive species and never allow their populations to rise, is cheap to verify and hard to game, and the recent record of outcome-based crediting in the land sector makes the preference for such rules easy to understand. The cost of a categorical rule is that it produces false negatives wherever its premise does not hold, and this paper identifies the class of cases where it does not: sites at which the invader is the dominant carbon pool, the native community is not recoverable at reasonable cost, and the standards nevertheless require that invasive populations not increase.
+
+That places the argument squarely inside an older and unresolved debate. Hobbs and colleagues argued that systems which have crossed a threshold should be managed for function rather than restored to historical composition [@hobbs2009novel]; Murcia and colleagues replied that the concept is too loosely specified to be operational and in practice licenses the abandonment of restoration [@murcia2014critique]. The parallel argument over whether provenance should determine management value ran through the same period [@davis2011dont; @schlaepfer2011potential]. Our contribution to that debate is narrow but quantitative: for a defined subset of invaded systems the carbon ledger favours retention, and no crediting instrument can express that preference in either direction.
+
+We do not conclude that retention should therefore be credited. The decisive objection is leakage. A payment for retaining an invader is a payment for maintaining a propagule source that continues to invade neighbouring land, and a stock-based accounting captures the retained carbon while externalising the spread. Any serious proposal to credit retention would need to internalise that externality, and none of the accounting designs reviewed here can do so. A second and more practical obstacle is that retention is often not a policy choice at all: *Prosopis* regains cover within months of cutting, and roughly a quarter of treated *Phragmites* sites are recolonised after apparent eradication, so the realistic question in much of the invaded world is not whether to retain but whether to account for what will persist regardless.
+
+## 4.5 What the sensitivity analysis says about the evidence base
 
 The parity time is most sensitive to the native recovery rate, with a mean absolute elasticity
 of `r f2(r_nat_elas)` across systems, and considerably less sensitive to the invader's
@@ -896,9 +954,21 @@ measurement programme retrofitted onto existing Working for Water clearance chro
 would produce the single most valuable dataset in this field at a fraction of the cost of
 establishing new sites.
 
-## 4.5 Limitations
+## 4.6 Limitations
 
-The model is deliberately simple. Both trajectories are monomolecular approaches to an
+The most consequential limitation is the counterfactual, and it belongs to the field rather than
+to this analysis. Section 2.3 shows that on the one site where all the relevant classes were
+measured, the sign of the estimated carbon effect of invasion changes with the comparison
+chosen, across a range of `r f1(cf_span)` Mg C per hectare. Every parity time reported here is
+conditional on the retention counterfactual and would differ under the others. More awkwardly,
+the parameters entering the model come from studies that overwhelmingly compare invaded plots
+against an uninvaded reference of unreported land-use history, so the inputs may already embed
+a different and unstated counterfactual from the one the model applies. Only the Kenyan
+rangeland carries a degraded-but-uninvaded class that would allow the two to be separated. We
+regard this as the central methodological problem of the invasion-carbon literature and treat
+it at length elsewhere.
+
+The model is otherwise deliberately simple. Both trajectories are monomolecular approaches to an
 asymptote, which represents stock recovery adequately but cannot represent a system that
 overshoots, collapses, or is reinvaded. Secondary invasion after clearing is common and is not
 modelled; where it occurs, the real parity times will be longer than those reported here and
@@ -936,11 +1006,23 @@ removal repays quickly. Where the invader is the dominant carbon pool, removal d
 on any horizon a crediting period can reach, and in the systems where the invader outperforms
 the community it displaced, it does not repay at all.
 
-The carbon standards cannot act on that answer in either direction. They have built the
-eligibility machinery for invaded land while leaving the quantification machinery unbuilt, and
-the one accounting design that dissolves the underlying problem is confined to forest in a
-single country. The result is an activity that is simultaneously required as a safeguard,
-named as eligible, and impossible to credit.
+The carbon standards cannot act on that answer in either direction, and the failure is
+symmetrical. Removal cannot be credited, because clearing a woody invader is an emission against
+a carbon-rich baseline and is indistinguishable, on the face of the applicable test, from
+deliberately lowering that baseline. Retention cannot be credited, because retention is the
+baseline and nothing can be additional to itself. Whichever action the arithmetic favours, the
+accounting returns nothing. The standards have built the eligibility machinery for invaded land
+while leaving the quantification machinery unbuilt, and the one accounting design that dissolves
+the underlying problem is confined to forest in a single country. The result is an activity that
+is simultaneously required as a safeguard, named as eligible, and impossible to credit, sitting
+on land whose carbon-optimal alternative is equally impossible to credit.
+
+That the answer also depends on the counterfactual compounds the problem rather than relieving
+it. On the one site in this study where the intact, degraded and restored classes were all
+measured, invasion is a carbon loss against one comparison and a gain against the other two,
+across a range wider than the invaded stand's entire aboveground stock. A crediting system must
+fix a counterfactual in advance and apply it categorically. It therefore fixes the sign of the
+answer before the ecology is consulted.
 
 Two things follow. The narrow one is technical: extending dynamic matched baselines beyond
 forest would make removal creditable in the systems where the parity calculation says it
