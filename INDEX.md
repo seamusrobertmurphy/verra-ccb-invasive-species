@@ -11,6 +11,11 @@ Edit it, not the renders. Every number in the prose is an inline R expression an
 and figure is generated at render time, so prose and results cannot drift.
 Build: `cd 01.manuscript && quarto render invasive-removal-carbon-debt.qmd --to docx`.
 
+
+## Active task request
+
+[`05.tasks/TASK-REQUEST-2026-07-30.md`](05.tasks/TASK-REQUEST-2026-07-30.md). The governing requirement is register: the manuscript must read as a formal scientific article, not a notepad. Section headings that argue a case, rhetorical constructions and conversational asides are to be rewritten out. The exemplar Nagy et al. 2021 governs formatting, layout, structure, depth and permitted vocabulary.
+
 ## Read in this order
 
 1. [`CLAUDE.md`](CLAUDE.md) — conventions, terminology, the corrections already forced, traps.
