@@ -1,166 +1,84 @@
 # verra-ccb-invasive-species
 
-**Carbon parity after invasive plant removal, and the crediting gap it exposes.**
+**Biological invasion increases carbon sequestration rates but not carbon stocks.**
 
-Status as of 2026-07-30: **master manuscript built and rendering**, analysis executable
-in-document, bibliography verified entry by entry against fetched publisher records.
-Sole-authored. Target venue Journal of Applied Ecology, following the exemplar Nagy et al. 2021.
+Status: **submission ready.** Sole-authored. Target venue *Global Change Biology*, Research
+Article, guidelines verified against the live pages on 2026-07-30.
 
-**The master is [`01.manuscript/invasive-removal-carbon-debt.qmd`](01.manuscript/invasive-removal-carbon-debt.qmd).**
+**The master is [`01.manuscript/invasion-rate-versus-stock.qmd`](01.manuscript/invasion-rate-versus-stock.qmd).**
 Edit it, not the renders. Every number in the prose is an inline R expression and every table
 and figure is generated at render time, so prose and results cannot drift.
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-debt.qmd --to docx`.
+Build: `cd 01.manuscript && quarto render invasion-rate-versus-stock.qmd --to docx`.
 
-
-## Active task request
-
-[`05.tasks/TASK-REQUEST-2026-07-30.md`](05.tasks/TASK-REQUEST-2026-07-30.md). The governing requirement is register: the manuscript must read as a formal scientific article, not a notepad. Section headings that argue a case, rhetorical constructions and conversational asides are to be rewritten out. The exemplar Nagy et al. 2021 governs formatting, layout, structure, depth and permitted vocabulary.
+Superseded drafts are in `01.manuscript/archive/`.
 
 ## Read in this order
 
-1. [`CLAUDE.md`](CLAUDE.md) — conventions, terminology, the corrections already forced, traps.
-2. [`README.md`](README.md) — the problem, what the paper does, headline findings.
-3. [`02.inputs/README-data.md`](02.inputs/README-data.md) — the parameter dictionary and the
-   evidence tier scheme that governs what may be claimed.
+1. [`CLAUDE.md`](CLAUDE.md) — conventions, the terminology rule, the corrections already forced.
+2. [`05.tasks/STUDY-DESIGN-2026-07-31.md`](05.tasks/STUDY-DESIGN-2026-07-31.md) — the four-part
+   design and why the paper is framed this way.
+3. [`02.inputs/README-data.md`](02.inputs/README-data.md) — input tables and evidence tiers.
 4. [`05.tasks/EVIDENCE-BASE-2026-07-30.md`](05.tasks/EVIDENCE-BASE-2026-07-30.md) — the
-   quote-backed standards evidence, every document retrieved and searched in full text.
+   quote-backed carbon standards evidence.
 
-## The question
+## The argument
 
-Across invaded systems differing in the functional type of the invader, how long does it take
-for recovering native vegetation to overtake the carbon trajectory the invader would have
-followed if left in place, and can any carbon standard credit the answer?
+Whether invasion increases ecosystem carbon is contested. The contest is largely artefactual:
+two different quantities are both reported as "sequestration". Invasion raises the **rate** of
+carbon accumulation substantially and consistently. It does not reliably raise the **stock**.
 
-H1 is that parity time is ordered by invader functional type, that it is never reached where
-the invader outperforms the community it displaced, and that no standard can act on either
-outcome.
+These correspond to the two methods the IPCC calls equally valid, the gain-loss and
+stock-difference methods, and on invaded land they disagree. Carbon crediting rewards evidence
+of rate while paying for durable stock, which is a systematic source of over-crediting and a
+route to the bio-perversity that Lindenmayer et al. identified.
 
-## The thesis, as of 2026-07-30
+## Principal results
 
-The paper now argues a **symmetry**, which is sharper than the original gap framing. Removal
-cannot be credited, because clearing a woody invader is an emission against a carbon-rich
-baseline and is indistinguishable, on the face of the applicable test, from deliberately
-lowering that baseline. Retention cannot be credited either, and for a structural reason rather
-than an ideological one: retention is inaction, inaction is the baseline, and nothing can be
-additional to itself. Whichever action the carbon arithmetic favours, the accounting returns
-nothing.
+| Finding | Value |
+|---|---|
+| Soil organic carbon, all observations | +20.4%, 95% CI -4.6 to +52.0, not significant |
+| Same, observations weighted equally | +6.8%, so the estimate is not robust |
+| **Soil organic carbon, areal stocks only** | **-0.8%, 95% CI -15.7 to +16.7** |
+| Soil organic carbon, concentrations only | +25.0%, 95% CI -4.7 to +63.9 |
+| Microbial biomass carbon | +30.1%, significant |
+| Particulate organic carbon | -36.4%, significant |
+| Wetland and coastal | +140.0% significant; forest +3.5% and grassland +11.0%, neither significant |
+| Depth | +22.0% at 0-10 cm, -17.2% below 20 cm |
 
-Compounding it, the sign of the answer depends on the counterfactual. Section 2.3 shows that on
-the one site where intact, degraded and restored classes were all measured, invasion is a loss
-of 3.27 Mg C/ha against pristine grassland, a gain of 4.64 against restored grassland and a gain
-of 20.30 against degraded grassland. A crediting system must fix a counterfactual in advance and
-apply it categorically, so it fixes the sign before the ecology is consulted.
+**The sharpest result is internal to one study.** Pati et al. measured both quantities on the
+same plots: the biomass stock differs 1.3-fold under invasion while the sequestration rate
+differs 11.3-fold.
 
-Retention-crediting is **not** endorsed. The decisive objection is leakage: paying to retain an
-invader pays to maintain a propagule source, and stock accounting captures the retained carbon
-while externalising the spread.
+**The pattern is not confined to plants.** Invasive rats on 18 New Zealand islands raised live
+plant biomass carbon 104% while reducing non-living pools 26%, entirely through a trophic
+cascade with no plant invasion involved.
 
-## The two moving parts
+## Structural weaknesses, stated plainly
 
-**The parity model.** Two monomolecular trajectories from the moment of intervention. Under
-retention the stock relaxes toward the invaded asymptote. Under removal it falls instantly by
-the removal debt, then relaxes toward the native reference stock. Parity is the crossing.
-Payback, reported alongside, is the return to the pre-removal stock. Uncertainty by Monte
-Carlo, 10,000 draws per system, every parameter drawn from its reported dispersion.
+- **The two limbs are asymmetric.** The stock limb is a formal meta-analysis of 425 paired
+  observations; the rate limb is a compilation of four published sources, tabulated and
+  explicitly not pooled. This is declared in the Methods rather than concealed. A formal
+  meta-analysis of rate effects is the obvious next study, and no deposited dataset supports one.
+- **The evidence base is taxonomically narrow.** *Spartina alterniflora* supplies 36.5 per cent
+  of soil organic carbon observations and Poaceae 53.8 per cent.
+- **Mineral-associated carbon cannot be resolved**, at 10 observations from 5 studies. That is
+  the fraction that would settle the durability question.
+- **No contributing study reports bulk density**, so concentrations cannot be converted to
+  stocks and the equivalent soil mass correction cannot be applied.
+- Heterogeneity exceeds 99 per cent for every fraction.
 
-**The standards audit.** Six voluntary regimes plus the Australian compliance scheme, coded
-against six criteria, read from the current requirement documents in full text rather than
-from summaries.
+## Pipeline
 
-## Established so far
+Six scripts in `02.inputs/scripts/`, run in order by the manuscript when outputs are absent:
+probe the source workbook, tidy it to long format, fit the models, draw the fraction and
+moderator figures, compute coverage, and draw the rate-stock figure. Base R plus `metafor`.
 
-**Verra's eligibility gate has been open since 2015 and the crediting gate has never opened.**
-VM0033 has listed "removing invasive species" as an eligible tidal wetland activity since
-v1.0. The VCS Standard carries an eligibility route for land whose dominant cover is an
-invasive species threatening ecosystem health, tightened in v5.0 from a blanket exemption to
-an evidentiary test requiring a defined dominance threshold.
+## Submission checklist, all passing
 
-**VM0047 changed in May 2025 and this is the pivotal date for the standards argument.**
-v1.0 contained no occurrence of the word invasive and its pre-existing woody biomass clause
-made deliberate clearing close to disqualifying. v1.1 added a three-condition carve-out
-contemplating "site preparation (e.g., clearing invasive species)". Condition (ii) requires
-the removed biomass to be a waste product with no commercial value, which sits directly
-against the VM0044 biochar route where the same biomass is a saleable feedstock.
+Abstract 282 of 300 words; body 4,355 of 8,000; keywords 8; running title 41 characters;
+conflict of interest, funding, CRediT contributions, data availability, generative artificial
+intelligence disclosure and supporting information all present; 55 citations, all resolving;
+no unresolved markers; three figures.
 
-**No quantitative clearing threshold exists, and Verra says so in its own consultation
-record.** Asked what threshold of pre-existing woody biomass removal is permissible, Verra
-answered that the methodology specifies none and fell back on the 5 per cent de minimis rule.
-
-**VM0045's dynamic matched baseline already dissolves the accounting problem.** The invader
-stands in both project and matched control plots, so removal is not an emission and the credit
-attaches to differential regeneration growth. Present verbatim since v1.0 in October 2022 and
-apparently unrecognised as a solution to this problem. Limited to US FIA jurisdictions and to
-forest remaining forest.
-
-**Two routes monetise the activity today, neither as land carbon.** VM0044 biochar, where the
-draft v2.0 promotes invasive terrestrial and aquatic plants to a named feedstock category, and
-the SD VISta Nature Framework, where invasive abundance is a scored Condition metric.
-
-**Registered projects are effectively absent.** Zero projects where invasive plant control is
-the primary crediting activity. Note that registry.verra.org is closed to programmatic access
-and the Berkeley Voluntary Registry Offsets Database has an empty project-description column
-for all VCS projects, so name search is the only route and it returns mostly the opposite
-case, afforestation projects deliberately planting exotics.
-
-**CCB is purely restrictive.** All seven occurrences of invasive species in CCB v3.1 sit
-inside criterion B2 and impose a negative obligation: do not introduce, do not let populations
-increase. Nothing in CCB credits, rewards or requires control.
-
-## Results as they stand
-
-Ordered exactly by invader functional type, which was the hypothesis.
-
-| System | Debt (Mg C/ha) | Parity, median (95%) | P(never) | Claimable at 40 yr |
-|---|---|---|---|---|
-| Dry deciduous forest (Lantana) | 1.7 | 5 yr (1-71) | 19% | yes, debt 30% of benefit |
-| Cheatgrass steppe | 0.4 | 16 yr (0-158) | 40% | no, benefit is near zero |
-| Atlantic Forest regrowth (Acacia) | 45.4 | 21 yr (9-90) | 1% | yes, debt 178% of benefit |
-| Prosopis rangeland | 11.2 | 23 yr (2-110) | 38% | no, benefit near zero at yr 40 |
-| Tidal marsh (Phragmites) | 4.5 | not reached | 54% | no |
-| Tropical freshwater (hyacinth) | 3.8 | not reached | 70% | no |
-| Everglades (Melaleuca) | 51.0 | not reached | 86% | no |
-
-**The Prosopis result is the sharpest in the paper.** With the measured aboveground carbon from
-Mbaabu's Supplementary Table S7 (12.46 Mg C/ha for dense stands), the soil carbon gained by
-restoring grassland very nearly cancels the loss of Prosopis standing biomass. Parity lands at
-23 years by the Monte Carlo median and at roughly 41 years on the point estimate, straddling the
-end of a 40-year crediting period, and the net benefit at year 40 is indistinguishable from zero
-(-0.6, 95% interval -16.8 to 16.6). A project in Baringo would be betting its entire carbon case
-on where in that interval it lands. Note also that the restoration chronosequence stops at year
-30, so the approach to the asymptote is an extrapolation.
-
-Parity and payback are identical wherever the invaded state is treated as static, which is a
-check on the code rather than a coincidence: with a flat counterfactual the pre-removal stock
-and the counterfactual are the same quantity.
-
-## Blocking and open
-
-- **Only three of seven systems are fully quantified.** Evidence class is derived in code from
-  the parameter tiers, not asserted, so this cannot be talked around: a system counts as
-  quantified only where both stocks and the invader's own aboveground carbon are measured.
-  Prosopis, cheatgrass and Lantana pass. The rest carry at least one transferred parameter.
-- **Acacia is the most valuable remaining gap.** Matos et al. measure aboveground live stems
-  only: no roots, no soil, no litter, no deadwood, no regeneration layer. Since acacias are
-  nitrogen fixers and the uninvaded plots carry 147 species against 26, the belowground and
-  soil terms are exactly where a native stand would be expected to close the gap. The native
-  asymptote of 150 Mg C/ha is a transferred value and drives the acacia result. Note also that
-  the source's headline threefold difference is not age-controlled; invaded stands average 4.9
-  years younger, and the age-controlled multiplier is 5.15x.
-- **Melaleuca figures in the literature are dry mass, not carbon.** The canonical 129 to 263
-  t/ha is aboveground dry biomass excluding roots, from single unreplicated plots; the better
-  replicated 2002 figures are higher (141 to 304 t/ha with standard errors) but the weaker
-  numbers propagated. No carbon fraction has ever been measured for Melaleuca in Florida.
-- **No measured decay constant exists for any of the five woody invaders.** The global synthesis
-  of 295 estimates across 114 species contains no record for Prosopis, Acacia, Lantana,
-  Melaleuca or Tamarix, and almost nothing from warm semi-arid systems at all. Every release
-  fraction in the table is therefore a modelled quantity.
-- **No system has a measured post-removal carbon trajectory except Prosopis**, whose rate is
-  derived from the Mbaabu restoration chronosequence. Recovery rate is the parameter the model
-  is most sensitive to, so this is the field's central data gap and the paper says so.
-- Working for Water, the largest removal programme on earth, has no carbon accounting. Treated
-  in the discussion as a recommendation, not an apology.
-- Methane and nitrous oxide are outside the accounting boundary. Defensible for the terrestrial
-  systems, weakest for the aquatic one, where the stock framing may be wrong altogether and the
-  live question is methane.
-- GCB requires line numbering, which Quarto does not emit to docx. Enable it in Word at
-  submission.
+**One manual step remains: line numbering must be enabled in Word, because Quarto does not emit
+it to docx.**

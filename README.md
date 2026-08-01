@@ -1,6 +1,6 @@
 # verra-ccb-invasive-species
 
-**Carbon parity after invasive plant removal, and the crediting gap it exposes.**
+**Biological invasion increases carbon sequestration rates but not carbon stocks.**
 
 A quantitative synthesis of how long it takes for recovering native vegetation to overtake the
 carbon trajectory an invasive plant would have followed if left in place, joined to an audit of
@@ -98,8 +98,8 @@ would have put fabricated numbers in the Phragmites section.
 
 ```
 cd 01.manuscript
-quarto render invasive-removal-carbon-debt.qmd --to docx
-quarto render invasive-removal-carbon-debt.qmd --to html
+quarto render invasion-rate-versus-stock.qmd --to docx
+quarto render invasion-rate-versus-stock.qmd --to html
 ```
 
 Rendering runs the entire analysis. Base R only, no packages beyond `knitr`, nothing fetched

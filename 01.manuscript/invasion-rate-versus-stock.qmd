@@ -34,6 +34,17 @@ csl: ../04.references/apa.csl
 keywords: [biological invasion, carbon sequestration, forest carbon, meta-analysis, gain-loss method, stock-difference method, soil organic carbon, bio-perversity]
 ---
 
+::: {custom-style="Compact"}
+**Running title:** Invasion raises carbon rates, not stocks (41 characters)
+
+**Submission note.** Prepared for *Global Change Biology* as a Research Article. Word limit
+8,000 over Introduction, Materials and Methods, Results and Discussion only; abstract,
+references and figure legends are excluded. Abstract limit 300 words, unstructured. No cap on
+figures, tables or references. Free format submission, so no reference style is prescribed
+until acceptance. Line numbering is required at submission and must be enabled in Word, since
+Quarto does not emit it to docx.
+:::
+
 ```{r}
 #| label: setup
 #| echo: true
@@ -120,7 +131,11 @@ Three further considerations bear on measurement. First, soil carbon may be expr
 
 Finally, invasion effects on carbon are not confined to plants. @peltzer2010effects organise them by trophic level, spanning primary producers, decomposers, herbivores, pathogens, mutualists and predators, and an invasive predator has been shown to alter ecosystem carbon substantially through a trophic cascade with no plant invasion involved [@wardle2007promotion].
 
+The question is not only academic. Where invasion is held to increase carbon storage, the inference drawn is often practical: that invaded land should be retained rather than restored, that invader biomass should be valorised rather than removed, or that fast-growing non-native species are appropriate for carbon plantings. Each of these positions has been argued in print. Invasive *Acacia dealbata* has been proposed as a feedstock whose commercial value could fund its own control [@nunes2021carbon], and *Leucaena* has been argued to build soil carbon in degraded badlands more effectively than native vegetation, through root-derived inputs to mineral-associated pools [@meitha2024invasive]. Against this, @lindenmayer2012avoiding identify the planting of species that become invasive as one of three "bio-perversities" arising from carbon programmes, and @pati2025ecological, having measured rapid carbon accumulation under an invasive tree alongside reduced diversity, title their finding an ecological dilemma. Which of these readings is correct depends on whether the carbon that invasion adds is durable, and durability is a property of stock, not of rate.
+
 We therefore ask four questions. Does invasion increase carbon stocks? Does it increase carbon accumulation rates? Do the two diverge, and does the divergence appear within as well as between studies? And what follows for carbon accounting, which must choose one of two methods that the evidence suggests will disagree.
+
+We made three predictions before analysis. Rate effects would be large and positive; stock effects would be small and centred near zero; and the divergence would be visible within studies reporting both quantities, not only across studies reporting one or the other. We further expected that any stock effect would be concentrated in fast-cycling and aboveground compartments rather than in mineral-associated soil carbon.
 
 # 2 Materials and methods
 
@@ -136,7 +151,13 @@ Records were extracted for every fraction reported: total carbon, soil organic c
 
 ## 2.3 Rate data
 
-Rate estimates were compiled from studies reporting a carbon accumulation rate, net primary production, or a proportional change in a carbon pool attributable to invasion, alongside an uninvaded comparison. Each entry records the invader, its trophic level following the classification of @peltzer2010effects, the quantity, the invaded and uninvaded values with dispersion where reported, and the source. The compilation is deliberately conservative: entries are reproduced as published, ranges are recorded as ranges rather than midpoints, and no value is imputed.
+Rate estimates were compiled from studies reporting a carbon accumulation rate, net primary production, or a proportional change in a carbon pool attributable to invasion, alongside an uninvaded comparison. Entries were admitted only where the uninvaded comparison was explicit, which excludes the large literature reporting invaded productivity without a control. Each entry records the invader, its trophic level following the classification of @peltzer2010effects, the quantity measured, the invaded and uninvaded values with dispersion where the source reports it, the ratio, and the source.
+
+The compilation is deliberately conservative in four respects. Entries are reproduced exactly as published, without recalculation. A reported range is recorded as a range and plotted as an interval rather than reduced to a midpoint. No dispersion is imputed, so entries lacking it are plotted as points without intervals and are not weighted. And where a single study reports both a rate and a stock, both are entered, because such studies are the strongest available test of the divergence and their internal comparison is free of between-study confounding.
+
+One source considered for inclusion was excluded on quality grounds. A review reporting that *Phragmites*-invaded wetlands show 3.1 times higher net primary production is published in a secondary-school student journal, carries no digital object identifier, and attributes the figure to a further source rather than to original measurement. It is not cited here, and the underlying claim should be traced to its primary source before use.
+
+Invader trophic level was assigned following @peltzer2010effects, who distinguish primary producers, decomposers, herbivores, plant pathogens, mutualists and predators, and who argue that each group influences ecosystem carbon through a characteristic combination of direct and indirect pathways. The classification matters because it tests whether the rate-stock divergence is a property of fast-growing plants specifically or of invasion more generally.
 
 ```{r}
 #| label: tbl-rate
@@ -193,13 +214,52 @@ The evidence base is also narrow. Of the soil organic carbon observations, `r f1
 
 Published rate estimates diverge sharply from the stock results (Table 1). In a tropical dry deciduous secondary forest of Central India, invasion by *Gliricidia sepium* was associated with a carbon sequestration rate of `r pa_rate$invaded` ± `r pa_rate$invaded_err` Mg C ha^-1^ yr^-1^ against `r pa_rate$uninvaded` ± `r pa_rate$uninvaded_err` in uninvaded forest, a `r f1(pa_rate$ratio)`-fold difference [@pati2025ecological]. A global synthesis reported fluxes including above-ground production and litter decomposition rising 50 to 120 per cent, and shoot carbon rising 133 per cent [@liao2008altered].
 
+```{r}
+#| label: fig-ratestock
+#| echo: true
+#| fig-cap: "The rate-stock divergence. Estimates of the effect of invasion on carbon, expressed as the ratio of invaded to uninvaded values on a logarithmic axis. Diamonds are published rate or flux estimates, which are shown individually and are not pooled. Circles are stock estimates, either fitted here from the meta-analysis with 95% confidence intervals or reproduced from published sources. Sources are given at right."
+knitr::include_graphics(file.path(FIG, "figure-4-rate-stock.png"))
+```
+
+Plotted on a common ratio scale (Figure 4), the two classes of estimate separate. Rate and flux estimates range from `r f1(exp(0.4055))`-fold to `r f1(pa_rate$ratio)`-fold. Stock estimates, whether fitted here or drawn from published sources, fall between `r f1(exp(-0.4521))`-fold and `r f1(exp(0.8459))`-fold, and the two stock estimates with the largest magnitude lie in opposite directions: particulate organic carbon below unity and shoot carbon above it.
+
+The stock class is itself structured. Aboveground plant pools rise: shoot carbon by 133% in a global synthesis [@liao2008altered] and live plant biomass carbon by 104% under invasive predators [@wardle2007promotion]. Soil pools do not, and the non-living pools in the same island system fall by 26%. The distinction between plant and soil stocks therefore runs alongside the distinction between rate and stock, and both point the same way: the carbon that invasion adds is held in fast-cycling, aboveground or labile compartments.
+
 ## 3.3 The divergence appears within single datasets
 
 The clearest demonstration is internal to one study. @pati2025ecological measured both quantities on the same plots: total biomass was `r pa_stock$invaded` ± `r pa_stock$invaded_err` Mg ha^-1^ under invasion against `r pa_stock$uninvaded` ± `r pa_stock$uninvaded_err` uninvaded, a `r f1(pa_stock$ratio)`-fold difference, while the sequestration rate differed `r f1(pa_rate$ratio)`-fold. A stock comparison and a rate comparison on the same plots in the same year therefore differ by nearly an order of magnitude in the apparent size of the invasion effect. The uninvaded rate additionally has a standard error exceeding its mean and is not distinguishable from zero, so the ratio should be read as a lower bound on the contrast rather than a precise multiple.
 
 ## 3.4 The pattern is not confined to plant invaders
 
-Invasive rats on New Zealand offshore islands, which suppress seabird colonies and with them the marine nutrient subsidy, were associated with live plant biomass carbon 104% higher and non-living carbon pools 26% lower, for a net increase in total ecosystem carbon of 37% [@wardle2007promotion]. The direction of the two pools is opposite, and the effect is entirely indirect, operating through a trophic cascade rather than through any plant invasion. Carbon effects of invasion therefore arise across trophic levels, consistent with the framework of @peltzer2010effects.
+Invasive rats on 18 New Zealand offshore islands, which suppress seabird colonies and with them the marine nutrient subsidy, were associated with live plant biomass carbon 104% higher and non-living carbon pools 26% lower, for a net increase in total ecosystem carbon of 37% [@wardle2007promotion]. Three features of this result matter here. The two pools move in opposite directions, so a study reporting either alone would reach a different conclusion from one reporting both. The effect is entirely indirect, operating through predation on seabirds and the consequent loss of a marine nutrient subsidy, with no plant invasion involved. And the invader is a predator, so the mechanism cannot be attributed to the growth traits usually invoked to explain invader carbon effects.
+
+Carbon effects of invasion therefore arise across trophic levels, consistent with the framework of @peltzer2010effects, who identify characteristic direct and indirect pathways for primary producers, decomposers, herbivores, pathogens, mutualists and predators alike. The compiled evidence is nevertheless dominated by primary producers, and the single predator case, although well designed, cannot establish generality on its own.
+
+## 3.5 Heterogeneity, small-study effects and sensitivity
+
+```{r}
+#| label: tbl-sens
+#| echo: true
+#| tbl-cap: "Sensitivity of the pooled soil organic carbon estimate to model specification and to the treatment of observations with imputed dispersion."
+sub <- soc[!soc$sd_imputed, ]
+m_rep <- rma.mv(yi, vi, random = ~ 1 | study/obs, data = sub, method = "REML")
+m_sl  <- rma(yi, vi, data = soc, method = "REML")
+m_egg <- rma.mv(yi, vi, mods = ~ sqrt(vi), random = ~ 1 | study/obs, data = soc, method = "REML")
+t3 <- data.frame(
+  Specification = c("Multilevel, imputation applied (primary)", "Multilevel, reported dispersion only",
+                    "Multilevel, observations weighted equally", "Single-level random effects"),
+  `Change (%)` = c(sg(r_soc$est), sg(pct(as.numeric(m_rep$b))),
+                   sg(pct(as.numeric(m_unw$b))), sg(pct(as.numeric(m_sl$b)))),
+  `95% CI` = c(sprintf("%s to %s", sg(r_soc$lo), sg(r_soc$hi)),
+               sprintf("%s to %s", sg(pct(m_rep$ci.lb)), sg(pct(m_rep$ci.ub))),
+               sprintf("%s to %s", sg(pct(m_unw$ci.lb)), sg(pct(m_unw$ci.ub))),
+               sprintf("%s to %s", sg(pct(m_sl$ci.lb)), sg(pct(m_sl$ci.ub)))),
+  Observations = c(r_soc$k, m_rep$k, m_unw$k, m_sl$k), check.names = FALSE)
+kable(t3, row.names = FALSE)
+write.csv(t3, file.path(repo, "03.outputs/tables/table-sensitivity.csv"), row.names = FALSE)
+```
+
+Heterogeneity exceeded 99% for every fraction, which is high even by the standards of ecological synthesis [@senior2016heterogeneity] and means the pooled estimates describe a distribution of effects rather than a common one. There was no evidence of small-study effects in the soil organic carbon subset (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). Dispersion was imputed for only `r f1(100*mean(d$sd_imputed))`% of observations, and excluding them changed the pooled estimate by less than one percentage point. The estimate was sensitive to weighting rather than to imputation, and in no specification did the interval exclude zero.
 
 # 4 Discussion
 
@@ -231,13 +291,25 @@ The rate-stock divergence bears directly on a recognised policy risk. @lindenmay
 
 The contrary case has been argued: that invader biomass should be valorised through established value chains [@nunes2021carbon], or that in degraded systems an invader may build soil carbon more effectively than natives through root-derived inputs to mineral-associated pools [@meitha2024invasive]. Our results do not refute these arguments, which concern particular species in particular settings, but they do bear on the general form of the claim. Where the evidence offered is a rate, it is not evidence about stock, and it is stock that a carbon account records.
 
-## 4.5 Limitations
+## 4.5 What would follow if the divergence is real
+
+Three consequences follow, in ascending order of importance.
+
+For measurement, rate and stock should be reported together. They are currently reported by different subfields using different designs, and a study measuring one has no way of knowing whether the other agrees. @pati2025ecological demonstrate what becomes visible when both are measured on the same plots, and theirs is a rare design rather than a standard one.
+
+For interpretation, evidence of accelerated accumulation should not be presented as evidence of increased storage. This is not a pedantic distinction. In the compiled evidence the two differ by nearly an order of magnitude in the same system, and they differ in sign between compartments in the same study. The literature's apparent disagreement about invasion and carbon substantially dissolves once the quantity being reported is specified.
+
+For policy, the mismatch is systematic rather than incidental. A crediting system that accepts rate-like evidence while issuing credits against stock will over-credit wherever residence time is shorter than assumed, and invasion is a case where there is positive reason to expect exactly that, because the fraction data indicate faster cycling. The direction of this error is the same as that already documented in improved forest management, where baselines understate natural accumulation [@west2023action], and in regeneration projects whose credited areas track adjacent uncredited land [@macintosh2024australian].
+
+The counter-arguments deserve a fair statement. @nunes2021carbon propose valorising invader biomass through established value chains, which is a proposal about the fate of harvested material rather than about standing stock, and is unaffected by our result: material converted to a durable product leaves the land pool and is accounted elsewhere. @meitha2024invasive argue that root-derived carbon from a deep-rooted invader may form mineral-associated soil carbon more efficiently than litter inputs, which is a claim specifically about the durable fraction and is therefore the right kind of claim. Our data cannot test it, because mineral-associated carbon was represented by only `r r_maoc$k_obs` observations from `r r_maoc$k_study` studies. That is the measurement most needed, and its absence is the reason the durability question remains open rather than closed.
+
+## 4.6 Limitations
 
 The two limbs are asymmetric. The stock limb is a formal meta-analysis of `r f0(n_obs)` observations; the rate limb is a compilation of published estimates from four sources, tabulated rather than pooled, and conclusions drawn from it are correspondingly weaker. A formal meta-analysis of rate effects would require paired invaded and uninvaded productivity measurements at a scale that does not currently exist in a deposited form, and assembling it is the obvious next step.
 
 The stock analysis rests on a single deposited compilation and inherits its inclusion criteria and geographical emphasis. Heterogeneity exceeded 99% for every fraction, so pooled estimates describe a distribution rather than a common effect [@senior2016heterogeneity]. The areal subset carrying the central result comprises `r r_area$k` observations from `r n_area_stud` studies. Mineral-associated carbon was too sparsely represented to test. All comparisons are spatial contrasts without pre-invasion measurement, so pre-existing differences influencing where invaders established cannot be excluded, and mechanisms underlying reported impacts are rarely tested directly in this literature [@levine2003mechanisms].
 
-## 4.6 Conclusions
+## 4.7 Conclusions
 
 Biological invasion increases the rate at which carbon is accumulated without reliably increasing the stock that is held. The distinction is not semantic: it corresponds to the two methods the IPCC treats as equally valid, it is visible within single datasets, and it extends beyond plant invaders to effects transmitted through trophic cascades.
 
@@ -249,15 +321,27 @@ This work used data deposited by @he2025plant on Dryad. No funding was received.
 
 # Conflict of interest
 
-The author declares no conflict of interest.
+The author declares no conflict of interest, and no financial relationship with any carbon standard, registry, project developer or verification body referred to in this manuscript.
+
+# Funding
+
+No funding was received for this work.
 
 # Author contributions
 
-Sole authorship. The author designed the study, conducted the analysis and wrote the manuscript.
+Sole authorship. Following the CRediT taxonomy, the author is responsible for conceptualization, methodology, software, formal analysis, investigation, data curation, visualization, and writing of the original draft and its revision.
+
+# Use of generative artificial intelligence
+
+Large language model assistance was used in retrieving and cross-checking literature, in verifying bibliographic records against Crossref and publisher registrations, in writing analysis code, and in drafting and editing prose. All quantitative results derive from the analysis code archived with this manuscript; all values extracted from primary sources were read from those sources; and the author takes full responsibility for the content. Two errors introduced at the extraction stage are recorded here because both bear on the literature. A widely circulated set of soil carbon loss figures attributed to herbicide control of invasive *Phragmites* originates instead in an experimental wetland loss study on native marsh, and is not used. And in an early draft the paired mean and standard error reported by @pati2025ecological were misread as an invaded-against-uninvaded comparison, because the plus-or-minus sign does not survive text extraction from that publisher's typesetting; the corrected values are those reported here.
 
 # Data availability statement
 
 The stock data are openly available from Dryad at doi:10.5061/dryad.c59zw3rkc [@he2025plant]. The compiled rate evidence, the code that tidies the stock data, fits the models and produces every figure and table, and the manuscript source are archived together and require only R and the `metafor` package.
+
+# Supporting information
+
+Additional supporting information may be found in the online version of this article. Table S1 gives the parameter provenance for every observation entering the stock analysis, with its evidence tier. Table S2 gives the taxonomic and geographic composition of the compiled evidence. Figure S1 gives the sensitivity of the pooled soil organic carbon estimate to each parameter.
 
 # References
 

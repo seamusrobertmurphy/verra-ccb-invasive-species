@@ -11,12 +11,12 @@ invader functional types, and no carbon standard can credit the result either wa
 
 ## The master document
 
-`01.manuscript/invasive-removal-carbon-debt.qmd` is the single source of truth. Edit it,
+`01.manuscript/invasion-rate-versus-stock.qmd` is the single source of truth. Edit it,
 never the renders. Rendering runs the analysis: every number in the prose is an inline R
 expression, every table and figure is generated at render time from `02.inputs/`. Nothing is
 fetched over the network.
 
-Build: `cd 01.manuscript && quarto render invasive-removal-carbon-debt.qmd --to docx`
+Build: `cd 01.manuscript && quarto render invasion-rate-versus-stock.qmd --to docx`
 (or `--to html`).
 
 Base R only, no packages beyond `knitr`. Every chunk carries an explicit `#| echo: true`.
@@ -152,3 +152,38 @@ is precisely why the biochar route changes the arithmetic and not merely the fin
   for the removal case and must stay labelled as such.
 - Soil carbon is reported to different depths across sources. Never combine a 1 m soil stock
   with a 30 cm stock without saying so in the parameter table.
+
+## The paper's central distinction
+
+**Rate is not stock.** Carbon stock is a mass held at a point in time; carbon sequestration rate
+is a flux. They are related through residence time and can move in opposite directions. The
+literature reports both as "sequestration", and that conflation is what the paper resolves.
+
+The distinction is formalised in the IPCC's two estimation methods, the gain-loss method
+(2006 Guidelines Vol. 4 Eq. 2.4) and the stock-difference method (Eq. 2.5), which the guidance
+calls "equally valid". Never write about invasion and carbon without specifying which quantity
+is meant.
+
+## Corrections forced by PDF extraction
+
+**The plus-or-minus sign does not survive text extraction from some publishers' typesetting.**
+In Pati et al. 2025 it renders as an arrow, and an early draft read the paired mean and standard
+error as an invaded-against-uninvaded comparison. The correct readings are total biomass
+94.45 +/- 10.27 against 72.85 +/- 9.50 Mg/ha, and sequestration rate 8.01 +/- 1.50 against
+0.71 +/- 2.39 Mg C/ha/yr. **Never read a paired value from a text layer without confirming
+whether the separator is a comparison or a dispersion term.**
+
+## Sources excluded on quality grounds
+
+**Wang 2023 on Phragmites carbon must not be cited.** It is published in the National High
+School Journal of Science, a secondary-school student publication, carries no DOI, and is not
+peer reviewed to professional standard. Its claim that Phragmites-invaded wetlands show 3.1
+times higher net primary production is attributed to its own reference 47 and should be traced
+to that primary source. The exclusion is recorded in the manuscript's Methods.
+
+## Filename and citation traps in 04.references/literature
+
+Two deposited PDFs carry wrong metadata in their filenames. The Gliricidia paper is **Pati et
+al. 2025**, *Environmental Challenges* 20:101186, not "Kumar et al". The bio-perversity paper is
+**Lindenmayer et al. 2012**, *Conservation Letters* 5:28-36, not 2023. Always verify against
+Crossref rather than trusting a filename.
