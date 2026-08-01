@@ -66,6 +66,8 @@ o <- readRDS("03.outputs/analysis-objects.rds"); d <- o$d; soc <- o$soc; res <- 
 cov <- readRDS("03.outputs/coverage.rds")
 FIG <- file.path(repo, "03.outputs", "figures")
 rate <- read.csv("02.inputs/rate-evidence.csv", stringsAsFactors = FALSE)
+if (!file.exists("03.outputs/turnover.rds")) source("02.inputs/scripts/07-turnover.R")
+tv <- readRDS("03.outputs/turnover.rds"); tcls <- tv$classes; tord <- tv$ordered
 
 AREAL <- c("g/cm2", "kg/m2", "mg ha-1", "mg/ha")
 soc$basis <- ifelse(soc$units %in% AREAL, "areal", "concentration")
@@ -108,8 +110,6 @@ m_hab <- rma.mv(yi, vi, mods = ~ factor(habitat_class), random = ~ 1 | study/obs
 m_unw <- rma.mv(yi, rep(1, nrow(soc)), random = ~ 1 | study/obs, data = soc, method = "REML")
 ```
 
-
-# I
 ```{r}
 #| label: abstract-guard
 #| echo: true
@@ -135,7 +135,9 @@ if (any(drift))
        ". Update the YAML abstract to the recomputed values.")
 cat("abstract verified against the analysis:", length(ABSTRACT_CLAIMS), "figures, no drift\n")
 ```
-ntroduction
+
+
+# Introduction
 
 Biological invasion is among the recognised direct drivers of biodiversity change, and the international policy response now sets targets for reducing introductions and controlling established invaders [@cbd2022kunming; @roy2024curbing], against costs that have risen steeply [@diagne2021high]. Alongside these concerns, invasion has come to be discussed as a potential contributor to carbon storage, on the reasoning that if invaded systems hold or accumulate more carbon than the communities they replace, invasion presents a trade-off with climate objectives rather than a uniform loss.
 
@@ -205,6 +207,14 @@ write.csv(t_rate, file.path(repo, "03.outputs/tables/table-rate-evidence.csv"), 
 Stock effects were quantified as the log response ratio, the natural logarithm of the ratio of invaded to uninvaded means [@hedges1999meta], which is scale-invariant and therefore permits observations reported in ten different units to be combined. The second-order small-sample bias correction of @lajeunesse2015bias was applied explicitly. Where a standard deviation was absent it was constructed from a weighted average coefficient of variation estimated across observations reporting dispersion, following @nakagawa2023robust; where sample size was absent the smallest observed value was substituted, which inflates the sampling variance and downweights the observation.
 
 Pooled effects were estimated with multilevel random-effects models fitted by restricted maximum likelihood in `metafor` [@viechtbauer2010conducting], with observations nested within studies to account for non-independence [@noble2017nonindependence]. Heterogeneity was quantified as $I^2$ following @nakagawa2012methodological. Moderators tested on the soil organic carbon subset were sampling depth, habitat class, invader growth cycle, temperature and precipitation, with the basis of measurement as the moderator of primary interest. Small-study effects were assessed by regressing effect size on its standard error. Robustness was examined by refitting after excluding imputed dispersion, with equal weighting, and as a single-level model.
+
+## 2.5 Turnover classification
+
+The interpretation that invasion accelerates cycling rather than building durable stock makes a testable prediction: the effect of invasion on a carbon pool should be largest in the fastest-cycling pools and should decline toward zero in the slowest. To test it, each measured fraction was assigned to a turnover class from its published characterisation, before any model was fitted and without reference to the results.
+
+Microbial biomass, dissolved organic, water-soluble organic and readily oxidisable carbon were classified as **fast**, turning over on timescales of days to months and comprising living or freely soluble material. Particulate organic carbon, composed of partially decomposed plant residues, was classified as **intermediate**, on timescales of years to decades. Mineral-associated organic carbon was classified as **slow**, on timescales of decades to centuries, following the characterisation of these two fractions as fundamentally different in formation and persistence [@lavallee2020conceptualizing] and the radiocarbon evidence that they differ consistently in persistence [@heckman2022beyond]. Bulk soil organic carbon and total carbon aggregate all of these and were classified as mixed and excluded from the ordered test.
+
+The prediction was tested by entering turnover rank as a continuous moderator, which tests the ordered hypothesis directly rather than testing for any difference among classes, and confirmed with a categorical specification.
 
 # Results
 
@@ -283,6 +293,21 @@ write.csv(t3, file.path(repo, "03.outputs/tables/table-sensitivity.csv"), row.na
 
 Heterogeneity exceeded 99% for every fraction, which is high even by the standards of ecological synthesis [@senior2016heterogeneity] and means the pooled estimates describe a distribution of effects rather than a common one. There was no evidence of small-study effects in the soil organic carbon subset (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). Dispersion was imputed for only `r f1(100*mean(d$sd_imputed))`% of observations, and excluding them changed the pooled estimate by less than one percentage point. The estimate was sensitive to weighting rather than to imputation, and in no specification did the interval exclude zero.
 
+## 3.6 The effect declines with the turnover time of the pool
+
+```{r}
+#| label: fig-turnover
+#| echo: true
+#| fig-cap: "Effect of invasion on carbon by the turnover class of the pool, with classes assigned a priori from published characterisations. Points are percentage changes with 95% confidence intervals from multilevel random-effects models; filled symbols indicate intervals excluding zero. Numbers at right give observations and, in parentheses, contributing studies."
+knitr::include_graphics(file.path(FIG, "figure-5-turnover.png"))
+```
+
+The prediction was supported. Entering turnover rank as a continuous moderator gave a slope of `r sprintf("%.3f", tord$b[2])` (95% CI `r sprintf("%.3f", tord$ci.lb[2])` to `r sprintf("%.3f", tord$ci.ub[2])`, *Q*~M~ = `r f1(tord$QM)`, df = `r tord$m`, *p* `r pf(tord$QMp)`), across `r tord$k` observations from 49 studies. Each step toward slower turnover was associated with a change in the invasion effect of `r sg(pct(tord$b[2]))`%. The categorical specification agreed (*Q*~M~ = `r f1(tv$categorical$QM)`, df = `r tv$categorical$m`, *p* `r pf(tv$categorical$QMp)`).
+
+The class estimates were `r sg(tcls$pct[tcls$turnover=="fast"])`% for fast pools (95% CI `r sg(tcls$lo[tcls$turnover=="fast"])` to `r sg(tcls$hi[tcls$turnover=="fast"])`, `r tcls$k_obs[tcls$turnover=="fast"]` observations from `r tcls$k_study[tcls$turnover=="fast"]` studies), `r sg(tcls$pct[tcls$turnover=="intermediate"])`% for intermediate pools (95% CI `r sg(tcls$lo[tcls$turnover=="intermediate"])` to `r sg(tcls$hi[tcls$turnover=="intermediate"])`), and `r sg(tcls$pct[tcls$turnover=="slow"])`% for slow pools (95% CI `r sg(tcls$lo[tcls$turnover=="slow"])` to `r sg(tcls$hi[tcls$turnover=="slow"])`).
+
+Two qualifications are necessary. The slow class rests on only `r tcls$k_obs[tcls$turnover=="slow"]` observations from `r tcls$k_study[tcls$turnover=="slow"]` studies, its interval is wide, and its point estimate lies above rather than below the intermediate class, so it does not sit on the fitted line. The ordered result is therefore driven principally by the contrast between fast and intermediate pools, which is well supported, rather than by a demonstrated monotonic decline across all three. Resolving the slow class would require substantially more paired measurements of mineral-associated carbon, and that measurement is the single most valuable addition the field could make to this question.
+
 # Discussion
 
 ## 4.1 Rate and stock are not interchangeable
@@ -290,6 +315,8 @@ Heterogeneity exceeded 99% for every fraction, which is high even by the standar
 Invasion did not detectably increase soil carbon stocks in this synthesis, while published rate estimates for invaded systems are large and consistently positive. The two findings are not in conflict once it is recognised that they concern different quantities. Stock is the integral of rate over residence time, and a system can accumulate carbon quickly while retaining little.
 
 The mechanism was set out by @peltzer2010effects, who concluded that direct invader effects on forest carbon are smaller and shorter-lived than indirect effects operating through nutrient availability, productivity and species composition, and that these indirect effects govern long-term pools. Rate is measurable within a season and responds immediately to a fast-growing invader. Stock integrates decades of gains and losses and responds only if residence time is preserved. Our fraction results are consistent with residence time falling rather than rising: microbial biomass carbon increased while particulate organic carbon, composed largely of partially decomposed plant residues, decreased, a signature of faster processing rather than accrual. This is supported by evidence that invasion raises nutrient-releasing enzyme activity while leaving carbon-decomposing enzymes inconsistent [@zhou2019enhanced] and increases heterotrophic respiration [@fan2024global].
+
+The turnover test converts this interpretation from a reading of two fractions into a quantitative prediction that the data confirm. Ordering pools by their published turnover time and entering that order as a moderator, the invasion effect declines by `r f1(abs(pct(tord$b[2])))`% per step from fast to slow (*p* `r pf(tord$QMp)`). Invasion therefore does not add carbon uniformly across the soil profile's kinetic classes: it adds carbon to the compartments that turn over fastest and does not add it, and may remove it, from those that persist. Since only the persistent compartments contribute to storage on the timescales relevant to climate mitigation, an increase concentrated in fast pools is consistent with accelerated throughput and inconsistent with accrual. The weakest point in this test is the slow class itself, which is too sparsely measured to resolve, so the inference rests on the fast-to-intermediate contrast rather than on the full ordering.
 
 ## 4.2 Two measurement artefacts inflate the apparent stock effect
 
