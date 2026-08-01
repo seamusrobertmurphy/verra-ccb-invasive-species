@@ -69,16 +69,21 @@ cascade with no plant invasion involved.
 
 ## Pipeline
 
-Six scripts in `02.inputs/scripts/`, run in order by the manuscript when outputs are absent:
-probe the source workbook, tidy it to long format, fit the models, draw the fraction and
-moderator figures, compute coverage, and draw the rate-stock figure. Base R plus `metafor`.
+Eight scripts in `02.inputs/scripts/`, run in order by the manuscript when outputs are absent:
+probe the source workbook, tidy it to long format, fit the stock models, draw the fraction and
+moderator figures, compute coverage, draw the rate-stock figure, fit the turnover test, and fit
+the flux meta-analysis on the Negesse deposit. Base R plus `metafor`.
 
 ## Submission checklist, all passing
 
-Abstract 282 of 300 words; body 4,355 of 8,000; keywords 8; running title 41 characters;
-conflict of interest, funding, CRediT contributions, data availability, generative artificial
-intelligence disclosure and supporting information all present; 55 citations, all resolving;
-no unresolved markers; three figures.
+Abstract 295 of 300 words; body 5,978 of 8,000; keywords 7; data availability present; 118
+verified bibliography entries; no unresolved inline expressions; no em-dashes or en-dashes;
+six figures. The abstract's literal figures are checked against the analysis on every render by
+the `abstract-guard` chunk, which halts the render on drift.
+
+The author-facing sections the manuscript no longer carries (acknowledgements, conflict of
+interest, funding, CRediT contributions, artificial intelligence disclosure, supporting
+information) were removed deliberately by the author and must not be reinstated.
 
 **One manual step remains: line numbering must be enabled in Word, because Quarto does not emit
 it to docx.**

@@ -9,5 +9,6 @@
 .Rproj.user/
 # raw third-party data and copyrighted PDFs stay out of git; see 02.inputs/README-data.md
 02.inputs/dryad-*/*.xlsx
+02.inputs/dryad-*/*.csv
 04.references/literature/*.pdf
 ~$*

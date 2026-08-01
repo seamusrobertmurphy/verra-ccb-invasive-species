@@ -152,6 +152,17 @@ is precisely why the biochar route changes the arithmetic and not merely the fin
   for the removal case and must stay labelled as such.
 - Soil carbon is reported to different depths across sources. Never combine a 1 m soil stock
   with a 30 cm stock without saying so in the parameter table.
+- **State the clustering unit before reading any meta-analytic result.** The Negesse deposit
+  has no complete study identifier: `Authors` is blank for 84.4% of rows and `Case_studies` is
+  a row index. Clustering on either gives one group per observation, a degenerate random
+  effect that silently drops the correction for non-independence. Soil respiration read
+  +3.8% (p = 0.54) under that mistake and +24.3% (p = 0.041) once clustered on the site
+  coordinates, which are complete for every row. The data never changed; the grouping did.
+  Full detail in `02.inputs/dryad-negesse2025/PROVENANCE.md`.
+- **Do not cite a source you have not resolved against Crossref.** An enzyme-asymmetry claim
+  was nearly attributed to a "Zhou & Staver 2019" that does not exist. The real source for the
+  claim is `zhou2019enhanced`, already in the bibliography, and the manuscript now reports that
+  our data fail to replicate it rather than citing it as support.
 
 ## The paper's central distinction
 
