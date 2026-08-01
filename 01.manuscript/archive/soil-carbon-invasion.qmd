@@ -1,0 +1,327 @@
+---
+title: "Plant invasion increases soil carbon concentration but not areal stock: a global meta-analysis"
+author:
+    - name: Murphy, S
+      url: https://scholar.google.com/citations?hl=en&user=jDGq9I4AAAAJ
+      orcid: 0000-0002-1792-0351
+      email: seamusrobertmurphy@gmail.com
+date: today
+format:
+  docx:
+    prefer-html: true
+    reference-doc: ../04.references/style-formal.docx
+    highlight-style: pygments
+  html:
+    page-layout: full
+    toc: true
+    number-sections: false
+    embed-resources: true
+    toc-location: right
+    theme: cosmo
+    code-fold: false
+    code-tools: true
+execute:
+  eval: true
+  echo: true
+  warning: false
+  message: false
+  error: false
+  comment: NA
+engine: knitr
+citeproc: true
+bibliography: ../04.references/references.bib
+csl: ../04.references/apa.csl
+keywords: [biological invasion, soil organic carbon, meta-analysis, bulk density, equivalent soil mass, particulate organic carbon, blue carbon, log response ratio]
+---
+
+```{r}
+#| label: setup
+#| echo: true
+#| output: false
+
+# Rendering this manuscript runs the analysis. The pipeline is three scripts held in
+# 02.inputs/scripts, which tidy the source dataset, fit the models and draw the figures.
+# Every number in the text below is an inline expression evaluated against those fitted
+# objects, so the prose cannot drift from the results.
+suppressPackageStartupMessages(library(metafor))
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+repo <- normalizePath("..")
+setwd(repo)
+if (!file.exists("03.outputs/analysis-objects.rds")) {
+  source("02.inputs/scripts/02-tidy-he2025.R")
+  source("02.inputs/scripts/03-analysis.R")
+  source("02.inputs/scripts/04-figures.R")
+}
+o   <- readRDS("03.outputs/analysis-objects.rds")
+d   <- o$d; soc <- o$soc; res <- o$res
+FIG <- file.path(repo, "03.outputs", "figures")
+
+AREAL <- c("g/cm2", "kg/m2", "mg ha-1", "mg/ha")
+d$basis   <- ifelse(d$units %in% AREAL, "areal", "concentration")
+soc$basis <- ifelse(soc$units %in% AREAL, "areal", "concentration")
+soc$db    <- cut(soc$depth_bot, c(0, 10, 20, 1000),
+                 labels = c("0-10 cm", "10-20 cm", ">20 cm"))
+
+pct <- function(b) (exp(b) - 1) * 100
+fit <- function(s) {
+  if (nrow(s) < 6 || length(unique(s$study)) < 3) return(NULL)
+  m <- try(rma.mv(yi, vi, random = ~ 1 | study/obs, data = s, method = "REML"), silent = TRUE)
+  if (inherits(m, "try-error")) return(NULL)
+  list(est = pct(as.numeric(m$b)), lo = pct(m$ci.lb), hi = pct(m$ci.ub),
+       k = m$k, ns = length(unique(s$study)), p = m$pval)
+}
+f1 <- function(x) sprintf("%.1f", x)
+sg <- function(x) sprintf("%+.1f", x)
+pf <- function(p) if (p < 0.001) "< 0.001" else sprintf("= %.3f", p)
+ci <- function(f) sprintf("%s%%, 95%% CI %s to %s", sg(f$est), sg(f$lo), sg(f$hi))
+
+# quantities quoted in the text
+r_soc  <- fit(soc)
+r_conc <- fit(soc[soc$basis == "concentration", ])
+r_area <- fit(soc[soc$basis == "areal", ])
+r_wet  <- fit(soc[which(soc$habitat_class == "wetland_coastal"), ])
+r_for  <- fit(soc[which(soc$habitat_class == "forest"), ])
+r_gra  <- fit(soc[which(soc$habitat_class == "grassland"), ])
+r_shal <- fit(soc[which(soc$db == "0-10 cm"), ])
+r_deep <- fit(soc[which(soc$db == ">20 cm"), ])
+gf <- function(k) as.list(res[res$fraction == k, ])
+r_mbc <- gf("MBC"); r_poc <- gf("POC"); r_maoc <- gf("MAOC")
+
+n_obs <- nrow(d); n_stud <- length(unique(d$study))
+n_frac <- length(unique(d$fraction))
+pct_conc <- 100 * mean(soc$basis == "concentration")
+n_area_stud <- length(unique(soc$study[soc$basis == "areal"]))
+spart <- soc[which(soc$habitat_class == "wetland_coastal"), ]
+pct_spart <- 100 * mean(grepl("alterniflora", spart$invasive_species))
+
+m_dep <- rma.mv(yi, vi, mods = ~ depth_mid, random = ~ 1 | study/obs,
+                data = soc[is.finite(soc$depth_mid), ], method = "REML")
+m_hab <- rma.mv(yi, vi, mods = ~ factor(habitat_class), random = ~ 1 | study/obs,
+                data = soc[!is.na(soc$habitat_class), ], method = "REML")
+m_unw <- rma.mv(yi, rep(1, nrow(soc)), random = ~ 1 | study/obs, data = soc, method = "REML")
+m_egg <- rma.mv(yi, vi, mods = ~ sqrt(vi), random = ~ 1 | study/obs, data = soc, method = "REML")
+
+# taxonomic concentration of the evidence base, quoted in the Discussion
+cov <- readRDS(file.path(repo, "03.outputs/coverage.rds"))
+top_share     <- cov$species$`Share (%)`[1]
+poaceae_share <- cov$family$`Share (%)`[cov$family$Family == "Poaceae"][1]
+```
+
+# Abstract
+
+Plant invasion is widely held to increase soil carbon storage, and this belief underpins arguments that invaded ecosystems may deliver climate benefits that partially offset their biodiversity costs. The evidence for it has never been assembled into a pooled estimate. We meta-analysed `r n_obs` paired invaded and uninvaded observations from `r n_stud` studies across `r n_frac` soil carbon fractions, using log response ratios in multilevel models that account for the non-independence of observations within studies. Soil organic carbon was `r sg(r_soc$est)`% higher under invasion, but the interval spanned zero (95% CI `r sg(r_soc$lo)` to `r sg(r_soc$hi)`%) and the estimate was not robust to model specification, falling to `r sg(pct(as.numeric(m_unw$b)))`% when observations were weighted equally. Two results explain the discrepancy between this null and the prevailing assumption. First, the effect was confined to wetland and coastal systems (`r ci(r_wet)`), where it was dominated by *Spartina alterniflora* invasion of tidal flats, and was absent in forest (`r ci(r_for)`) and grassland (`r ci(r_gra)`). Second, and more consequentially, the apparent increase occurred only where soil carbon was reported as a concentration (`r ci(r_conc)`). Among the `r r_area$k` observations reporting carbon on an areal basis, the effect was `r ci(r_area)`, indistinguishable from zero. Because invasion alters soil bulk density, concentration and areal stock are not interchangeable, and `r f1(pct_conc)`% of the available observations are concentrations. Fractionation reinforced this interpretation: microbial biomass carbon increased (`r sg(r_mbc$pct)`%) while particulate organic carbon decreased (`r sg(r_poc$pct)`%), a signature of accelerated turnover rather than accumulation. We conclude that the soil carbon benefit attributed to plant invasion is not supported for carbon stocks, and that the primary literature cannot currently resolve the question because it reports concentrations without the bulk density needed to convert them.
+
+# 1 Introduction
+
+Biological invasion is among the recognised direct drivers of biodiversity change, and the international policy response now sets explicit targets for reducing the introduction and establishment of invasive species and for controlling those already present [@cbd2022kunming; @roy2024curbing]. The economic costs attributed to biological invasions are large and have risen steeply over recent decades [@diagne2021high]. Alongside these established concerns, attention has turned to whether invasion alters ecosystem carbon storage, because if invaded systems hold more carbon than the communities they replace, invasion presents a trade-off between biodiversity and climate objectives rather than a uniform loss, with consequences for how invaded land is valued and managed.
+
+That invasion alters soil processes is not in dispute. Invaders change nutrient pool sizes and cycling rates through differences in tissue chemistry, productivity and rooting habit [@ehrenfeld2003effects; @ehrenfeld2010ecosystem], and in some systems they reorganise whole-ecosystem processes such as fire regimes [@dantonio1992biological]. What remains contested is the direction and magnitude of the effect on soil carbon, and in particular whether any change constitutes durable storage.
+
+The proposition that invasion increases soil carbon is widely repeated, and its provenance deserves attention. The synthesis most often cited in its support reported that invasion raised carbon and nitrogen pools and accelerated the fluxes between them, with pool changes "ranging from a 5% increase in root carbon stock to a 133% increase in shoot C stock" and above-ground production and litter decomposition rising by 50 to 120 per cent [@liao2008altered]. Every quantified pool in that abstract is a plant pool, and the only soil variables reported are inorganic nitrogen concentrations. A subsequent synthesis of greenhouse gas responses found that plant invaders enhanced carbon storage while animal invaders reduced it, so the effect is taxon-conditional even within its own source [@qiu2015global], and a systematic review established that the sign of the carbon response depends on the difference in traits between invader and resident rather than on the invader's traits alone [@martin2017impacts]. The generalisation that invasion increases soil carbon storage therefore rests on evidence about plant biomass, cycling rates and context-dependent contrasts, and has not been tested as a pooled estimate for soil organic carbon.
+
+Recent evidence points in the opposite direction with increasing consistency. A synthesis of 1,678 case studies comparing native and non-native forests found higher total carbon in non-native stands through above-ground biomass but greater below-ground carbon, and soil organic carbon in particular, under natives [@lazarolobo2025worldwide]. A synthesis of 2,479 observations from 91 field studies found no significant effect of *Spartina alterniflora* invasion on soil organic carbon in vegetated native wetlands, and a decrease through the upper 60 cm of some mangrove systems [@xu2022effects]. Soil carbon losses have been documented under non-native grasses in Californian grassland [@koteen2011invasion], under exotic grassland assemblages where the difference was driven by inorganic carbonate rather than organic carbon [@wilsey2020lower], and in sagebrush steppe, where invasion reduced mineral-associated carbon by 36 and 46 per cent in successive depth increments in the warmer of two ecoregions [@katz2025invasion]. Where a positive effect has been reported it has proved conditional on climate [@maxwell2022effects].
+
+Three methodological considerations bear on this disagreement, and none has been examined systematically in an invasion context.
+
+The first concerns the basis of measurement. Soil carbon may be expressed as a concentration, a mass fraction of dry soil, or as an areal stock, a mass per unit ground area to a stated depth. The two are related by bulk density, and where a vegetation change alters bulk density they diverge, because a fixed-depth core taken in denser soil contains more soil mass and therefore more carbon at unchanged concentration [@gifford2003soil]. Fixed-depth comparison has been shown to bias estimates of soil carbon stocks, mass fractions and isotopic composition [@wendt2013equivalent; @vonhaden2020soils], and correcting to an equivalent soil mass basis [@ellert1995calculation; @potash2026empirical] can alter estimated stock changes by more than one hundred per cent [@raffeld2024importance]. Invasion alters bulk density in both directions: it is reduced beneath encroaching woody legumes, where ignoring the change overestimates subcanopy soil carbon by nearly thirty per cent [@throop2008shrub], and the primary literature on *Spartina* invasion notes explicitly that "as soil bulk density is often reduced by *S. alterniflora* invasions, the C storage capabilities of vegetated native ecosystems might be substantially reduced" [@xu2022effects].
+
+The second concerns which carbon is counted. Soil organic matter is now understood as a continuum of progressively decomposing compounds whose persistence is an ecosystem property rather than a molecular one [@schmidt2011persistence; @lehmann2015contentious], and is most usefully resolved into particulate and mineral-associated forms, which differ fundamentally in formation, persistence and response to environmental change [@lavallee2020conceptualizing]. A global radiocarbon synthesis found these fractions to differ consistently in persistence and concluded that projections based on bulk soil organic carbon may be misleading [@heckman2022beyond], and a fraction-resolved meta-analysis of global change drivers found particulate carbon the most responsive pool and the better short-term diagnostic [@rocci2021soil]. Mechanistically, the two fractions respond to different aspects of plant input: high-quality litter is used efficiently by microorganisms whose residues become precursors of mineral-associated carbon [@cotrufo2013microbial], necromass may constitute half or more of soil organic carbon [@liang2019quantitative; @wang2021microbial], and the formation pathway depends on the point of entry of plant carbon as well as its chemistry [@sokol2019pathways]. Any gain is nevertheless bounded by mineralogical capacity, and soils further from that capacity accrue carbon faster [@georgiou2022global], although whether a strict upper limit exists remains disputed [@begill2023no; @cotrufo2023robust]. Because invaders frequently differ from residents in litter quality and rooting habit, an effect on bulk soil carbon could reflect either durable accrual or transient enrichment of labile pools, and the distinction is not resolvable without fractionation.
+
+The third concerns depth. Vegetation controls the vertical distribution of soil carbon more strongly than it controls the total [@jobbagy2000vertical], and the median depth at which recent carbon is incorporated into mineral soil is approximately 10 cm, with subsoil between 30 and 100 cm holding 47 per cent of the carbon in the upper metre but only 19 per cent of recently incorporated carbon [@balesdent2018atmosphere]. Deeper rooting can additionally prime the mineralisation of old subsoil carbon [@fontaine2007stability; @henneron2022bioenergetic]. Sampling confined to the upper 20 or 30 cm, which is usual, will therefore detect surface gains while remaining blind to compensating losses below.
+
+A further consideration concerns the systems in which positive effects have been reported. The largest published positive result, a 40 per cent increase in carbon storage in invaded coastal vegetated habitats, was attributed by its authors to invaders that "intensify biomass per unit area, extend and elevate coastal wetlands, and convert coastal mudflats into C-rich vegetated habitat", with increases in saltmarsh, decreases in seagrass and no effect in mangroves [@davidson2018differential]. Primary studies in the Chinese coastal systems that dominate this literature commonly compare invaded marsh against bare tidal flat [@huang2022effects], and where the comparison is against established native marsh the reported effect is smaller, depth-dependent and expressed as concentration [@wang2018spartina; @liao2007invasion]. Whether the coastal result reflects the substitution of one vegetated community for another, or the colonisation of unvegetated sediment, has a direct bearing on its generality [@zheng2023impact], as does evidence that the effect rises over decades and then declines [@xu2022effects].
+
+Independent of the stock question, invasion consistently accelerates soil biological activity. Microbial biomass carbon increases [@he2025plant; @negesse2025plant], as do nutrient-releasing enzyme activities, although effects on carbon-decomposing enzymes are inconsistent [@zhou2019enhanced], and heterotrophic respiration increases [@fan2024global]. A system in which microbial biomass and respiration are elevated is not necessarily one in which carbon is accumulating.
+
+We therefore ask three questions of the available paired evidence. First, does plant invasion increase soil organic carbon, and how robust is any effect to model specification? Second, is the response conditional on habitat, sampling depth, or the basis on which carbon was measured? Third, does the response differ among carbon fractions in a manner that distinguishes durable accrual from accelerated cycling? We predicted that any pooled increase would be concentrated in coastal systems, that it would attenuate or reverse with depth, and that particulate and microbial fractions would respond more strongly than mineral-associated carbon.
+
+# 2 Materials and methods
+
+## 2.1 Data
+
+This synthesis reuses an existing deposited compilation rather than conducting a new systematic search. Effect sizes were extracted from the dataset deposited by @he2025plant (Dryad doi:10.5061/dryad.c59zw3rkc), which assembles paired measurements of soil carbon fractions from invaded plots and adjacent uninvaded controls. The literature search, screening and inclusion decisions are therefore those of the source compilation, and are reported in full in its own documentation; they are not repeated here and no PRISMA flow diagram is presented, because no new screening was performed. The consequences of this design choice for generality are considered in the Discussion, and the reporting conventions otherwise follow the recommendations for quantitative evidence synthesis in the environmental sciences [@nakagawa2023quantitative; @odea2021preferred].
+
+The compilation was selected because it is, to our knowledge, the only openly deposited invasion dataset carrying multiple soil carbon fractions with paired means, dispersion estimates and sample sizes, together with the sampling depth, habitat and climate descriptors required to test the moderators of interest. Alternative deposited datasets carry either a single system [@nagy2021synthesis], a single fraction, or endpoints other than carbon. Records were extracted for every fraction reported: total carbon, soil organic carbon, dissolved organic carbon, microbial biomass carbon, particulate organic carbon, mineral-associated organic carbon, readily oxidisable carbon and water-soluble organic carbon. Observations were retained where both the invaded and the uninvaded mean were present and positive, the latter condition being required for the ratio estimator to be defined. This yielded `r n_obs` paired observations from `r n_stud` studies.
+
+Moderators were taken from the source dataset and standardised without recourse to the primary papers. Sampling depth was recorded as a range and converted to an upper bound, a lower bound and a midpoint; observations without a resolvable depth were excluded from depth models but retained elsewhere. Habitat descriptions in the source were inconsistently cased and phrased, and were collapsed into four classes by keyword: forest, which includes orchard; grassland, which includes hill, plain, plateau, terrace and watershed descriptors; wetland and coastal, which includes swamp, marsh, mangrove, delta, estuary, beach, shore, island and river valley; and cropland. Invader growth cycle was reduced to annual or perennial.
+
+The basis of measurement was classified from the reported unit. Observations expressed as mass per unit ground area, in grams per square centimetre, kilograms per square metre or megagrams per hectare, were classified as areal stocks. Observations expressed as a mass fraction of dry soil, in per cent, grams per kilogram, milligrams per gram or milligrams per kilogram, were classified as concentrations. This distinction is central to the analysis, because the two quantities are related by bulk density and sampling depth, and are equivalent only when bulk density is unchanged between the compared states.
+
+```{r}
+#| label: tbl-data
+#| echo: true
+#| tbl-cap: "Paired observations available for each soil carbon fraction, with the number of contributing studies and the percentage of observations reporting a dispersion estimate."
+
+t1 <- do.call(rbind, lapply(unique(d$fraction), function(k) {
+  s <- d[d$fraction == k, ]
+  data.frame(Fraction = k, Observations = nrow(s),
+             Studies = length(unique(s$study)),
+             `Dispersion reported (%)` =
+               sprintf("%.1f", 100 * mean(!s$sd_imputed)),
+             check.names = FALSE)}))
+t1 <- t1[order(-t1$Observations), ]
+kable(t1, row.names = FALSE)
+write.csv(t1, file.path(repo, "03.outputs/tables/table-1-data.csv"), row.names = FALSE)
+```
+
+## 2.2 Effect size
+
+The effect of invasion was quantified as the log response ratio, the natural logarithm of the ratio of the invaded to the uninvaded mean [@hedges1999meta]. The log response ratio is scale-invariant, which permits observations reported in different units to be combined, and it is the conventional metric in ecological meta-analysis. Sampling variances were computed in the standard form, and the second-order bias correction of @lajeunesse2015bias was applied, because the ratio estimator is biased at small sample size.
+
+Dispersion was reported for the great majority of observations. Where it was absent, standard deviations were constructed using the weighted average coefficient of variation estimated from the observations that did report dispersion, following @nakagawa2023robust. This method has been shown to be minimally biased and is preferable to discarding studies, which selects on reporting practice.
+
+```{r}
+#| label: effect-size-note
+#| echo: true
+
+cat(sprintf("dispersion imputed for %d of %d observations (%.1f%%)\n",
+            sum(d$sd_imputed), nrow(d), 100 * mean(d$sd_imputed)))
+```
+
+## 2.3 Models
+
+Pooled effects were estimated with multilevel random-effects models fitted by restricted maximum likelihood in the `metafor` package [@viechtbauer2010conducting]. Observations were nested within studies as crossed random effects, which accounts for the statistical non-independence induced by multiple observations drawn from the same study [@noble2017nonindependence]. Heterogeneity was quantified as $I^2$ following the multilevel formulation of @nakagawa2012methodological, recognising that high heterogeneity is typical of ecological syntheses [@senior2016heterogeneity].
+
+Moderators were tested by meta-regression on the soil organic carbon subset: sampling depth as a continuous predictor, habitat class, invader growth cycle, mean annual temperature and mean annual precipitation. Depth was additionally examined as three bins to give a directly interpretable contrast. The basis of measurement was tested as a moderator of primary interest.
+
+Small-study effects were assessed by regressing effect size on its standard error within the multilevel model, an analogue of Egger's test. Robustness was examined by refitting the primary model after excluding observations with imputed dispersion, with all observations weighted equally, and as a conventional single-level random-effects model. Reporting follows the PRISMA extension for ecology and evolutionary biology [@odea2021preferred], and the general workflow for quantitative synthesis in the environmental sciences set out by @nakagawa2023quantitative.
+
+# 3 Results
+
+## 3.1 Response by carbon fraction
+
+```{r}
+#| label: fig-fractions
+#| echo: true
+#| fig-cap: "Pooled effect of plant invasion on eight soil carbon fractions. Points are percentage changes under invasion from multilevel random-effects models, with 95% confidence intervals. Filled symbols indicate intervals excluding zero. Numbers at right give observations and, in parentheses, contributing studies."
+
+knitr::include_graphics(file.path(FIG, "figure-1-fractions.png"))
+```
+
+Invasion increased microbial biomass carbon by `r sg(r_mbc$pct)`% (95% CI `r sg(r_mbc$pct_lb)` to `r sg(r_mbc$pct_ub)`%, *p* `r pf(r_mbc$pval)`) and decreased particulate organic carbon by `r f1(abs(r_poc$pct))`% (95% CI `r sg(r_poc$pct_lb)` to `r sg(r_poc$pct_ub)`%, *p* `r pf(r_poc$pval)`). These were the only fractions whose confidence intervals excluded zero. Soil organic carbon was `r sg(r_soc$est)`% higher under invasion but the interval spanned zero (95% CI `r sg(r_soc$lo)` to `r sg(r_soc$hi)`%, *p* `r pf(r_soc$p)`). Mineral-associated organic carbon was `r sg(r_maoc$pct)`% (95% CI `r sg(r_maoc$pct_lb)` to `r sg(r_maoc$pct_ub)`%) on `r r_maoc$k_obs` observations from `r r_maoc$k_study` studies. Total carbon, dissolved organic carbon, readily oxidisable carbon and water-soluble organic carbon did not differ detectably between invaded and uninvaded soils. Heterogeneity was high throughout, with $I^2$ exceeding 99% for every fraction.
+
+## 3.2 Moderators of the soil organic carbon response
+
+```{r}
+#| label: fig-moderators
+#| echo: true
+#| fig-cap: "Effect of invasion on soil organic carbon by habitat class, sampling depth and basis of measurement. Points are percentage changes with 95% confidence intervals from multilevel random-effects models fitted separately to each subset. Filled symbols indicate intervals excluding zero."
+
+knitr::include_graphics(file.path(FIG, "figure-2-moderators.png"))
+```
+
+Habitat class was a significant moderator (*Q*~M~ = `r f1(m_hab$QM)`, df = `r m_hab$m`, *p* `r pf(m_hab$QMp)`). The soil organic carbon response was positive and large in wetland and coastal systems (`r ci(r_wet)`, *p* `r pf(r_wet$p)`) and indistinguishable from zero in forest (`r ci(r_for)`) and grassland (`r ci(r_gra)`). Of the `r r_wet$k` wetland observations, `r f1(pct_spart)`% concerned invasion by *Spartina alterniflora*.
+
+The response declined with sampling depth (slope `r sprintf("%.5f", m_dep$b[2])` per cm, 95% CI `r sprintf("%.5f", m_dep$ci.lb[2])` to `r sprintf("%.5f", m_dep$ci.ub[2])`, *p* `r pf(m_dep$pval[2])`). Binned, the effect was `r ci(r_shal)` in the uppermost 10 cm and `r ci(r_deep)` below 20 cm. Invader growth cycle, mean annual temperature and mean annual precipitation were not significant moderators.
+
+## 3.3 Basis of measurement
+
+```{r}
+#| label: fig-basis
+#| echo: true
+#| fig-cap: "Effect sizes for soil organic carbon plotted against precision, separately for observations reported as concentrations and as areal stocks. Vertical dashed lines are the pooled estimates for each subset; the solid line marks no effect."
+
+knitr::include_graphics(file.path(FIG, "figure-3-basis.png"))
+```
+
+`r f1(pct_conc)`% of soil organic carbon observations were reported as concentrations rather than areal stocks, and only `r n_area_stud` studies reported carbon on an areal basis. Among concentration observations the pooled effect was `r ci(r_conc)`. Among areal observations it was `r ci(r_area)`, centred almost exactly on zero. No study in the compilation reported soil bulk density alongside carbon concentration, so the concentration observations cannot be converted to stocks.
+
+## 3.4 Small-study effects and sensitivity
+
+```{r}
+#| label: tbl-sensitivity
+#| echo: true
+#| tbl-cap: "Sensitivity of the pooled soil organic carbon estimate to model specification and to the treatment of observations with imputed dispersion."
+
+sub <- soc[!soc$sd_imputed, ]
+m_rep <- rma.mv(yi, vi, random = ~ 1 | study/obs, data = sub, method = "REML")
+m_sl  <- rma(yi, vi, data = soc, method = "REML")
+t3 <- data.frame(
+  Specification = c("Multilevel, imputation applied (primary)",
+                    "Multilevel, reported dispersion only",
+                    "Multilevel, observations weighted equally",
+                    "Single-level random effects"),
+  `Change (%)` = c(sg(r_soc$est), sg(pct(as.numeric(m_rep$b))),
+                   sg(pct(as.numeric(m_unw$b))), sg(pct(as.numeric(m_sl$b)))),
+  `95% CI` = c(sprintf("%s to %s", sg(r_soc$lo), sg(r_soc$hi)),
+               sprintf("%s to %s", sg(pct(m_rep$ci.lb)), sg(pct(m_rep$ci.ub))),
+               sprintf("%s to %s", sg(pct(m_unw$ci.lb)), sg(pct(m_unw$ci.ub))),
+               sprintf("%s to %s", sg(pct(m_sl$ci.lb)), sg(pct(m_sl$ci.ub)))),
+  Observations = c(r_soc$k, m_rep$k, m_unw$k, m_sl$k),
+  check.names = FALSE)
+kable(t3, row.names = FALSE)
+write.csv(t3, file.path(repo, "03.outputs/tables/table-3-sensitivity.csv"), row.names = FALSE)
+```
+
+There was no evidence of small-study effects (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). The pooled estimate was insensitive to the treatment of imputed dispersion but sensitive to weighting, falling from `r sg(r_soc$est)`% under inverse-variance weighting to `r sg(pct(as.numeric(m_unw$b)))`% when observations were weighted equally, and to `r sg(pct(as.numeric(m_sl$b)))`% in a single-level model. In no specification did the interval exclude zero.
+
+# 4 Discussion
+
+Plant invasion did not detectably increase soil organic carbon in this synthesis. The pooled estimate was positive but its interval spanned zero, and its magnitude depended on how observations were weighted, falling by roughly two thirds when inverse-variance weighting was removed. This is not a consequence of low power, since the compilation contains `r r_soc$k` paired observations from `r r_soc$ns` studies. It is a result about the structure of the evidence, and three features of that structure account for the distance between this estimate and the prevailing view.
+
+## 4.1 The effect is confined to coastal systems and to one invader
+
+The positive response was restricted to wetland and coastal systems, where soil organic carbon was more than twice as high under invasion, and was absent in both forest and grassland. This is not a novel pattern so much as a rediscovered one. The largest published positive result, a 40 per cent increase in carbon storage in invaded coastal vegetated habitats, was attributed by its own authors to invaders that "intensify biomass per unit area, extend and elevate coastal wetlands, and convert coastal mudflats into C-rich vegetated habitat", with increases in saltmarsh, decreases in seagrass and no effect in mangroves [@davidson2018differential]. Where the comparison is against bare tidal flat the difference is very large: soil organic carbon under *Spartina alterniflora* in one Chinese coastal wetland ranged from 2.65 to 21.54 g kg^-1^ against 0.85 to 1.19 g kg^-1^ on mudflat [@huang2022effects]. Where the comparison is against established native marsh the reported effect is smaller, depth-dependent, and expressed as concentration [@wang2018spartina], and a synthesis of 2,479 observations found no significant effect on soil organic carbon in vegetated native wetlands at all [@xu2022effects].
+
+The composition of the evidence compounds this. Of the soil organic carbon observations analysed here, `r f1(top_share)`% concern a single species, *Spartina alterniflora*, and `r f1(poaceae_share)`% concern the grass family alone. A generalisation about plant invasion and soil carbon therefore rests substantially on one rhizomatous grass colonising intertidal sediment in eastern Asia. Whether that represents the substitution of one vegetated community for another, or the colonisation of unvegetated ground, materially changes its interpretation, and the primary literature suggests the latter is common [@zheng2023impact]. There is also evidence that the coastal effect is not durable, rising over roughly two decades before declining [@xu2022effects].
+
+## 4.2 The effect exists only in concentration data
+
+Almost three quarters of the soil organic carbon observations report concentrations rather than areal stocks. Among these the pooled effect was positive, though its interval still included zero. Among the minority reporting areal stocks it was essentially exactly zero. Concentration and stock differ by bulk density, and invasion alters bulk density in both directions: it is reduced beneath encroaching woody legumes, where ignoring the change overestimates subcanopy soil carbon by nearly thirty per cent [@throop2008shrub], and the *Spartina* literature notes explicitly that bulk density is often reduced under invasion [@xu2022effects].
+
+This is not a novel methodological concern, and it is not confined to the invasion literature. The correction, expressing stocks on an equivalent soil mass basis, has been available for three decades [@ellert1995calculation], has been shown repeatedly to matter [@gifford2003soil; @wendt2013equivalent; @vonhaden2020soils], and can alter estimated stock changes by more than one hundred per cent in agricultural settings [@raffeld2024importance; @potash2026empirical]. The IPCC now states the problem in its own guidance, observing that soil mass to a given depth changes in response to management, including through the uprooting of vegetation and through compaction following loss of canopy cover, and concluding that "with a management induced change in soil bulk density, it is possible to calculate a change in soil carbon stock to a fixed depth in the absence of any change in soil carbon content" [@ipcc2019refinement]. That sentence describes the pattern reported here. Notably, the remedy is confined in that guidance to the derivation of higher-tier stock change factors and to process-model parameterisation; no Tier 1 method corrects for it, and the 2006 Guidelines, which remain the operative reference for most inventories, treat bulk density only as a multiplier in computing a stock and nowhere as a quantity that changes under land-use change [@ipcc2006guidelines].
+
+The correction cannot be applied to the observations compiled here, because no contributing study reported bulk density alongside carbon concentration. That absence, rather than any estimate reported above, is the principal finding of this work. The primary literature is not currently constituted to answer whether invasion changes soil carbon stocks, and the concentration results that dominate it cannot be converted into the quantity that matters for either an ecosystem carbon budget or a greenhouse gas inventory.
+
+## 4.3 Fraction responses indicate accelerated cycling rather than accumulation
+
+Microbial biomass carbon rose by roughly thirty per cent, reproducing the estimate published from this dataset [@he2025plant] and consistent with an independent synthesis of 688 paired observations [@negesse2025plant]. Particulate organic carbon, composed largely of partially decomposed plant residues, fell by more than a third. A soil in which microbial biomass is elevated while particulate residues are depleted is one in which inputs are being processed faster, not one in which carbon is accruing, and the interpretation is supported by evidence that invasion raises nutrient-releasing enzyme activity while leaving carbon-decomposing enzymes inconsistent [@zhou2019enhanced] and increases heterotrophic respiration [@fan2024global].
+
+Resolving fractions is necessary rather than merely informative. A global radiocarbon synthesis found particulate and mineral-associated carbon to differ consistently in persistence and concluded that projections based on bulk soil organic carbon may be misleading [@heckman2022beyond], and a fraction-resolved meta-analysis of global change drivers found particulate carbon the most responsive pool and the better short-term diagnostic [@rocci2021soil]. Mineral-associated organic carbon, the fraction with the longest residence time and therefore the most relevant to any claim of durable storage, was represented by only `r r_maoc$k_obs` observations from `r r_maoc$k_study` studies and could not be resolved. Single-system evidence that invasion depletes mineral-associated carbon while any increase occurs through unstable particulate forms [@katz2025invasion] is neither contradicted nor confirmed here. Given that mineral-associated carbon accrues fastest in soils furthest from their mineralogical capacity [@georgiou2022global], and that the existence of a strict capacity remains disputed [@begill2023no; @cotrufo2023robust], the paucity of paired mineral-associated observations is a priority for measurement.
+
+## 4.4 The surface signal does not extend to depth
+
+The response declined with sampling depth, positive in the uppermost 20 cm and negative below, with the continuous slope negative at the margin of significance. This is consistent with the vertical structure of soil carbon inputs. Vegetation controls the vertical distribution of soil carbon more strongly than the total [@jobbagy2000vertical], the median depth of recent carbon incorporation into mineral soil is approximately 10 cm, and subsoil between 30 and 100 cm holds 47 per cent of the carbon in the upper metre but only 19 per cent of recently incorporated carbon [@balesdent2018atmosphere]. Deeper rooting can additionally prime the mineralisation of old subsoil carbon [@fontaine2007stability; @henneron2022bioenergetic], and invasive *Phragmites australis* has been shown to prime deep soil pools while the native community it displaced primed surface material [@bernal2017invasive].
+
+Sampling depth conventions compound the problem. The generic IPCC default for mineral soils is 30 cm, whereas coastal wetlands are assessed to 1 m [@ipcc2006guidelines; @ipcc2014wetlands]. Comparisons drawn between terrestrial and coastal results are therefore not necessarily like for like, and the coastal systems that carry the positive effect here are also those conventionally sampled deepest.
+
+## 4.5 Implications for carbon accounting
+
+The results bear on a proposition that has become common in policy discussion, that invaded ecosystems may deliver a climate co-benefit partially offsetting their biodiversity costs. For soil carbon, and outside coastal wetlands, the available evidence does not support it. The quantity relevant to an inventory or a crediting methodology is the areal stock, and that is the quantity for which the effect here is indistinguishable from zero.
+
+It is worth recording how little accounting frameworks engage with this question. National greenhouse gas inventory guidance classifies land carbon by land use, management status and structural threshold; the carbon pools are defined as physical compartments distinguished by whether material is living or dead, above or below ground, and above or below a size threshold, with no reference to species identity or provenance [@ipcc2006guidelines]. Invasion is consequently invisible to the accounts: an invaded stand and a native stand of equal biomass are indistinguishable, and the guidance supplies default biomass and increment values for species that are aggressive invaders elsewhere without remark. The single peer-reviewed treatment of this gap estimates that invasions of ten problem plants may emit up to 150 Mt CO~2~-equivalent annually in one country alone, and characterises the topic as largely unstudied [@mantoani2026invasive].
+
+Where accounting frameworks have engaged, the results are instructive. Voluntary standards treat invasive species as a conduct rule governing what may be planted and as evidence that land is degraded and therefore eligible, rather than as a category affecting how carbon is counted. New Zealand is the only national inventory identified that names invasive trees explicitly, and it accounts their spread as afforestation while its own reporting concedes that the estimate pools native regeneration with wilding exotics across a small number of plots. These arrangements were not designed around any evidence about whether invasion changes soil carbon, and the evidence assembled here suggests that outside coastal wetlands there is little to account for.
+
+## 4.6 Limitations
+
+The synthesis rests on a single deposited compilation, selected because it is the only one carrying multiple carbon fractions with paired dispersions, and it therefore inherits that compilation's inclusion criteria and geographical emphasis. Heterogeneity exceeded 99 per cent for every fraction, which is usual in ecological synthesis but means the pooled estimates describe a distribution of effects rather than a common one [@senior2016heterogeneity]. The areal subset that carries the central result comprises `r r_area$k` observations from only `r n_area_stud` studies; its interval is narrow and centred on zero, but it is a small base. Mineral-associated carbon was too sparsely represented to test. Coordinates in the source were unreliable, so climate moderators were tested only from the reported temperature and precipitation fields. All comparisons are spatial contrasts between invaded and uninvaded plots with no pre-invasion measurement, so the possibility that pre-existing soil differences influenced where invaders established cannot be excluded, and the mechanisms underlying reported impacts are rarely tested directly in this literature [@levine2003mechanisms].
+
+## 4.7 Conclusions
+
+Plant invasion does not increase soil organic carbon stocks on the evidence currently available. The apparent increase reported in the literature is confined to coastal wetlands, is dominated by a single grass frequently colonising unvegetated sediment, and is present only in concentration measurements that cannot be converted to stocks because bulk density is not reported. Fraction responses indicate accelerated cycling rather than accumulation, and the surface signal does not extend below 20 cm.
+
+Three changes to measurement practice would resolve the question. Studies of invasion effects on soil carbon should report bulk density alongside carbon concentration as a matter of course, sample below 30 cm, and express stocks on an equivalent soil mass basis. Reporting particulate and mineral-associated fractions, rather than bulk carbon alone, would further distinguish durable accrual from transient enrichment. Until these become standard, claims that invasion delivers a soil carbon benefit should be treated as unsupported rather than as established.
+
+# Acknowledgements
+
+This work used data deposited by @he2025plant on Dryad. No funding was received.
+
+# Conflict of interest
+
+The author declares no conflict of interest.
+
+# Author contributions
+
+Sole authorship. The author designed the study, conducted the analysis and wrote the manuscript.
+
+# Data availability statement
+
+The primary data are openly available from Dryad at doi:10.5061/dryad.c59zw3rkc [@he2025plant]. The code that tidies those data, fits the models and produces every figure and table in this manuscript is archived with the manuscript source and requires only R and the `metafor` package.
+
+# References
+
+::: {#refs}
+:::

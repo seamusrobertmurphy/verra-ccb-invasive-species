@@ -23,7 +23,7 @@ two methods disagree in sign, and carbon crediting pays for the one that shows n
 
 | Source | System | Result |
 |---|---|---|
-| Pati et al. 2025 | *Gliricidia sepium*, dry deciduous secondary forest, Central India | Sequestration rate **8.01 vs 1.50 Mg C/ha/yr**, a 5.3-fold increase; biomass 94.45 vs 10.27 Mg/ha; stem density 1059 vs 38 per ha |
+| Pati et al. 2025 | *Gliricidia sepium*, dry deciduous secondary forest, Central India | Sequestration rate **8.01 +/- 1.50 against 0.71 +/- 2.39 Mg C/ha/yr**, an 11.3-fold difference, while the biomass stock differs by only 1.3-fold (94.45 +/- 10.27 against 72.85 +/- 9.50 Mg/ha). The divergence appears within one study |
 | Liao et al. 2008 | Global, 94 studies | Fluxes, including ANPP and litter decomposition, **up 50 to 120%** |
 | Wardle et al. 2007 | 18 New Zealand islands | Invasive rats, via seabird predation, raise live plant biomass C **+104%** |
 | Meitha et al. 2024 | *Leucaena*, Taiwanese badlands | Root-derived carbon argued to form mineral-associated soil carbon more efficiently than litter |
@@ -114,3 +114,22 @@ The measurement-basis finding, that the apparent soil carbon gain exists only in
 data and vanishes in areal stocks, survives intact and strengthens the argument: it is a second
 instance of the same error, measuring one quantity and reporting another. The standards audit
 and the IPCC accounting evidence become Part 3.
+
+
+## Correction recorded 2026-08-01
+
+An earlier draft of this document misread Pati et al.'s Table 1. The PDF text layer renders the
+plus-or-minus sign as an arrow, and the paired values were taken for invaded-against-uninvaded
+comparisons when they are in fact mean and standard error for a single community. The correct
+readings are: total biomass 94.45 +/- 10.27 (invaded) against 72.85 +/- 9.50 (uninvaded) Mg/ha,
+and carbon sequestration rate 8.01 +/- 1.50 against 0.71 +/- 2.39 Mg C/ha/yr. Stem density
+1059.2 +/- 37.94 is the invaded community alone.
+
+The correction strengthens the design rather than weakening it. Within this single study the
+biomass stock differs by 30 per cent while the sequestration rate differs by more than a
+thousand per cent, which is the rate-stock divergence demonstrated on one set of plots. Note
+also that the uninvaded rate has a standard error larger than its mean and is therefore not
+distinguishable from zero.
+
+**Lesson for the pipeline: never read a paired value from a PDF text layer without confirming
+whether the separator is a comparison or a dispersion term.**

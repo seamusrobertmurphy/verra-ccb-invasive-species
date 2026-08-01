@@ -1,0 +1,10 @@
+study,source_key,system,invader,trophic_level,quantity,units,invaded,invaded_err,uninvaded,uninvaded_err,err_type,ratio,note
+Pati 2025,pati2025ecological,Tropical dry deciduous secondary forest Central India,Gliricidia sepium,primary producer,carbon sequestration rate,Mg C ha-1 yr-1,8.01,1.50,0.71,2.39,SE,11.28,"Table 1. Uninvaded standard error exceeds its mean, so the uninvaded rate is not distinguishable from zero"
+Pati 2025,pati2025ecological,Tropical dry deciduous secondary forest Central India,Gliricidia sepium,primary producer,total biomass stock,Mg ha-1,94.45,10.27,72.85,9.50,SE,1.30,"Table 1. Same plots and same study as the rate above, so the rate-stock divergence is internal to one dataset"
+Wardle 2007,wardle2007promotion,Offshore islands New Zealand,Rattus spp,predator,live plant biomass carbon,percent change,104,,,,none,2.04,"18 islands. Effect is indirect, mediated by predation on seabirds and loss of marine nutrient subsidy"
+Wardle 2007,wardle2007promotion,Offshore islands New Zealand,Rattus spp,predator,non-living pool carbon,percent change,-26,,,,none,0.74,"Same islands. Live and non-living pools move in opposite directions"
+Wardle 2007,wardle2007promotion,Offshore islands New Zealand,Rattus spp,predator,total ecosystem carbon,percent change,37,,,,none,1.37,"Net of the two preceding rows"
+Liao 2008,liao2008altered,Global synthesis of 94 studies,multiple,primary producer,shoot carbon stock,percent change,133,,,,none,2.33,"Abstract. Plant pool, not soil"
+Liao 2008,liao2008altered,Global synthesis of 94 studies,multiple,primary producer,root carbon stock,percent change,5,,,,none,1.05,"Abstract. Plant pool, not soil"
+Liao 2008,liao2008altered,Global synthesis of 94 studies,multiple,primary producer,fluxes including ANPP and litter decomposition,percent change,50,,,,range,1.50,"Abstract reports a 50 to 120 per cent range; lower bound entered here and upper bound in the following row"
+Liao 2008,liao2008altered,Global synthesis of 94 studies,multiple,primary producer,fluxes including ANPP and litter decomposition,percent change,120,,,,range,2.20,"Upper bound of the reported range"
