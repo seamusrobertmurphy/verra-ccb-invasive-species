@@ -1,0 +1,8 @@
+system_id,system_short,invader,region,functional_type,evidence_class,display_order,route
+prosopis,Prosopis rangeland,Prosopis juliflora,"Baringo, Kenya",Woody nitrogen-fixing tree,Quantified,1,"VM0042 grassland, or VM0044 biochar feedstock"
+cheatgrass,Cheatgrass steppe,Bromus tectorum,"Great Basin, USA",Annual grass,Quantified,2,"VM0045 matched baseline, forest only"
+phragmites,Tidal marsh,Phragmites australis,"Northeast USA tidal marsh",Wetland graminoid,Quantified,3,"VM0033, removal a named eligible activity"
+lantana,Dry deciduous forest,Lantana camara,"Madhya Pradesh, India",Thicket-forming shrub,Indicative,4,"VM0045 design, no approved jurisdiction"
+acacia,Atlantic Forest regrowth,Acacia mangium and A. mearnsii,"Atlantic Forest, Brazil",Woody nitrogen-fixing tree,Indicative,5,"VM0047 site preparation carve-out"
+melaleuca,Everglades wetland,Melaleuca quinquenervia,"Florida Everglades, USA",Woody wetland tree,Indicative,6,"VM0033, removal a named eligible activity"
+hyacinth,Tropical freshwater,Pontederia crassipes,Tropical and subtropical lakes,Floating aquatic,Indicative,7,"VM0044 biochar, aquatic feedstock named"

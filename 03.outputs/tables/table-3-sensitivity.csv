@@ -1,5 +1,0 @@
-"Specification","Change (%)","95% CI","Observations"
-"Multilevel, imputation applied (primary)","+20.4","-4.6 to +52.0",104
-"Multilevel, reported dispersion only","+20.5","-5.3 to +53.2",102
-"Multilevel, observations weighted equally","+6.8","-11.8 to +29.5",104
-"Single-level random effects","+7.6","-3.7 to +20.3",104

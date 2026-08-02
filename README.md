@@ -1,106 +1,164 @@
-# verra-ccb-invasive-species
+# Biological invasion increases carbon sequestration rates but not carbon stocks
 
-**Biological invasion increases carbon sequestration rates but not carbon stocks.**
+Sole-authored manuscript for **Global Change Biology**, Research Article.
+Master document: [`01.manuscript/invasion-rate-versus-stock.qmd`](01.manuscript/invasion-rate-versus-stock.qmd).
 
-A quantitative synthesis of how long it takes for recovering native vegetation to overtake the
-carbon trajectory an invasive plant would have followed if left in place, joined to an audit of
-whether any carbon standard can credit the answer.
+> **Rendering the manuscript runs the analysis.** Every model, table and figure below is
+> computed when the document builds, from the two deposited datasets in `02.inputs/`, and every
+> number in the prose is an inline R expression. There are no analysis scripts: if it is not in
+> the manuscript, it is not part of the study. Nothing is fetched over the network.
 
-Status: master manuscript built and rendering, analysis executable in-document. Sole-authored.
-Target venue **Global Change Biology**, Research Article, guidelines verified live on 2026-07-30.
+```
+cd 01.manuscript && quarto render invasion-rate-versus-stock.qmd --to docx
+```
 
-The venue decision was made on budget, not prestige. Global Change Biology allows 8,000 words
-counted over the body only, with **no cap on figures, tables or references**, which is the only
-budget among the candidates that can carry the parity model and the six-standard audit in one
-paper without exiling the audit to supplementary material. Impact factor 12.5, six-day median
-to first decision, no submission or publication charge. One Earth is the strong second choice
-and arguably the better home for the mixed character, at the cost of 5,000 words and seven
-display items. Nature Sustainability fits the argument best and the manuscript worst: 3,500
-words and roughly 50 references cannot hold both halves. If it goes there, it goes as an
-**Analysis**, never a Review, because their own rule reclassifies structured literature
-syntheses as original research.
+Requires R with `metafor`, `readxl` and `knitr`, plus Quarto. The two raw datasets are
+gitignored and must be downloaded by hand; see [`02.inputs/README-data.md`](02.inputs/README-data.md).
 
 ---
 
-## The problem
+## Abstract
 
-Removing an invasive plant is one of the few restoration actions with an unambiguous
-biodiversity rationale and no reliable way to pay for it. Carbon finance is the obvious
-candidate and it fails for a reason that is arithmetic rather than administrative. A woody
-invader is itself a carbon stock. Clearing it registers as an emission against a carbon-rich
-baseline, and the clearing is deliberate, carried out by the proponent, and motivated by
-carbon finance. Those three facts are the standard test for baseline gaming, and a genuine
-restoration project satisfies all of them.
+Whether biological invasion increases ecosystem carbon storage is contested, and the disagreement has consequences for how invaded land is valued under carbon policy. We show that the contest is largely artefactual, arising because two different quantities are both reported as sequestration. Invasion raises the *rate* at which carbon moves through an ecosystem; it does not reliably raise the *stock* held there. These are the two methods the IPCC treats as equally valid for land carbon accounting, gain-loss and stock-difference, and on invaded land they disagree. We fit parallel meta-analyses of both quantities: 425 paired invaded and uninvaded observations from 57 studies across eight soil carbon fractions for stocks, and 688 paired observations from 110 sites in 25 countries for fluxes and related processes. Soil organic carbon was +20.4% higher under invasion but the interval spanned zero and the estimate fell to +6.8% under equal weighting. Among observations reporting carbon as an areal stock rather than a concentration the effect was -0.8%, 95% CI -15.7 to +16.7, and no contributing study reported the bulk density needed to convert between the two. Process rates moved in the opposite direction: soil respiration rose +24.3%, carbon-acquiring enzyme activity +24.6% and microbial biomass +12.6%, while soil fauna declined 32.3%. The gap between the flux and areal stock responses was +25.3 percentage points, in the predicted direction but not significant (*p* = 0.156). The strongest support is internal to the stock data, where the invasion effect declined with the turnover time of the pool, being largest in the fastest-cycling fractions; mineral-associated carbon was too sparsely measured to resolve. Carbon crediting rewards evidence of rate while paying for durable stock. Where the two diverge, as they do under invasion, that mismatch is a systematic source of over-crediting and a route to bio-perversity.
 
-Whether removal is nevertheless a carbon gain depends on a quantity nobody had estimated: the
-time to carbon parity, meaning the point at which the recovering native trajectory overtakes
-the counterfactual. The literature splits cleanly into two halves that have never been joined.
-A large body quantifies what invasion does to ecosystem carbon, and finds that invasion
-frequently *raises* stocks. A much thinner body follows what happens after removal, and
-measures species composition, water yield and employment rather than carbon.
+---
 
-## What this does
+## Results, in the order the manuscript presents them
 
-Two parts, and the second is what makes it a standards paper rather than an invasion ecology
-paper.
+### Table 1. Published carbon accumulation rates (Methods 2.4)
 
-**The parity synthesis.** The carbon debt framework built for biofuels by Fargione et al.
-(2008) and sharpened into a parity concept by Mitchell et al. (2012) is adapted to invasive
-removal and applied across seven systems chosen to span invader functional type: woody
-nitrogen-fixing trees, a thicket-forming shrub, an annual grass, a wetland graminoid, a woody
-wetland tree and a floating aquatic. The selection is deliberately adversarial, including the
-systems where removal is most likely to *lose* carbon.
+Reproduced as published, tabulated and never pooled: four sources cannot support a pooled
+estimate, and the entries differ in quantity and in units.
 
-**The standards audit.** Six voluntary crediting regimes plus one compliance scheme, read
-against their own current requirement documents rather than summaries. Every regime prohibits
-introducing invasive species. None credits the carbon consequence of removing them.
+| Source | Invader | Trophic level | Quantity | Invaded | Uninvaded | Ratio |
+|---|---|---|---|---|---|---|
+| Pati 2025 | *Gliricidia sepium* | primary producer | carbon sequestration rate | 8.01 ± 1.5 | 0.71 ± 2.39 | 11.28 |
+| Pati 2025 | *Gliricidia sepium* | primary producer | total biomass stock | 94.45 ± 10.27 | 72.85 ± 9.5 | 1.30 |
+| Wardle 2007 | *Rattus spp* | predator | live plant biomass carbon | 104 | - | 2.04 |
+| Wardle 2007 | *Rattus spp* | predator | non-living pool carbon | -26 | - | 0.74 |
+| Wardle 2007 | *Rattus spp* | predator | total ecosystem carbon | 37 | - | 1.37 |
+| Liao 2008 | multiple | primary producer | shoot carbon stock | 133 | - | 2.33 |
+| Liao 2008 | multiple | primary producer | root carbon stock | 5 | - | 1.05 |
+| Liao 2008 | multiple | primary producer | fluxes including ANPP and litter decomposition | 50 | - | 1.50 |
+| Liao 2008 | multiple | primary producer | fluxes including ANPP and litter decomposition | 120 | - | 2.20 |
 
-## Headline findings
+### Table 2. Pooled effect of invasion by soil carbon fraction (Results 3.1)
 
-**The eligibility gate is open and the crediting gate is shut.** Verra's VM0033 has listed
-"removing invasive species" as an eligible tidal wetland activity since 2015, and the VCS
-Standard has carried an eligibility carve-out for land whose dominant cover is an invasive
-species. Neither provides a way to quantify the result without penalising the proponent for
-the invader's own biomass.
+| Fraction | Obs. | Studies | Change (%) | CI low | CI high | p | I² (%) |
+|---|---|---|---|---|---|---|---|
+| SOC | 104 | 35 | +20.4 | -4.6 | +52.0 | 0.119 | 100 |
+| TC | 42 | 15 | -8.5 | -25.0 | +11.5 | 0.377 | 99 |
+| POC | 34 | 11 | -36.4 | -56.2 | -7.6 | 0.017 | 99 |
+| MAOC | 10 | 5 | +11.8 | -20.1 | +56.5 | 0.516 | 100 |
+| MBC | 104 | 35 | +30.1 | +8.7 | +55.8 | 0.004 | 99 |
+| DOC | 68 | 22 | +17.2 | -2.5 | +40.8 | 0.092 | 100 |
+| ROC | 40 | 8 | +34.2 | -26.0 | +143.4 | 0.332 | 100 |
+| WSOC | 23 | 6 | -22.0 | -41.9 | +4.7 | 0.097 | 99 |
 
-**One accounting design already solves the problem, and nobody appears to have noticed.**
-VM0045's dynamic matched baseline leaves the invader standing in both project and control
-plots, so its removal never registers as a net emission and the credit attaches to the
-differential growth of released regeneration. The constraint is jurisdictional, currently the
-conterminous United States via the Forest Inventory and Analysis, and structural, forest
-remaining forest. It cannot reach a marsh or a rangeland. Whether that design generalises is
-the paper's constructive proposal.
+### Figure 1. Effect of invasion on eight soil carbon fractions
 
-**The activity is monetised, just never as land carbon.** Two routes pay today: invasive
-biomass as biochar feedstock under VM0044, where the carbon leaves the land pool for a durable
-one, and invasive control as a scored Condition metric under the SD VISta Nature Framework,
-where it generates biodiversity credits. Neither rewards the land carbon effect.
+![Pooled effect of invasion on eight soil carbon fractions](03.outputs/figures/figure-1-fractions.png)
 
-**Registered projects are close to absent.** Against a decade-old eligibility clause, the
-number of registered projects where invasive plant control is the primary crediting activity
-is zero.
+### Table 3. Moderator tests on soil organic carbon (Results 3.1)
 
-## Layout
+| Moderator | Q<sub>M</sub> | df | p | Obs. |
+|---|---|---|---|---|
+| Soil depth (midpoint) | 3.76 | 1 | 0.053 | 84 |
+| Habitat class | 13.68 | 3 | 0.003 | 76 |
+| Invader growth cycle | 0.32 | 1 | 0.571 | 86 |
+| Mean annual temperature | 0.39 | 1 | 0.530 | 46 |
+| Mean annual precipitation | 0.37 | 1 | 0.542 | 56 |
+| Basis of measurement | 0.55 | 1 | 0.460 | 104 |
 
-| Path | What it holds |
+### Figure 2. Soil organic carbon by habitat, depth and basis of measurement
+
+![Effect of invasion on soil organic carbon by habitat class, sampling depth and basis of measurement](03.outputs/figures/figure-2-moderators.png)
+
+### Table 4. Taxonomic concentration of the stock evidence (Results 3.1)
+
+The pooled estimates are only as general as the studies behind them.
+
+| Invasive taxon | Obs. | Share (%) | Studies |
+|---|---|---|---|
+| *Spartina alterniflora* | 38 | 36.5 | 10 |
+| *Phyllostachys edulis* | 12 | 11.5 | 3 |
+| *Chromolaena odorata* | 10 | 9.6 | 2 |
+| *Ambrosia artemisiifolia* | 5 | 4.8 | 2 |
+| *Sonneratia apetala* | 5 | 4.8 | 1 |
+| *Robinia pseudoacacia* | 4 | 3.8 | 2 |
+| *Bidens pilosa* | 3 | 2.9 | 1 |
+| *Pueraria montana* | 3 | 2.9 | 1 |
+
+### Table 5. Effect of invasion on soil processes, by functional class (Results 3.2)
+
+Clustered by site, because the deposit carries no complete study identifier.
+
+| Functional class | Obs. | Sites | Change (%) | CI low | CI high | p |
+|---|---|---|---|---|---|---|
+| carbon flux | 37 | 14 | +24.3 | +0.9 | +53.2 | 0.041 |
+| nutrient transformation rate | 49 | 23 | +8.6 | -20.0 | +47.6 | 0.596 |
+| nutrient-acquiring enzyme | 135 | 37 | +19.7 | +8.2 | +32.4 | < 0.001 |
+| carbon-acquiring enzyme | 131 | 38 | +24.6 | +13.9 | +36.3 | < 0.001 |
+| microbial pool | 259 | 57 | +12.6 | +1.7 | +24.7 | 0.022 |
+| faunal abundance | 77 | 18 | -32.3 | -49.0 | -10.1 | 0.007 |
+
+### Figure 6. Effect of invasion on soil processes
+
+![Pooled effect of invasion on soil processes, by functional class](03.outputs/figures/figure-6-flux.png)
+
+### Figure 4. The rate-stock divergence (Results 3.3)
+
+![Estimates of the effect of invasion on carbon, expressed as the ratio of invaded to uninvaded values on a logarithmic axis](03.outputs/figures/figure-4-rate-stock.png)
+
+### Table 6. Flux against stock, the formal contrast (Results 3.4)
+
+The gap runs in the predicted direction and is largest against areal stock, which is the correct
+comparison, but it does not reach significance. The manuscript reports this as a consistency
+check the argument passes, not as a test it survives.
+
+| Stock limb | Gap (pp) | Q_M | p | Stock obs |
+|---|---|---|---|---|
+| Areal stock (primary) | +25.3 | 2.01 | 0.156 | 28 |
+| Concentration | +3.6 | 0.03 | 0.874 | 76 |
+| All stock observations | +7.3 | 0.12 | 0.733 | 104 |
+
+### Table 7. Sensitivity of the pooled soil organic carbon estimate (Results 3.6)
+
+| Specification | Change (%) | 95% CI | Observations |
+|---|---|---|---|
+| Multilevel, imputation applied (primary) | +20.4 | -4.6 to +52.0 | 104 |
+| Multilevel, reported dispersion only | +20.5 | -5.3 to +53.2 | 102 |
+| Multilevel, observations weighted equally | +6.8 | -11.8 to +29.5 | 104 |
+| Single-level random effects | +7.6 | -3.7 to +20.3 | 104 |
+
+### Table 8. Effect of invasion by turnover class of the pool (Results 3.7)
+
+Classes assigned a priori from published characterisations, before any model was fitted.
+
+| Turnover class | Obs. | Studies | Change (%) | CI low | CI high | p |
+|---|---|---|---|---|---|---|
+| fast | 235 | 46 | +29.2 | +11.5 | +49.7 | < 0.001 |
+| intermediate | 34 | 11 | -36.4 | -56.2 | -7.6 | 0.017 |
+| slow | 10 | 5 | +11.8 | -20.1 | +56.5 | 0.516 |
+
+### Figure 5. Effect of invasion by turnover class
+
+![Effect of invasion on carbon by the turnover class of the pool](03.outputs/figures/figure-5-turnover.png)
+
+---
+
+## Repository layout
+
+| Path | Contents |
 |---|---|
-| `01.manuscript/` | the master `.qmd` and its renders |
-| `02.inputs/` | the two parameter tables, each row carrying its source |
-| `03.outputs/` | tables and figures, all regenerated at render time |
-| `04.references/` | verified BibTeX, CSL styles, the reference docx |
-| `05.tasks/` | task requests and evidence notes |
+| `01.manuscript/` | the master `.qmd`, the rendered `.docx`, and superseded drafts in `archive/` |
+| `02.inputs/` | the two Dryad deposits, each with its own README, and the compiled rate evidence |
+| `03.outputs/` | figures and tables written at render time; `archive/` holds outputs of the superseded version |
+| `04.references/` | `references.bib`, the CSL style, and the literature PDFs (gitignored) |
+| `05.tasks/` | study design notes and the evidence base |
+| `CLAUDE.md` | working conventions, corrections already forced, and the traps |
+| `INDEX.md` | what each file is and where it sits |
 
-Read [`INDEX.md`](INDEX.md) for what to open in what order, and [`CLAUDE.md`](CLAUDE.md) for
-the conventions and the corrections already forced, including one misattributed dataset that
-would have put fabricated numbers in the Phragmites section.
-
-## Build
-
-```
-cd 01.manuscript
-quarto render invasion-rate-versus-stock.qmd --to docx
-quarto render invasion-rate-versus-stock.qmd --to html
-```
-
-Rendering runs the entire analysis. Base R only, no packages beyond `knitr`, nothing fetched
-over the network.
+Figures and tables in `03.outputs/` are regenerated on every render and are committed because
+they are what this README displays. The `.docx` is a build artefact; the `.qmd` is the source of
+truth.

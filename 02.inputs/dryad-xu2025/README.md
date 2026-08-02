@@ -1,203 +1,68 @@
-# Plant invasion increases soil microbial biomass carbon: Meta-analysis and empirical tests
-
-[https://doi.org/10.5061/dryad.c59zw3rkc](https://doi.org/10.5061/dryad.c59zw3rkc)
-
-## Description of the data and file structure
-
-All empty cells will be replaced with standardized placeholders (n/a) to avoid ambiguity in **Meta-analysis Data**.
-
-All variables (column names)  in Meta-analysis Data. Detailed annotation information is provided below:
-
-| Abbreviations | Corresponding full forms                                                           |
-| :------------ | :--------------------------------------------------------------------------------- |
-| TC            | Total Carbon                                                                       |
-| SOC           | Soil Organic Carbon                                                                |
-| DOC           | Dissolved Organic Carbon                                                           |
-| MBC           | Microbial Biomass Carbon                                                           |
-| POC           | Particulate Organic Carbon                                                         |
-| MAOC          | Mineral-Associated Organic Carbon                                                  |
-| ROC           | Readily Oxidizable Carbon                                                          |
-| EOC           | Easily Oxidized Organic Carbon                                                     |
-| LOC           | Labile Organic Carbon                                                              |
-| WSOC          | Water Soluble Organic Carbon                                                       |
-| N\_native     | Native Plant Data Sample Content (Numbers)                                         |
-| M\_native     | Native plant data arithmetic mean (mean)                                           |
-| SD\_native    | Standard error of the mean of the native plant data (standard error of the mean)   |
-| N\_invasive   | Invasive plant data sample content (Numbers)                                       |
-| M\_invasive   | Arithmetic mean of invasive plant data (mean)                                      |
-| SD\_invasive  | Standard error of the mean of the invasive plant data (standard error of the mean) |
-
-**Data collection and extraction**
-
-We searched peer-reviewed publications from 1990 to 2023 on the ISI Web of Science ([https://www.webofscience.com/](https://www.webofscience.com/)), Google Scholar ([http://scholar.google.com/](http://scholar.google.com/)), China National Knowledge Infrastructure (CNKI) Open Resource ([http://www.cnki.net/](http://www.cnki.net/)), and reference lists of the retrieved articles. The search terms were as follows: (plant invasive* OR alien plant OR exotic plant OR invasive plant) AND (soil organic carbon OR microbial biomass carbon OR dissolved organic carbon OR particulate organic carbon OR mineral-associated organic carbon). The same set of keywords was employed across all three databases in the search process. We reviewed each article to determine whether the studies satisfied the following criteria:
-
-(1) The studies should provide measured data for at least one of the following seven carbon fractions: TOC, SOC, DOC, MBC, POC, MAOC, and ROC.
-
-(2) The mean, sample size, and standard deviation (SD) or standard error (SE) of these carbon fractions should be provided directly or should be calculated from the study results. Data were obtained from the figures via Digitizer software version 4.6 (Department of Physics at the University of South Alabama, Mobile, AL, USA) .
-
-(3) Experiments conducted under both greenhouse and field conditions were considered, and the data were analysed separately.
-
-(4) As we focused on variations in soil carbon during plant invasion, the studies should include pairwise comparisons of at least two soil carbon categories (invasive plants vs. native plants or invasive plants vs. bare land) with significant differences (*p *< 0.05).
-
-(5) When different publications included the same observations, we recorded the observations only once.
-
-(6) When a study included data on different invasive species, we considered the data as distinct observations. Additionally, when a publication contained multiple experiments under different abiotic conditions, such as different sites, treatments, and soil layers, we considered each to include different observations and recorded them separately.
-
-Finally, we obtained a meta-dataset of 445 observations covering 61 studies. For each study, we extracted various carbon fractions. In addition, we obtained data on plant families, geographical location (latitude and longitude), ecosystem type, and soil sampling depth from the original publications.
-
-## Code/software
-
-We employed the natural log-transformed response ratio (lnRR) as the effect size for various types of soil carbon affected by plant invasion. The lnRR can be calculated as follows:
-
-| ![](data:image/png;base64,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) |    |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :- |
-
-where ![](data:image/png;base64,R0lGODlhEwAYAHcAMSH+GlNvZnR3YXJlOiBNaWNyb3NvZnQgT2ZmaWNlACH5BAEAAAAALAAABAATABQAhAAAAAAAAAAAKwAAVQArKwArVQArgABVgABVqisAACsAKysAVSsrgCuA1FUAAFUrAFWq/4ArAIDU/6pVAKpVVarU/6r//9SAK9SqVdT///+qVf/UgP//qv//1AECAwECAwV3YCCOZDkiQKqubOu+65aIKOfQsBYcWaobvVcngkpNgLDUZWABXArNJEDW0DClqSFBIcGqLgGI1ydIFLEb7uQaYwRTNrFOvJqcAZxHA+5A4iMjQENsABMCXXx0AIACdBgzBRUpGwtRYxd+Y3ZjWRENHRSIWGAFiCEAOw==) represents the mean content of the various types of carbon in soil in the area where invasive plants are located, and *Xc* represents the mean content of each type of carbon in soil in the area where native plants are located. To solve the problem of the occurrence of RR values of zero in the numerator, we replaced them with 10% of the lowest value measured within the same sample . The total effect is the average effect across all samples.
-
-We calculated the variance (v) in the effect size of the individual observations as follows:
-
-| ![](data:image/png;base64,R0lGODlhjQA1AHcAMSH+GlNvZnR3YXJlOiBNaWNyb3NvZnQgT2ZmaWNlACH5BAEAAAAALAAAAwCNADIAhQAAAAAAAAAAKwAAVQArKwArVQArgABVqisAACsAKysAVSsrACsrKysrVSsrgCtVgCtVqiuAqiuA1FUAAFUrAFUrgFWA1FWq1FWq/4ArAIArK4ArVYBVK4BVVYCq1ICq/4DU/6pVAKpVK6pVVaqAVarU/6r//9SAK9SAVdSqVdSqgNT/1NT///+qVf/UgP/Uqv//qv//1AECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwb/QIBwSCwaj8iksvjiBAIF03JKrSKbz6h1y+0SYxkL4DU5eM9dsJhsRrvfyFAbTl/K63hkjLR4CholRTATGHlne30Bf4FEg4WGkGACHgAxIQNSRCISkGkZk5WXmUObnZAtAY8ALg4smhCmXKiqrK6ksLF5JwIgSSK4uVW7vUi/wboBc0UtBq4wFbbHSCfJSMzO0NJugwEP0ULcTwHN2kjc3oIT4uPf5VxgisTu7xnx87EpAZj3Xfn7/JCocQK4RSBBQy4QDFzV6mCShAsddmmhbNaQOxIBUCRiUQgWdhmVhAAFQAWCNjDqPSF3cCSlkieHDIrAYmPIJCQYiCNwoRGh/5A5d/a8yPImGhcKRhlNp2qplxNFnQ5xkUCeVC4Yr8qc0FNFQ61TwEiIMcLq0aqdUCDo1g5sEmoFzJ6V67YuFap0Ab7QUK0kBQFN7U7BG/JFhRUZmrmAgDjiEGrrIgdwbJTwTTAswQQWrMRyyEFzauGRTLq06dNFIJt2fLq1a9JCIJLazPkh2psdWwAzoro05ZueMw5j2La27bwAh6VAZ/ejliXByzkfhYonZzVjygy+7Q47G+MilSGJngeRH0BGsoI1rwi9T9rdP1Gy9G8rfKOS5osqUsphR+L8/ebUf6LdIhwvShhj13DF7AbHHgjwEoMIinwwBTXivXIPhBJSKP+AhUpgaA05zxTHxQkXJHRBByUMEtUR57R1DQAlaoOiiiy6aCI46jC31TovHoVAA1KARgU8CP4oTpC5JEQkjdotgSRyhlDziGxV+KOUQ1bGplCW+mxpyn4aJSnMZDeR2YKZAB5hUDBgzEFmFVhKFOdF9QGgXhF1FpgHlncS8VEzNgnx36A7mgJoBnOktGRNFaVyUYZ0dATaCxsUOQFNG7kkhEmNbgrpPZaWgammqngKE0oqgYTHnBQWwEgIUQX1hHVEJRoMrFAwgtQotgaAK4/3xeKIFcdqBZWuUyV1D3nHgbVniEwGM0hXXyVxbUnZhiQWWVQKMa02arFFRbk+GgUQV7iVZDBWWeDF+xgU7GoVBAA7) |    |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :- |
-
-where St and Sc are the SDs of the experimental and control groups, respectively, and nt and nc are the sample sizes of the experimental and control groups, respectively.
-
-The metafor package in R v. 4.0.2 (R Core Team, Vienna, Austria) was used to derive the effect size for each variable. The weighted response ratio (RR++), 95% bootstrap confidence interval (CI) and SE *S *(RR++) were calculated via a random effects model.
-
-| ![](data:image/png;base64,R0lGODlh4QA8AHcAMSH+GlNvZnR3YXJlOiBNaWNyb3NvZnQgT2ZmaWNlACH5BAEAAAAALAAAAwDhADkAhQAAAAAAAAAAKwAAVQArKwArVQArgABVqisAACsAKysAVSsrACsrgCtVVStVgCtVqiuA1FUAAFUAK1UrAFUrK1VVqlWAqlWq1FWq/4ArAIBVK4CAK4CAqoCq/4DU/6pVAKpVK6qqVarU/6r//9SAK9SAVdSqVdSqgNTUqtT/1NT///+qVf/UgP/Uqv/U1P//qv//1AECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwECAwb/QIBwSCwaj8ikcslsOp9JFmIwKq4EHqh2y+16v+CwOEkyqMbotHotXgXe8HjADNMEMFIBfqJ/uuVyZkIfBwAfAVSHEGyMjY5qh4JDMCBzKiUeHw0WKh8EFZ2FT5Fnk5WCMBkYACsJFwAvEauPtLW2TLEBi0SxqBmFqXQZu065xEK9ZywJHiecQiwKVVCUb1hDH1TQCG+SSrlxBK9D4HDit+hKbtdEZWexq/CwEllQ6/VD7qzW+CveT7HYAZCiTUgJS05YREB1aBa0hWdgNExH0QgpJCu0RauScRqUi0cIxSJGiEuqgoYQebyCj4kUYlJEbYOJQGbFisaQ6NtpAAUH/y05jaRa9MFACg5DT3TQcnJatA0Fh9q7MyQmETcOrd7c+schkZKGRK1AUMCjnzdekdEbSLZKpQdcsk37AIFEQX1P7HqcmA8l3603D6F0JNgsI7kDpemFJYtaBkEuKh0LdiayLsCAc6VlpJkWYroAFoMFGCGOAxFFygU4jTlzBJuOYsE+TGVj6NrMtGAF0OK1kd29Z7dGV7SU53+N9IK+PWK5EJbt/pFg90GgkOn1qrdkZR3v8DHYk0BvYkIaGetHvC8pb/j6gBB33w9uQvk61UmPS5G4//3WSzEsULDAfFUhcAwYAQ7YXmgCLEDMdAt4pQg5pXkl2xBuHHPhc5dh0/8hY/z198WGV2kzIRMuqNDRESRiWFBnKKpIYGgq5YMQhV4t09J+MiVjY48Q4UiEjiKGgVgR+siTCiCDrWgRgd4RuaQcTc6YYTvo2YahN38EIMqSDKDW5ZcZBBAmNOZtaVyRXIw3ZJBaNuHkVegNFORzyKkzox/SCReGP2uS4CebTUgBSByCAOrHfIYe2o1xgtqzpxOjASDVGpVeSihTZTr6hihgTRlHlWaJ6qhMl5r6BqleJLUUY5uF4SoyjW3KyKxNhNeFPHnVCcVbGPoaBrDPWadaAOdQKEeythZB7BJd1riFm9COuiAX6iWHnEIMhchtRH81e1O26fR2ICPmGvH/3zY2rcvWoOLSku5NSz6wJhv13rtPVjVdxZ9W8aKTb8CPLDZIiAanFCvBDDcsVH4AWDYZxBKrsZ+nHzqsMRqqscZLaXB4vPHIGwPnmxVUBdcfxiy37PLLMMcs88w0H3oddejpql16fkZK8s/0QkyjV/UNzbNO8NKI8blAN70EiVdSKFPUSPactNNYg+clhd7wyLW+PhsRdtZkqzGmEGCKCQeZZqKmqkpvT1o2FAQZRu3cuVr9XbSH5ukF34BIQi7eW4zdztW3gIT2KSrUcUcee/Qxyo2L31hSYScS7oTh+SBuS1BfY6IJJ56AUikupR3oYyqrtPIKr09UE4BARzbq/7eInF/nuS33IOkLMPlp6kTv0SnDjDOlxEmaQHUPcdDtmntGeWqNyfPCWloojvLs/UCfRFMeonR39LeAboVG5s1JWsZfHTASNrsTAX5iUE0jPPnpdJWeIDz5NC1aDyOKUZAyDKVs4Uh0Mdjg8GeLwlgEVGJpS1ykRY61SKEsAHjWR9A3gsXAjoEUgdEjRNiIzyxCNPEDoRpaFJuTPUIuttELkVRYkeI00HtoUM4udEinHeGQhoUT1hp0RQu7wGcaRpQbENngriOMDwnsQUITdfJDIURRbA16UIMk9CESLnFELnTRtaIgoBmxkBVKlGIZF7QflOznHx+c4RfBcKTipaGEaUZIkfqwASVJeBEJerRSxoiIJrMoao5fGN+3YGWpTlmrRO1R5J0Gkpu4GTKN6ugTIr/QKEcJQnnQYhQ3PMWlKj4Hk0nI1DA22YW3yUEspkRjqRx5qsNJaoxMwNUHWcmGUNFyVZfE5RJS9UsKyvILz3oiL8eAKyYQEii12pwQsRXLZW5Bg+J55LSm6S84oHIJ87Km0xZIi4GJs2nhBFoQAAA7) |    |
-| :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :- |
-
- 
-
-| ![](data:image/png;base64,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) |    |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :- |
-
- 
-
-| ![](data:image/png;base64,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) |    |
-| :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :- |
-
-If the 95% bootstrap CI contained the value of 0, the invasion of exotic species did not significantly affect the variables. If 95% bootstrap CI > 0, the invasion of exotic species significantly increased the amount of soil carbon (*p* < 0.05). If 95% bootstrap CI < 0, the invasion of exotic species significantly decreased the amount of soil carbon (*p *<0.05) .
-
-We employed a random effects model to conduct heterogeneity tests, thereby assessing the impact and quantifying the degree of influence of invasive plants on various types of soil carbon across different ecosystem types (forests, estuaries, etc.), as well as the impact of invasive plants on the various carbon types at different soil depths.
-
- To assess publication bias, we used funnel plots, which are graphical tools that help visualize the distribution of studies in a meta-analysis. Funnel plots were constructed with the effect size (lnRR) on the x-axis and the SE of the effect size on the y-axis. Funnel plot symmetry is a key indicator of the absence of publication bias. Notably, if the plot is symmetric, with studies evenly distributed around the central axis, this suggests that there is no publication bias. Conversely, asymmetry may indicate the presence of publication bias. To quantitatively evaluate publication bias, we employed Egger's regression test, in which the SE of the effect size is regressed against the effect size itself. A p value greater than 0.05 suggests no publication bias, whereas a *p* value less than 0.05 indicates the presence of publication bias. If publication bias was detected (*p*< 0.05), we applied the trim-and-fill method to reanalyse the data. This method involves mirroring any missing studies in the funnel plot to estimate potential unpublished studies and then applying a random effects model to reanalyse the imputed data, which yields the final pooled effect size and its SE. Funnel plots were constructed for the data used in each analysis. Therefore, this approach helps ensure that our conclusions are robust and not unduly influenced by publication bias.
-
-### **Access information  (Data Source)**
-
-**Data was derived from the following sources:**
-
-Bai, S., Conant, R. T., Zhou, G., Wang, Y., Wang, N., Li, Y., & Zhang, K. (2016). Effects of moso bamboo encroachment into native, broad-leaved forests on soil carbon and nitrogen pools. *Scientific Reports, 6*(1), 31480.  [https://doi.org/doi:10.1038/srep31480](https://doi.org/doi:10.1038/srep31480)
-
-Boscutti, F., Pellegrini, E., Casolo, V., de Nobili, M., Buccheri, M., & Alberti, G. (2020). Cascading effects from plant to soil elucidate how the invasive* Amorpha fruticosa* L. impacts dry grasslands. *Journal of Vegetation Science, 31*(4), 667-677. [https://doi.org/10.1111/jvs.12879](https://doi.org/10.1111/jvs.12879)
-
-Bradford, M. A., Strickland, M. S., DeVore, J. L., & Maerz, J. C. (2012). Root carbon flow from an invasive plant to belowground foodwebs. *Plant and Soil, 359*(1), 233-244.  [https://doi.org/10.1007/s11104-012-1210-y](https://doi.org/10.1007/s11104-012-1210-y)
-
-Bu, N., Wu, S., Yang, X., Sun, Y., Chen, Z.L., Ma, X., . . . Yan, Z. (2018). Spartina alterniflora invasion affects methane emissions in the Yangtze River estuary. *Journal of Soils Sediments, 19*, 579-587.
-
-Bu, N. S., Yang, X., Li, G. H., Ma, X. P., Song, Y. T., Ma, F., . . . Yan, Z. J. (2018). Effects of *Spartina alterniflora* invasion on soil carbon dynamics in wetlands of the Yangtze River estuary. *Zhongguo Huanjing Kexue/China Environmental Science, 38*, 2671-2679.
-
-Caldwell, B. A. (2006). Effects of invasive scotch broom on soil properties in a Pacific coastal prairie soil. *Applied Soil Ecology, 32*(1), 149-152. [https://doi.org/10.1016/j.apsoil.2004.11.008](https://doi.org/10.1016/j.apsoil.2004.11.008)
-
-Chen, F., Zheng, H., Kai, Z., Ouyang, Z., Wu, Y., Shi, Q., & Li, H. (2013). Non-linear impacts of Eucalyptus plantation stand age on soil microbial metabolic diversity. *Journal of Soils and Sediments, 13*.  [https://doi.org/0.1007/s11368-013-0669-3](https://doi.org/0.1007/s11368-013-0669-3)
-
-Cheng, X., Chen, J., Luo, Y., Henderson, R., An, S., Zhang, Q., . . . Li, B. (2008). Assessing the effects of short-term *Spartina alterniflora* invasion on labile and recalcitrant C and N pools by means of soil fractionation and stable C and N isotopes. *Geoderma, 145*(3), 177-184. [https://doi.org/10.1016/j.geoderma.2008.02.013](https://doi.org/10.1016/j.geoderma.2008.02.013)
-
-Chi, X.-c., Song, C., Zhu, X., Wang, N., Wang, X., & Bai, S. (2020). Effects of moso bamboo invasion on soil active organic carbon and nitrogen in a evergreen broad-leaved forest in subtropical China.* Chinese Journal of Ecology, 39*(7), 2263-2272.
-
-Cuassolo, F., Balseiro, E., & Modenutti, B. (2012). Alien vs. native plants in a Patagonian wetland: elemental ratios and ecosystem stoichiometric impacts. *Biological Invasions, 14*(1), 179-189.  [https://doi.org/10.1007/s10530-011-9995-9](https://doi.org/10.1007/s10530-011-9995-9)
-
-Cusack, D. F., Lee, J. K., McCleery, T. L., & LeCroy, C. S. (2015). Exotic grasses and nitrate enrichment alter soil carbon cycling along an urban–rural tropical forest gradient. *Global Change Biology, 21*(12), 4481-4496. [https://doi.org/10.1111/gcb.13066](https://doi.org/10.1111/gcb.13066)
-
-de Souza, T., de Lucena, E., Nascimento, G., & da Silva, L. (2023). Biochemical characterization and mycorrhizal fungal community of plant species in the Brazilian seasonal dry forest. *Journal of Basic Microbiology, 63*(11), 1242-1253. [https://doi.org/10.1002/jobm.202300269](https://doi.org/10.1002/jobm.202300269)
-
-Feng, D. (2022). Characteristics of particulate organic carbon and nitrogen in soil of *Leucaena leucocephala* plantation in the dry-hot valley. *Forest Research, 35*.  [https://doi.org/10.13275/j.cnki.lykxyj.2022.01.005](https://doi.org/10.13275/j.cnki.lykxyj.2022.01.005)
-
-Feng, J., Wang, S., Wang, S., Ying, R., Yin, F., Jiang, L., & Li, Z. (2019). Effects of invasive *Spartina alterniflora* Loisel. and subsequent ecological replacement by *Sonneratia apetala* Buch.-Ham. on soil organic carbon fractions and stock. *Forests, 10*(2). [https://doi.org/10.3390/f10020171](https://doi.org/10.3390/f10020171)
-
-Fraterrigo, J. M., & Rembelski, M. K. (2021). Frequent fire reduces the magnitude of positive interactions between an invasive grass and soil microbes in temperate forests. *Ecosystems, 24*(7), 1738-1755. [https://doi.org/10.1007/s10021-021-00615-x](https://doi.org/10.1007/s10021-021-00615-x)
-
-Gang, W., Wenbin, Y., Guoxiang, W., Jin'e, L., & Ziqing, H. (2013). The effects of *Spartina alterniflora *seaward invasion on soil organic carbon fractions,sources and distribution. *Acta Ecologica Sinica, 33*, 2474-2483.  [https://doi.org/10.5846/stxb201201100056](https://doi.org/10.5846/stxb201201100056)
-
-Gasch, C. K., Enloe, S. F., Stahl, P. D., & Williams, S. E. (2013). An aboveground–belowground assessment of ecosystem properties associated with exotic annual brome invasion. *Biology and Fertility of Soils, 49*(7), 919-928. [https://doi.org/10.1007/s00374-013-0790-x](https://doi.org/10.1007/s00374-013-0790-x)
-
-Guoming, Q., Danjuan, M., Jia-en, Z., Junfang, X., & Zhong, Q. (2016). Impacts of* Ipomoea cairica *and *Wedelia trilobata* invasion on soil chemical and microbiological characteristics. *Journal of Plant Nutrition and Fertilizers, 22*(2), 439-449. [https://doi.org/10.11674/zwyf.14417](https://doi.org/10.11674/zwyf.14417)
-
-Hu, H., Sun, H., Wu, J., Liu, J., Jin, H., & Tao, K. (2023). Response of bacterial community characteristics in the rhizosphere soil of *Stellera chamaejasme* L. to its expansion on the Qinghai‐Tibet Plateau. *Land Degradation & Development, 34*. [https://doi.org/10.1002/ldr.4835](https://doi.org/10.1002/ldr.4835)
-
-Hu, Z., Li, J., Shi, K., Ren, G., Dai, Z., Sun, J., . . . Du, D. (2021). Effects of Canada goldenrod invasion on soil extracellular enzyme activities and ecoenzymatic stoichiometry. *Sustainability, 13*(7). [https://doi.org/10.3390/su13073768](https://doi.org/10.3390/su13073768)
-
-Huang, X., Liang, S., Tao, Y., Wang, X., & Duan, Y. (2021). Distribution characteristics of organic carbon stocks of *Spartina alterniflora* in Dafeng River Estuary, Beibu Gulf. *Guihaia, 41*(06), 853-861. [https://doi.org/10.11931/guihaia.gxzw202012054](https://doi.org/10.11931/guihaia.gxzw202012054)
-
-Jian-wen, Z. (2011). Effect of invasive plants (*Conyza sumatrenss* and* Alternanthera philoxeroides*) on soil carbon and nitrogen processes. *Journal of Agro-Environment Science*. [https://doi.org/10.1080/00405000.2010.522047](https://doi.org/10.1080/00405000.2010.522047)
-
-Jin, B., Lai, D. Y. F., Gao, D., Tong, C., & Zeng, C. (2017). Changes in soil organic carbon dynamics in a native C4 plant-dominated tidal marsh following* Spartina alterniflora* invasion. *Pedosphere, 27*(5), 856-867. [https://doi.org/10.1016/S1002-0160(17)60396-5](https://doi.org/10.1016/S1002-0160\(17\)60396-5)
-
-Kassi, S.-P. A. Y., Koné, A. W., Tondoh, J. E., & Koffi, B. Y. (2017). *Chromoleana odorata *fallow-cropping cycles maintain soil carbon stocks and yam yields 40 years after conversion of native- to farmland, implications for forest conservation. *Agriculture, Ecosystems & Environment, 247*, 298-307. [https://doi.org/10.1016/j.agee.2017.06.044](https://doi.org/10.1016/j.agee.2017.06.044)
-
-Koteen, L. E., Baldocchi, D. D., & Harte, J. (2011). Invasion of non-native grasses causes a drop in soil carbon storage in California grasslands. *Environmental Research Letters, 6*(4), 044001.  [https://doi.org/10.1088/1748-9326/6/4/044001](https://doi.org/10.1088/1748-9326/6/4/044001)
-
-Kramer, T. D., Warren, R. J., Tang, Y., & Bradford, M. A. (2012). Grass invasions across a regional gradient are associated with declines in belowground carbon pools. *Ecosystems, 15*(8), 1271-1282.  [https://doi.org/10.1007/s10021-012-9583-6](https://doi.org/10.1007/s10021-012-9583-6)
-
-Li, Y., Li, Y., Chang, S. X., Xu, Q., Guo, Z., Gao, Q., . . . Liang, X. (2017). Bamboo invasion of broadleaf forests altered soil fungal community closely linked to changes in soil organic C chemical composition and mineral N production. *Plant and Soil, 418*(1), 507-521. [https://doi.org/10.1007/s11104-017-3313-y](https://doi.org/10.1007/s11104-017-3313-y)
-
-Liang, L. (2016). Effect of the invasion by *Soildago canadensis* on soil properties in Hangzhou bay wetland and reclamation district. Master's Thesis, Hangzhou Normal University.
-
-Liang, L., Ye, X., Wu, M., Shao, X., & Li, C. (2016). Invasion effects of *Solidago canadensis* on soil nutrients and active organic carbon components in reclamation district of Hangzhou bay wetland. *Soil, 48*(04), 680-685.  [https://doi.org/10.13758/j.cnki.tr.2016.04.009](https://doi.org/10.13758/j.cnki.tr.2016.04.009)
-
-Lin, M., Chen, Y., Cheng, L., Zheng, Y., Wang, W., Sardans, J., . . . Peñuelas, J. (2023). Response of topsoil Fe-bound organic carbon pool and microbial community to* Spartina alterniflora* invasion in coastal wetlands. *CATENA, 232*, 107414. [https://doi.org/10.1016/j.catena.2023.107414](https://doi.org/10.1016/j.catena.2023.107414)
-
-Matos, C., Teixeira, R., Silva, I., Costa, M., & Silva, A. (2019). Crop-weed competition changes the decomposition of soil organic matter fractions in the rhizosphere. *Archives of Agronomy and Soil Science, 65*(11), 1507-1520.  [https://doi.org/10.1080/03650340.2019.1566717](https://doi.org/10.1080/03650340.2019.1566717)
-
-Murugan, R., Beggi, F., Prabakaran, N., Maqsood, S., & Joergensen, R. G. (2020). Changes in plant community and soil ecological indicators in response to *Prosopis juliflora *and *Acacia mearnsii invasion and removal in two biodiversity hotspots in Southern India.* 2, 61-72.  [https://doi.org/10.1007/s42832-019-0020-z](https://doi.org/10.1007/s42832-019-0020-z)
-
-Nasto, M. K., McLeod, M. L., Bullington, L. S., Lekberg, Y., & Stark, J. M. (2021). The effect of plant invasion on soil microbial carbon‐use efficiency in semi‐arid grasslands of the Rocky Mountain West. *Journal of Ecology, 110*, 479 - 493. [https://doi.org/10.1111/1365-2745.13815](https://doi.org/10.1111/1365-2745.13815)
-
-Qin, T., Chunmei, N., Takeshi, T., Norikazu, Y., Weiyu, S., & Sheng, D. (2017). Relationship among vegetation types and soil microbial biomass in the Loess Hilly region of China. *Acta Ecologica Sinica, 37*. [https://doi.org/10.5846/stxb201607311571](https://doi.org/10.5846/stxb201607311571)
-
-Rau, B., Johnson, D., Blank, R., Lucchesi, A., Caldwell, T., & Schupp, E. (2011). Transition from sagebrush steppe to annual grass (*Bromus tectorum*): Influence on belowground carbon and nitrogen. *Rangeland Ecology & Management, 64*, 139-147. [https://doi.org/10.2307/25835915](https://doi.org/10.2307/25835915)
-
-Sarkhot, D. V., Grunwald, S., Ge, Y., & Morgan, C. L. S. (2012). Total and available soil carbon fractions under the perennial grass *Cynodon dactylon* (L.) Pers and the bioenergy crop *Arundo donax* L. *Biomass and Bioenergy, 41*, 122-130. [https://doi.org/10.1016/j.biombioe.2012.02.015](https://doi.org/10.1016/j.biombioe.2012.02.015)
-
-Sheng, Y., Luan, Z., Yan, D., Li, J., Xie, S., Liu, Y., . . . Wu, C. (2022). Effects of* Spartina alterniflora *invasion on soil carbon, nitrogen and phosphorus in Yancheng coastal wetlands. *Land, 11*(12).  [https://doi.org/10.3390/land11122218](https://doi.org/10.3390/land11122218)
-
-Strickland, M. S., Devore, J. L., Maerz, J. C., & Bradford, M. A. (2010). Grass invasion of a hardwood forest is associated with declines in belowground carbon pools. *Global Change Biology, 16*(4), 1338-1350. [https://doi.org/10.1111/j.1365-2486.2009.02042.x](https://doi.org/10.1111/j.1365-2486.2009.02042.x)
-
-Strickland, M. S., DeVore, J. L., Maerz, J. C., & Bradford, M. A. (2011). Loss of faster-cycling soil carbon pools following grass invasion across multiple forest sites. *Soil Biology and Biochemistry, 43*(2), 452-454. [https://doi.org/10.1016/j.soilbio.2010.10.006](https://doi.org/10.1016/j.soilbio.2010.10.006)
-
-Sun, C. (2023). *E*ffects of the invasion of Ambrosia artemisiifolia and Bidens pilosa on soil microbial community structures and carbon metabolic pathways*.* Master's Thesis, Hebei University, [https://link.cnki.net/doi/10.27103/d.cnki.ghebu.2023.002647](https://link.cnki.net/doi/10.27103/d.cnki.ghebu.2023.002647)
-
-Sun, F., Ou, Q., Yu, H., Li, N., & Peng, C. (2019). The invasive plant *Mikania micrantha* affects the soil foodweb and plant-soil nutrient contents in orchards. *Soil Biology and Biochemistry, 139*, 107630. [https://doi.org/10.1016/j.soilbio.2019.107630](https://doi.org/10.1016/j.soilbio.2019.107630)
-
-Sun Huimin, Jiang, J., Cui, L., Shuifeng, Z., & Jinchi, Z. (2018). Effects of* Spartina alterniflora *invasion on soil organic carbon composition of mangrove wetland in Zhangjiang River Estuary. *Chinese Journal of Plant Ecology, 42*(7), 774-784. [https://doi.org/10.3389/fmars.2022.890811](https://doi.org/10.3389/fmars.2022.890811)
-
-Tamura, M., & Tharayil, N. (2014). Plant litter chemistry and microbial priming regulate the accrual, composition and stability of soil carbon in invaded ecosystems. *New Phytologist, 203*(1), 110-124.  [https://doi.org/10.1111/nph.12795](https://doi.org/10.1111/nph.12795)
-
-Tian, C., Wang, W., Wang, H., Chen, H., & Tian, J. (2023). Plant invasion mediates the regulation of topsoil organic carbon sequestration by the fungal community in coastal wetlands. *CATENA, 227*, 107118. [https://doi.org/10.1016/j.catena.2023.107118](https://doi.org/10.1016/j.catena.2023.107118)
-
-Wei, H., Xu, J., Quan, G., Zhang, J., & Qin, Z. (2017). Invasion effects of *Chromolaena odorata* on soil carbon and nitrogen fractions in a tropical savanna. *Ecosphere, 8*(5), e01831. [https://doi.org/10.1002/ecs2.1831](https://doi.org/10.1002/ecs2.1831)
-
-Wei, H., Xu, J., Quan, G., Zhang, J., & Qin, Z. (2018). Invasion of *Praxelis clematidea* increases the chemically non-labile rather than labile soil organic carbon in a tropical savanna. *Archives of Agronomy and Soil Science, 64*(3), 441-447. [https://doi.org/10.1080/03650340.2017.1359412](https://doi.org/10.1080/03650340.2017.1359412)
-
-Wei, Y.-c., Ouyang, Z.-y., Miao, H., & Zheng, H. (2009). Exotic* Pinus carbaea* causes soil quality to deteriorate on former abandoned land compared to an indigenous* Podocarpus *plantation in the tropical forest area of southern China. *Journal of Forest Research, 14*(4), 221-228. [https://doi.org/10.1007/s10310-009-0130-z](https://doi.org/10.1007/s10310-009-0130-z)
-
-Wu, M., He, Z., Fung, S., Cao, Y., Guan, D., Peng, Y., & Lee, S. Y. (2020). Species choice in mangrove reforestation may influence the quantity and quality of long-term carbon sequestration and storage. *Science of The Total Environment, 714*, 136742. [https://doi.org/10.1016/j.scitotenv.2020.136742](https://doi.org/10.1016/j.scitotenv.2020.136742).
-
-Xiaowen, L., Fu-lin, H., Chengmei, Q., Qinguo, Q., Yan, A., Yuan, L.H., . . . Aocheng, C. (2016). Effect of invasive plants* Ambrosia artemisiifolia* L. on soil carbon and nitrogen transition. *Acta Agriculturae Zhejiangensis,28,* 297-301.
-
-Xuehui, Z., Zhongsheng, Z., Zhe, L., Min, L., Haitao, W., & Ming, J. (2021). Impacts of *Spartina alterniflora* invasion on soil carbon contents and stability in the Yellow River Delta, China. *Science of The Total Environment, 775*, 145188. [https://doi.org/10.1016/j.scitotenv.2021.145188](https://doi.org/10.1016/j.scitotenv.2021.145188)
-
-Yang, W., Qiao, Y., Li, N., Zhao, H., Yang, R., Leng, X., . . . An, S. (2017). Seawall construction alters soil carbon and nitrogen dynamics and soil microbial biomass in an invasive *Spartina alterniflora *salt marsh in eastern China. *Applied Soil Ecology, 110*, 1-11. [https://doi.org/10.1016/j.apsoil.2016.11.007](https://doi.org/10.1016/j.apsoil.2016.11.007)
-
-Yang, W., Yan, Y., Jiang, F., Leng, X., Cheng, X., & An, S. (2016). Response of the soil microbial community composition and biomass to a short-term Spartina alterniflora invasion in a coastal wetland of eastern China. *Plant and Soil, 408*(1), 443-456. [https://doi.org/10.1007/s11104-016-2941-y](https://doi.org/10.1007/s11104-016-2941-y)
-
-Yu, C., Feng, J., Liu, K., Wang, G., Zhu, Y., Chen, H., & Guan, D. (2020). Changes of ecosystem carbon stock following the plantation of exotic mangrove Sonneratia apetala in Qi'ao Island, China. *Science of The Total Environment, 717*, 137142. [https://doi.org/10.1016/j.scitotenv.2020.137142](https://doi.org/10.1016/j.scitotenv.2020.137142)
-
-Yuan, J., Ding, W., Liu, D., Xiang, J., & Lin, Y. (2014). Methane production potential and methanogenic archaea community dynamics along the* Spartina alterniflora* invasion chronosequence in a coastal salt marsh. *Applied Microbiology and Biotechnology, 98*(4), 1817-1829.  [https://doi.org/10.1007/s00253-013-5104-6](https://doi.org/10.1007/s00253-013-5104-6)
-
-Zhang, G., Bai, J., Zhao, Q., Jia, J., Wang, W., & Wang, X. (2020). Bacterial succession in salt marsh soils along a short-term invasion chronosequence of *Spartina alterniflora* in the Yellow River estuary, China. *Microbial Ecology, 79*(3), 644-661. [https://doi.org/10.1007/s00248-019-01430-7](https://doi.org/10.1007/s00248-019-01430-7)
-
-Zhang, L., Li, H., Wu, C., Linghu, G., Zhu, H., Khamphilavong, K., . . . Kang, Y. (2023). Far-reaching effects on soil properties and underground microbial ecosystem after the introduction of black locusts in forest.* 11*.  [https://doi.org/10.3389/fevo.2023.1210498](https://doi.org/10.3389/fevo.2023.1210498)
-
-Zhao, P., Liu, B., Zhao, H., Lei, Z., & Zhou, T. (2023). Significant changes in soil microbial community structure and metabolic function after *Mikania micrantha *invasion. *Scientific Reports, 13*(1), 1141.  [https://doi.org/10.1038/s41598-023-27851-6](https://doi.org/10.1038/s41598-023-27851-6)
-
-Zhiyuan, H., Jiaqi, Z., Yizhou, D., Kangwei, S., Guangqian, R., Babar, I., . . . Daolin, D. (2022). Substrate availability regulates the suppressive effects of *Canada* goldenrod invasion on soil respiration. *Journal of Plant Ecology, 15*(3), 509-523. [https://doi.org/10.1093/jpe/rtab073](https://doi.org/10.1093/jpe/rtab073)
+# Stock deposit: He et al. (2025), soil carbon fractions under plant invasion
+
+This folder holds the **stock limb** of the analysis: paired invaded and uninvaded measurements
+of eight soil carbon fractions.
+
+| Field | Value |
+|---|---|
+| Source publication | He, Y., Li, J., Siemann, E., Li, B., Xu, Y. & Wang, Y. (2025). Plant invasion increases soil microbial biomass carbon: meta-analysis and empirical tests. *Global Change Biology*, 31(3), e70109. |
+| Article DOI | 10.1111/gcb.70109 |
+| Data DOI | 10.5061/dryad.c59zw3rkc |
+| File used | `Meta-analysis_Data.xlsx`, 164,065 bytes |
+| Licence | Dryad deposits are released under CC0 1.0 |
+| Retrieved | 2026-07-30, manual download |
+| Bibliography key | `he2025plant` |
+
+## Files
+
+| File | What it is |
+|---|---|
+| `Meta-analysis_Data.xlsx` | the deposit itself, **gitignored** under the raw-data convention |
+| `README.md` | this file, the canonical record of where the data came from |
+| `README-deposit.md` | the depositor's own README, reproduced verbatim |
+| `PROVENANCE.md` | earlier provenance note, retained for the record |
+
+## The folder name is wrong and is kept anyway
+
+The dataset is **He et al.**, not Xu et al. The directory was named `dryad-xu2025` when the file
+was first placed here, and renaming it would change a path the manuscript depends on for no
+scientific gain. Cite it as He et al. (2025).
+
+## Retrieval
+
+Download from the Dryad landing page for the data DOI above, using a browser. Dryad serves a
+proof-of-work challenge to automated clients, so command-line retrieval fails; the API download
+endpoint requires a bearer token and returns `{"error":"Unauthorized"}` without one. Do not
+attempt to circumvent the challenge.
+
+## Structure
+
+A single sheet with a two-row header. Columns 1 to 15 carry study metadata. From column 16 the
+sheet is eight blocks of 12 columns, one per carbon fraction (TC, SOC, DOC, MBC, POC, MAOC, ROC,
+WSOC). Each block carries data source, index, units, soil depth, and paired mean, standard
+deviation and sample size for the native and invaded states, followed by a blank separator
+column.
+
+## How the manuscript uses it
+
+The `data-stock` chunk of `01.manuscript/invasion-rate-versus-stock.qmd` parses this workbook
+directly at render time. There is no intermediate script: the block layout is detected from row
+1, the sub-headers in row 2 are verified rather than assumed, and any block whose layout does
+not match is skipped. Effect sizes are recomputed from the reported means, dispersions and
+sample sizes rather than taken from the deposit's own `lnRR` columns, so that the stock and flux
+limbs use identical estimators and the same small-sample correction.
+
+## Traps
+
+1. **Coordinates are unreliable.** Some rows give latitudes beyond 90 degrees, which indicates
+   longitude values entered in the latitude field. The coordinate fields are therefore not used
+   as moderators.
+2. **Habitat labels vary in case and spacing** for the same habitat, so they are collapsed to
+   classes by pattern rather than matched exactly.
+3. **Species names run words together and carry trailing authorities**, with at least one
+   persistent misspelling: *Chromolaena* appears throughout as "Chromolaeo". The manuscript maps
+   them explicitly, taxon by taxon, so that every correction stays visible; see the `coverage`
+   chunk.
+4. **Depth is a range string**, not a number, and is parsed to bounds and a midpoint.
+5. **Bulk density is never reported**, which is why concentration observations cannot be
+   converted to areal stocks. That absence is a finding of the paper, not an inconvenience.

@@ -69,10 +69,17 @@ cascade with no plant invasion involved.
 
 ## Pipeline
 
-Eight scripts in `02.inputs/scripts/`, run in order by the manuscript when outputs are absent:
-probe the source workbook, tidy it to long format, fit the stock models, draw the fraction and
-moderator figures, compute coverage, draw the rate-stock figure, fit the turnover test, and fit
-the flux meta-analysis on the Negesse deposit. Base R plus `metafor`.
+**There are no analysis scripts.** Every stage lives in the manuscript as a visible R chunk, so
+rendering the document is running the analysis. In order: `setup` (helpers, the shared model
+and the shared forest-plot routine), `data-stock` (parse the He et al. workbook, build
+moderators, construct missing dispersion, compute effect sizes), `data-flux` (the same for the
+Negesse et al. deposit), `tbl-rate`, `fit-fractions`, `fig-fractions`, `fit-moderators`,
+`fig-moderators`, `coverage`, `fit-flux`, `fig-flux`, `fig-ratestock`, `fit-contrast`,
+`tbl-sens`, `fit-turnover`, `fig-turnover`, `abstract-guard`. Base R plus `metafor`, `readxl`
+and `knitr`.
+
+The superseded eight-script pipeline is in `02.inputs/archive/scripts/`. It is not read by
+anything and is kept only for the record.
 
 ## Submission checklist, all passing
 
