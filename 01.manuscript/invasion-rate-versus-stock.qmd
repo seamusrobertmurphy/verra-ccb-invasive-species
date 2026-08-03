@@ -87,7 +87,7 @@ fit <- function(s) {
   m <- try(rma.mv(yi, vi, random = ~ 1 | study/obs, data = s, method = "REML"), silent = TRUE)
   if (inherits(m, "try-error")) return(NULL)
   list(est = pct(as.numeric(m$b)), lo = pct(m$ci.lb), hi = pct(m$ci.ub),
-       k = m$k, ns = length(unique(s$study)), p = m$pval, model = m)
+       k = m$k, ns = length(unique(s$study)), p = m$pval)
 }
 
 # ---- weighted coefficient of variation, for constructing missing dispersion --------------
@@ -206,7 +206,9 @@ SUB <- c("source", "index", "units", "depth", "M_native", "SD_native", "N_native
          "M_invasive", "SD_invasive", "N_invasive", "lnRR")
 num <- function(x) suppressWarnings(as.numeric(ifelse(trimws(as.character(x)) %in%
                                                       c("n/a", "NA", "", "-"), NA, x)))
-VALS <- c("M_native","SD_native","N_native","M_invasive","SD_invasive","N_invasive","lnRR")
+# the deposit's own lnRR column is deliberately not coerced or used: effect sizes are
+# recomputed below, so that both limbs share one estimator and one small-sample correction
+VALS <- c("M_native", "SD_native", "N_native", "M_invasive", "SD_invasive", "N_invasive")
 out <- list()
 for (i in seq_along(starts)) {
   cols <- starts[i] + (0:10)             # 11 populated columns; the 12th is a spacer
@@ -224,12 +226,13 @@ d <- do.call(rbind, out); rownames(d) <- NULL
 d$MAT <- num(d$MAT); d$MAP <- num(d$MAP)
 
 # ---- moderators --------------------------------------------------------------------------
-# Depth is recorded as a range string; both bounds are retained, because the prediction under
-# test is that a gain in topsoil masks a loss at depth.
+# Depth is recorded as a range string. The lower bound drives the depth bands, because the
+# prediction under test is that a gain in topsoil masks a loss at depth; the midpoint is the
+# continuous form of the same moderator.
 dp <- t(vapply(regmatches(d$depth_raw,
                           regexec("^\\s*([0-9.]+)\\s*-\\s*([0-9.]+)", d$depth_raw)),
                function(v) if (length(v) == 3) as.numeric(v[2:3]) else c(NA, NA), c(0, 0)))
-d$depth_top <- dp[, 1]; d$depth_bot <- dp[, 2]; d$depth_mid <- rowMeans(dp)
+d$depth_bot <- dp[, 2]; d$depth_mid <- rowMeans(dp)
 
 h <- tolower(gsub("[^a-z]", "", tolower(d$habitat)))   # labels vary in case and spacing
 d$habitat_class <- ifelse(grepl("forest|orchard", h), "forest",
@@ -267,7 +270,7 @@ n_area_stud <- length(unique(soc$study[soc$basis == "areal"]))
 write.csv(d, "03.outputs/he2025-effectsizes.csv", row.names = FALSE)
 ```
 
-Records were extracted for every fraction reported: total carbon, soil organic carbon, dissolved organic carbon, microbial biomass carbon, particulate organic carbon, mineral-associated organic carbon, readily oxidisable carbon and water-soluble organic carbon. Observations were retained where both means were present and positive, yielding `r f0(n_obs)` paired observations from `r n_stud` studies. Sampling depth was converted to bounds and a midpoint; habitats were collapsed into forest, grassland, wetland and coastal, and cropland. The basis of measurement was classified as areal where the reported unit expressed mass per unit ground area and as concentration otherwise, a distinction central to the analysis because the two are related by bulk density.
+Records were extracted for every fraction reported: total carbon, soil organic carbon, dissolved organic carbon, microbial biomass carbon, particulate organic carbon, mineral-associated organic carbon, readily oxidisable carbon and water-soluble organic carbon. Observations were retained where both means were present and positive, yielding `r f0(n_obs)` paired observations from `r n_stud` studies. Sampling depth was converted to a lower bound and a midpoint; habitats were collapsed into forest, grassland, wetland and coastal, and cropland. The basis of measurement was classified as areal where the reported unit expressed mass per unit ground area and as concentration otherwise, a distinction central to the analysis because the two are related by bulk density.
 
 ## 2.3 Flux data
 
@@ -331,6 +334,7 @@ x$obs <- seq_len(nrow(x))
 
 n_flux <- nrow(x); n_site <- length(unique(x$study))
 n_ctry <- length(unique(x$Country)); n_src <- length(unique(na.omit(x$source)))
+pct_imp_flux <- 100 * mean(x$sd_imputed)
 ```
 
 Flux effect sizes were extracted from the compilation deposited by @negesse2025invasive (Dryad doi:10.5061/dryad.hhmgqnkq5), which assembles paired measurements of soil processes from invaded plots and adjacent uninvaded controls. As with the stock limb, the search, screening and inclusion decisions are those of the source. Retaining observations with positive paired means yielded `r f0(n_flux)` paired observations from `r n_site` sites in `r n_ctry` countries on six continents.
@@ -339,7 +343,7 @@ The deposit carries no complete study identifier: the author field is populated 
 
 Response variables were assigned to six functional classes before any model was fitted: soil respiration, which is a direct carbon flux and the quantity of primary interest; carbon-acquiring extracellular enzymes; nutrient-acquiring extracellular enzymes; nitrogen transformation rates; microbial pools; and faunal abundance. Carbon-acquiring and nutrient-acquiring enzymes were separated because the two groups index different limitations, the first the supply of degradable carbon and the second the demand for nitrogen and phosphorus, and an invader that accelerates carbon cycling specifically should raise the first more than the second. Keeping them apart makes that a testable prediction rather than an assumption. Enzyme activities and microbial pools are not fluxes, and we do not treat them as such; they are the proximate machinery of decomposition and are reported as evidence on the mechanism.
 
-Effect sizes were recomputed from the reported means, dispersions and sample sizes rather than taken from the deposit's own log ratio column, so that both limbs use identical estimators and identical corrections.
+Effect sizes were recomputed from the reported means, dispersions and sample sizes rather than taken from the deposit's own log ratio column, so that both limbs use identical estimators and identical corrections. Every flux observation reported a standard deviation and a sample size, so dispersion was constructed for `r f1(pct_imp_flux)`% of them.
 
 ## 2.4 Rate data
 
@@ -444,7 +448,7 @@ draw_fig1(); invisible(dev.off())    # archived copy, reproduced in the reposito
 draw_fig1()
 ```
 
-Soil organic carbon was `r sg(r_soc$est)`% higher under invasion, but the interval spanned zero (95% CI `r sg(r_soc$lo)` to `r sg(r_soc$hi)`%, *p* `r pf(r_soc$p)`), and the estimate was not robust to specification, falling to `r sg(pct(as.numeric(m_unw$b)))`% under equal weighting. Of the eight fractions examined, only two had intervals excluding zero: microbial biomass carbon rose `r sg(r_mbc$pct)`% (*p* `r pf(r_mbc$pval)`) and particulate organic carbon fell `r f1(abs(r_poc$pct))`% (*p* `r pf(r_poc$pval)`). Mineral-associated organic carbon, the fraction most relevant to durable storage, rested on `r r_maoc$k_obs` observations from `r r_maoc$k_study` studies and could not be resolved. Heterogeneity exceeded 99% throughout.
+Soil organic carbon was `r sg(r_soc$est)`% higher under invasion, but the interval spanned zero (95% CI `r sg(r_soc$lo)` to `r sg(r_soc$hi)`%, *p* `r pf(r_soc$p)`), and the estimate was not robust to specification, falling to `r sg(pct(as.numeric(m_unw$b)))`% under equal weighting. Of the eight fractions examined, only two had intervals excluding zero: microbial biomass carbon rose `r sg(r_mbc$pct)`% (*p* `r pf(r_mbc$pval)`) and particulate organic carbon fell `r f1(abs(r_poc$pct))`% (*p* `r pf(r_poc$pval)`). Mineral-associated organic carbon, the fraction most relevant to durable storage, rested on `r r_maoc$k_obs` observations from `r r_maoc$k_study` studies and could not be resolved. Heterogeneity was at least `r f1(min(res$I2))`% in every fraction.
 
 ```{r}
 #| label: fit-moderators
@@ -797,7 +801,7 @@ kable(t3, row.names = FALSE)
 write.csv(t3, file.path(repo, "03.outputs/tables/table-sensitivity.csv"), row.names = FALSE)
 ```
 
-Heterogeneity exceeded 99% for every fraction, which is high even by the standards of ecological synthesis [@senior2016heterogeneity] and means the pooled estimates describe a distribution of effects rather than a common one. There was no evidence of small-study effects in the soil organic carbon subset (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). Dispersion was imputed for only `r f1(100*mean(d$sd_imputed))`% of observations, and excluding them changed the pooled estimate by less than one percentage point. The estimate was sensitive to weighting rather than to imputation, and in no specification did the interval exclude zero.
+Heterogeneity was at least `r f1(min(res$I2))`% for every fraction, which is high even by the standards of ecological synthesis [@senior2016heterogeneity] and means the pooled estimates describe a distribution of effects rather than a common one. There was no evidence of small-study effects in the soil organic carbon subset (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). Dispersion was imputed for only `r f1(100*mean(d$sd_imputed))`% of observations, and excluding them changed the pooled estimate by less than one percentage point. The estimate was sensitive to weighting rather than to imputation, and in no specification did the interval exclude zero.
 
 ## 3.7 The effect declines with the turnover time of the pool
 
@@ -945,7 +949,7 @@ The flux limb carries its own limitations. Its deposit records no complete study
 
 The rate compilation is weaker still, drawing on four sources, tabulated rather than pooled, and conclusions from it are drawn as such.
 
-The stock analysis rests on a single deposited compilation and inherits its inclusion criteria and geographical emphasis. Heterogeneity exceeded 99% for every fraction, so pooled estimates describe a distribution rather than a common effect [@senior2016heterogeneity]. The areal subset carrying the central result comprises `r r_area$k` observations from `r n_area_stud` studies. Mineral-associated carbon was too sparsely represented to test. All comparisons are spatial contrasts without pre-invasion measurement, so pre-existing differences influencing where invaders established cannot be excluded, and mechanisms underlying reported impacts are rarely tested directly in this literature [@levine2003mechanisms].
+The stock analysis rests on a single deposited compilation and inherits its inclusion criteria and geographical emphasis. Heterogeneity was at least `r f1(min(res$I2))`% for every fraction, so pooled estimates describe a distribution rather than a common effect [@senior2016heterogeneity]. The areal subset carrying the central result comprises `r r_area$k` observations from `r n_area_stud` studies. Mineral-associated carbon was too sparsely represented to test. All comparisons are spatial contrasts without pre-invasion measurement, so pre-existing differences influencing where invaders established cannot be excluded, and mechanisms underlying reported impacts are rarely tested directly in this literature [@levine2003mechanisms].
 
 # Conclusions
 
