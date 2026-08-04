@@ -1,18 +1,4 @@
-# Biological invasion increases carbon sequestration rates but not carbon stocks
-
-Sole-authored manuscript for **Global Change Biology**, Research Article. Master document:
-[`01.manuscript/invasion-rate-versus-stock.qmd`](01.manuscript/invasion-rate-versus-stock.qmd).
-
-> **Rendering the manuscript runs the analysis.** Every model, table and figure below is computed when the document
-> builds, from the two deposited datasets in `02.inputs/`, and every number in the prose is an inline R expression.
-> There are no analysis scripts: if it is not in the manuscript, it is not part of the study. Nothing is fetched over
-> the network.
-
-    cd 01.manuscript && quarto render invasion-rate-versus-stock.qmd --to docx
-
-Requires R with `metafor`, `readxl` and `knitr`, plus Quarto. The two raw datasets are gitignored and must be downloaded
-by hand; see [`02.inputs/README-data.md`](02.inputs/README-data.md).
-
+## Carbon storage and crediting outcomes of invasive plant removal under voluntary carbon standards: A synthesis across seven degraded ecosystems
 ------------------------------------------------------------------------------------------------------------------------
 
 ## Abstract
@@ -37,12 +23,15 @@ of over-crediting and a route to bio-perversity.
 
 ------------------------------------------------------------------------------------------------------------------------
 
-## Results, in the order the manuscript presents them
+## Results
 
-### Table 1. Published carbon accumulation rates (Methods 2.4)
+### Table 1. Published carbon accumulation rates 
 
 Reproduced as published, tabulated and never pooled: four sources cannot support a pooled estimate, and the entries
 differ in quantity and in units.
+
+<div align="center">
+
 
 | Source | Invader | Trophic level | Quantity | Invaded | Uninvaded | Ratio |
 |----|----|----|----|----|----|----|
@@ -56,7 +45,11 @@ differ in quantity and in units.
 | Liao 2008 | multiple | primary producer | fluxes including ANPP and litter decomposition | 50 | \- | 1.50 |
 | Liao 2008 | multiple | primary producer | fluxes including ANPP and litter decomposition | 120 | \- | 2.20 |
 
-### Table 2. Pooled effect of invasion by soil carbon fraction (Results 3.1)
+</div>
+
+### Table 2. Pooled effect of invasion by soil carbon fraction 
+
+<div align="center">
 
 | Fraction | Obs. | Studies | Change (%) | CI low | CI high | p     | I² (%) |
 |----------|------|---------|------------|--------|---------|-------|--------|
@@ -69,11 +62,15 @@ differ in quantity and in units.
 | ROC      | 40   | 8       | +34.2      | -26.0  | +143.4  | 0.332 | 100    |
 | WSOC     | 23   | 6       | -22.0      | -41.9  | +4.7    | 0.097 | 99     |
 
+</div>
+
 ### Figure 1. Effect of invasion on eight soil carbon fractions
 
 ![Pooled effect of invasion on eight soil carbon fractions](03.outputs/figures/figure-1-fractions.png)
 
-### Table 3. Moderator tests on soil organic carbon (Results 3.1)
+### Table 3. Moderator tests on soil organic carbon 
+
+<div align="center">
 
 | Moderator                 | Q<sub>M</sub> | df  | p     | Obs. |
 |---------------------------|---------------|-----|-------|------|
@@ -84,14 +81,18 @@ differ in quantity and in units.
 | Mean annual precipitation | 0.37          | 1   | 0.542 | 56   |
 | Basis of measurement      | 0.55          | 1   | 0.460 | 104  |
 
+</div>
+
 ### Figure 2. Soil organic carbon by habitat, depth and basis of measurement
 
 ![Effect of invasion on soil organic carbon by habitat class, sampling depth and basis of
 measurement](03.outputs/figures/figure-2-moderators.png)
 
-### Table 4. Taxonomic concentration of the stock evidence (Results 3.1)
+### Table 4. Taxonomic concentration of the stock evidence 
 
 The pooled estimates are only as general as the studies behind them.
+
+<div align="center">
 
 | Invasive taxon            | Obs. | Share (%) | Studies |
 |---------------------------|------|-----------|---------|
@@ -104,9 +105,13 @@ The pooled estimates are only as general as the studies behind them.
 | *Bidens pilosa*           | 3    | 2.9       | 1       |
 | *Pueraria montana*        | 3    | 2.9       | 1       |
 
-### Table 5. Effect of invasion on soil processes, by functional class (Results 3.2)
+</div>
+
+### Table 5. Effect of invasion on soil processes, by functional class 
 
 Clustered by site, because the deposit carries no complete study identifier.
+
+<div align="center">
 
 | Functional class             | Obs. | Sites | Change (%) | CI low | CI high | p        |
 |------------------------------|------|-------|------------|--------|---------|----------|
@@ -117,20 +122,24 @@ Clustered by site, because the deposit carries no complete study identifier.
 | microbial pool               | 259  | 57    | +12.6      | +1.7   | +24.7   | 0.022    |
 | faunal abundance             | 77   | 18    | -32.3      | -49.0  | -10.1   | 0.007    |
 
+</div>
+
 ### Figure 6. Effect of invasion on soil processes
 
 ![Pooled effect of invasion on soil processes, by functional class](03.outputs/figures/figure-6-flux.png)
 
-### Figure 4. The rate-stock divergence (Results 3.3)
+### Figure 4. The rate-stock divergence 
 
 ![Estimates of the effect of invasion on carbon, expressed as the ratio of invaded to uninvaded values on a logarithmic
 axis](03.outputs/figures/figure-4-rate-stock.png)
 
-### Table 6. Flux against stock, the formal contrast (Results 3.4)
+### Table 6. Flux against stock, the formal contrast 
 
 The gap runs in the predicted direction and is largest against areal stock, which is the correct comparison, but it does
 not reach significance. The manuscript reports this as a consistency check the argument passes, not as a test it
 survives.
+
+<div align="center">
 
 | Stock limb             | Gap (pp) | Q_M  | p     | Stock obs |
 |------------------------|----------|------|-------|-----------|
@@ -138,7 +147,11 @@ survives.
 | Concentration          | +3.6     | 0.03 | 0.874 | 76        |
 | All stock observations | +7.3     | 0.12 | 0.733 | 104       |
 
-### Table 7. Sensitivity of the pooled soil organic carbon estimate (Results 3.6)
+</div>
+
+### Table 7. Sensitivity of the pooled soil organic carbon estimate 
+
+<div align="center">
 
 | Specification                             | Change (%) | 95% CI         | Observations |
 |-------------------------------------------|------------|----------------|--------------|
@@ -147,7 +160,9 @@ survives.
 | Multilevel, observations weighted equally | +6.8       | -11.8 to +29.5 | 104          |
 | Single-level random effects               | +7.6       | -3.7 to +20.3  | 104          |
 
-### Table 8. Effect of invasion by turnover class of the pool (Results 3.7)
+</div>
+
+### Table 8. Effect of invasion by turnover class of the pool 
 
 Classes assigned a priori from published characterisations, before any model was fitted.
 
@@ -165,6 +180,8 @@ Classes assigned a priori from published characterisations, before any model was
 
 ## Repository layout
 
+<div align="center">
+
 | Path             | Contents                                                                                      |
 |------------------|-----------------------------------------------------------------------------------------------|
 | `01.manuscript/` | the master `.qmd`, the rendered `.docx`, and superseded drafts in `archive/`                  |
@@ -174,6 +191,8 @@ Classes assigned a priori from published characterisations, before any model was
 | `05.tasks/`      | study design notes and the evidence base                                                      |
 | `CLAUDE.md`      | working conventions, corrections already forced, and the traps                                |
 | `INDEX.md`       | what each file is and where it sits                                                           |
+
+</div>
 
 Figures and tables in `03.outputs/` are regenerated on every render and are committed because they are what this README
 displays. The `.docx` is a build artefact; the `.qmd` is the source of truth.

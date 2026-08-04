@@ -1,5 +1,6 @@
 ---
-title: "Biological invasion increases carbon sequestration rates but not carbon stocks"
+title: "Carbon storage and crediting outcomes of invasive plant removal under voluntary carbon standards"
+subtitle: "A synthesis across seven degraded ecosystems"
 author:
     - name: Murphy, S
       url: https://scholar.google.com/citations?hl=en&user=jDGq9I4AAAAJ
@@ -167,7 +168,7 @@ We made three predictions before analysis. Rate effects would be large and posit
 
 # Materials and methods
 
-## 2.1 Two limbs of evidence, treated differently
+## 2.1 Two domains
 
 The two questions require different evidence, and we draw on three bodies of it. Stocks and fluxes are each addressed by a formal meta-analysis of paired invaded and uninvaded observations, fitted by identical methods so that the two limbs are directly comparable. Because no single deposit reports both quantities on the same plots, the two meta-analyses necessarily draw on different primary literatures, and the contrast between them is therefore a between-dataset comparison, with the loss of precision that implies. A third body of evidence, a structured compilation of published carbon accumulation rates, is tabulated and compared but **not** pooled, because too few sources report an accumulation rate against a paired uninvaded control for a pooled estimate to be meaningful. It is used to illustrate the divergence within individual studies, not to estimate its magnitude.
 
@@ -374,7 +375,7 @@ kable(t_rate, row.names = FALSE)
 write.csv(t_rate, file.path(repo, "03.outputs/tables/table-rate-evidence.csv"), row.names = FALSE)
 ```
 
-## 2.5 Effect sizes and models
+## 2.5 Effect sizes
 
 Stock effects were quantified as the log response ratio, the natural logarithm of the ratio of invaded to uninvaded means [@hedges1999meta], which is scale-invariant and therefore permits observations reported in ten different units to be combined. The second-order small-sample bias correction of @lajeunesse2015bias was applied explicitly. Where a standard deviation was absent it was constructed from a weighted average coefficient of variation estimated across observations reporting dispersion, following @nakagawa2023robust; where sample size was absent the smallest observed value was substituted, which inflates the sampling variance and downweights the observation.
 
@@ -390,7 +391,7 @@ The prediction was tested by entering turnover rank as a continuous moderator, w
 
 # Results
 
-## 3.1 Carbon stocks show no reliable effect
+## 3.1 Carbon stocks effects
 
 ```{r}
 #| label: fit-fractions
@@ -578,7 +579,7 @@ kable(head(top, 8), row.names = FALSE)
 
 The evidence base is also narrow. Of the soil organic carbon observations, `r f1(top_share)`% concern a single species, *Spartina alterniflora*, and `r f1(poaceae_share)`% concern the grass family alone.
 
-## 3.2 Carbon fluxes and the processes driving them rise
+## 3.2 Carbon fluxes & drivers
 
 ```{r}
 #| label: fit-flux
@@ -619,8 +620,6 @@ kable(data.frame(Class = fcls$class, Observations = fcls$k_obs, Sites = fcls$k_s
 
 The flux limb reverses the stock result. Across `r f0(n_flux)` paired observations from `r n_site` sites, soil respiration was `r cif(q_resp)` higher under invasion (*p* `r pf(q_resp$p)`), on `r q_resp$k_obs` observations from `r q_resp$k_study` sites.
 
-
-
 ```{r}
 #| label: fig-flux
 #| echo: true
@@ -642,7 +641,7 @@ The machinery of decomposition moved with it. Carbon-acquiring extracellular enz
 
 Two results qualify this. Nutrient-acquiring enzymes rose `r cif(q_nenz)`, statistically indistinguishable from the carbon-acquiring group (*Q*~M~ = `r f1(m_enz$QM)`, df = `r m_enz$m`, *p* `r pf(m_enz$QMp)`), so the acceleration is not specific to carbon acquisition and is better read as a general intensification of microbial activity. And on the forest subset alone, soil respiration was `r sg(pct(as.numeric(m_frs$b)))`% (*p* `r pf(m_frs$pval)`) on `r m_frs$k` observations from `r n_forest_resp_site` sites, which is far too few to resolve; the flux result is a cross-biome one and is not demonstrated within forests specifically.
 
-## 3.3 Published accumulation rates point the same way
+## 3.3 Carbon gain studies
 
 Published rate estimates diverge from the stock results in the same direction (Table 1). In a tropical dry deciduous secondary forest of Central India, invasion by *Gliricidia sepium* was associated with a carbon sequestration rate of `r pa_rate$invaded` ± `r pa_rate$invaded_err` Mg C ha^-1^ yr^-1^ against `r pa_rate$uninvaded` ± `r pa_rate$uninvaded_err` in uninvaded forest, a `r f1(pa_rate$ratio)`-fold difference [@pati2025ecological]. A global synthesis reported fluxes including above-ground production and litter decomposition rising 50 to 120 per cent, and shoot carbon rising 133 per cent [@liao2008altered].
 
@@ -731,7 +730,7 @@ Plotted on a common ratio scale (Figure 4), the two classes of estimate separate
 
 The stock class is itself structured. Aboveground plant pools rise: shoot carbon by 133% in a global synthesis [@liao2008altered] and live plant biomass carbon by 104% under invasive predators [@wardle2007promotion]. Soil pools do not, and the non-living pools in the same island system fall by 26%. The distinction between plant and soil stocks therefore runs alongside the distinction between rate and stock, and both point the same way: the carbon that invasion adds is held in fast-cycling, aboveground or labile compartments.
 
-## 3.4 The divergence tested directly, within and between datasets
+## 3.4 Divergence tested
 
 The clearest demonstration is internal to one study. @pati2025ecological measured both quantities on the same plots: total biomass was `r pa_stock$invaded` ± `r pa_stock$invaded_err` Mg ha^-1^ under invasion against `r pa_stock$uninvaded` ± `r pa_stock$uninvaded_err` uninvaded, a `r f1(pa_stock$ratio)`-fold difference, while the sequestration rate differed `r f1(pa_rate$ratio)`-fold. A stock comparison and a rate comparison on the same plots in the same year therefore differ by nearly an order of magnitude in the apparent size of the invasion effect. The uninvaded rate additionally has a standard error exceeding its mean and is not distinguishable from zero, so the ratio should be read as a lower bound on the contrast rather than a precise multiple.
 
@@ -771,13 +770,13 @@ Tested formally across datasets, the divergence is in the predicted direction bu
 
 We therefore do not claim the cross-dataset contrast as a demonstration. The two limbs draw on different primary literatures and cannot be paired plot by plot, and a between-dataset comparison of this size is underpowered by construction. The demonstration rests instead on the two tests that are internal to a single dataset: the within-study divergence above, and the turnover gradient in Section 3.7.
 
-## 3.5 The pattern is not confined to plant invaders
+## 3.5 Patterns of invaders
 
 Invasive rats on 18 New Zealand offshore islands, which suppress seabird colonies and with them the marine nutrient subsidy, were associated with live plant biomass carbon 104% higher and non-living carbon pools 26% lower, for a net increase in total ecosystem carbon of 37% [@wardle2007promotion]. Three features of this result matter here. The two pools move in opposite directions, so a study reporting either alone would reach a different conclusion from one reporting both. The effect is entirely indirect, operating through predation on seabirds and the consequent loss of a marine nutrient subsidy, with no plant invasion involved. And the invader is a predator, so the mechanism cannot be attributed to the growth traits usually invoked to explain invader carbon effects.
 
 Carbon effects of invasion therefore arise across trophic levels, consistent with the framework of @peltzer2010effects, who identify characteristic direct and indirect pathways for primary producers, decomposers, herbivores, pathogens, mutualists and predators alike. The compiled evidence is nevertheless dominated by primary producers, and the single predator case, although well designed, cannot establish generality on its own.
 
-## 3.6 Heterogeneity, small-study effects and sensitivity
+## 3.6 Heterogeneity & sensitivity
 
 ```{r}
 #| label: tbl-sens
@@ -803,7 +802,7 @@ write.csv(t3, file.path(repo, "03.outputs/tables/table-sensitivity.csv"), row.na
 
 Heterogeneity was at least `r f1(min(res$I2))`% for every fraction, which is high even by the standards of ecological synthesis [@senior2016heterogeneity] and means the pooled estimates describe a distribution of effects rather than a common one. There was no evidence of small-study effects in the soil organic carbon subset (regression of effect size on standard error, *b* = `r f1(m_egg$b[2])`, *p* `r pf(m_egg$pval[2])`). Dispersion was imputed for only `r f1(100*mean(d$sd_imputed))`% of observations, and excluding them changed the pooled estimate by less than one percentage point. The estimate was sensitive to weighting rather than to imputation, and in no specification did the interval exclude zero.
 
-## 3.7 The effect declines with the turnover time of the pool
+## 3.7 Turnover time effects 
 
 ```{r}
 #| label: fit-turnover
@@ -899,7 +898,7 @@ cat("abstract verified against the analysis:", length(ABSTRACT_CLAIMS), "figures
 
 # Discussion
 
-## 4.1 Rate and stock are not interchangeable
+## 4.1 Rate & stock apart
 
 Invasion did not detectably increase soil carbon stocks in this synthesis, while the processes that move carbon through the soil ran measurably faster: respiration, enzyme activity and microbial biomass were all elevated. The two findings are not in conflict once it is recognised that they concern different quantities. Stock is the integral of rate over residence time, and a system can accumulate carbon quickly while retaining little.
 
@@ -907,7 +906,7 @@ The mechanism was set out by @peltzer2010effects, who concluded that direct inva
 
 The turnover test converts this interpretation from a reading of two fractions into a quantitative prediction that the data confirm. Ordering pools by their published turnover time and entering that order as a moderator, the invasion effect declines by `r f1(abs(pct(tord$b[2])))`% per step from fast to slow (*p* `r pf(tord$QMp)`). Invasion therefore does not add carbon uniformly across the soil profile's kinetic classes: it adds carbon to the compartments that turn over fastest and does not add it, and may remove it, from those that persist. Since only the persistent compartments contribute to storage on the timescales relevant to climate mitigation, an increase concentrated in fast pools is consistent with accelerated throughput and inconsistent with accrual. The weakest point in this test is the slow class itself, which is too sparsely measured to resolve, so the inference rests on the fast-to-intermediate contrast rather than on the full ordering.
 
-## 4.2 Two measurement artefacts inflate the apparent stock effect
+## 4.2 Artefacts inflating stock effect
 
 Two features of how stocks are measured act in the same direction as the rate-stock confusion.
 
@@ -929,7 +928,7 @@ The rate-stock divergence bears directly on a recognised policy risk. @lindenmay
 
 The contrary case has been argued: that invader biomass should be valorised through established value chains [@nunes2021carbon], or that in degraded systems an invader may build soil carbon more effectively than natives through root-derived inputs to mineral-associated pools [@meitha2024invasive]. Our results do not refute these arguments, which concern particular species in particular settings, but they do bear on the general form of the claim. Where the evidence offered is a rate, it is not evidence about stock, and it is stock that a carbon account records.
 
-## 4.5 What would follow if the divergence is real
+## 4.5 Evidence of divergence
 
 Three consequences follow, in ascending order of importance.
 
